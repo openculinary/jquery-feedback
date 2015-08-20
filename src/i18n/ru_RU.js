@@ -1,7 +1,7 @@
 i18n.label          = "Сообщить об ошибке";
 i18n.header         = "Сообщить об ошибке";
 i18n.nextLabel      = "Далее";
-i18n.reviewLabel    = "Проверить";
+i18n.reviewLabel    = "Далее";
 i18n.sendLabel      = "Отправить";
 i18n.closeLabel     = "Закрыть";
 
