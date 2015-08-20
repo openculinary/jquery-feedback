@@ -2,8 +2,8 @@ window.Feedback.Form = function( elements ) {
 
     this.elements = elements || [{
         type: "textarea",
-        name: "Issue",
-        label: "Please describe the issue you are experiencing",
+        name: _('issue'),
+        label: _('formDescription'),
         required: false
     }];
 

@@ -5,6 +5,8 @@ var uglify = require('gulp-uglify');
 var source_files = [
   "src/license.txt",
   "src/pre.txt",
+  "src/i18n/i18n.js",
+  //"src/i18n/ru_RU.js",
   "src/Core.js",
   "src/Page.js",
   "src/Send.js",

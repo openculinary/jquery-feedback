@@ -6,6 +6,55 @@
  Released under MIT License
 */
 (function( window, document, undefined ) {
+/*
+  This allows custom messages and languages in the feedback.js library.
+  The presidence order for messages is: Custom Message -> i18l -> defaults
+  --------------------
+  -Change Language: Include or create a language file. See examples at src/i18n/
+  -Change Messages: Include or create a custom_message_strings override file
+
+  Example:
+    custom_message_strings.header         = "Please, send us your thoughts";
+    custom_message_strings.messageSuccess = "Woah, we succeeded!";
+*/
+
+// Message getter function
+function _(s) {
+  return custom_message_strings[s];
+}
+
+// Define message inheritnace
+var default_message_strings = { label:          "Send Feedback"
+                              , header:         "Send Feedback"
+                              , nextLabel:      "Continue"
+                              , reviewLabel:    "Review"
+                              , sendLabel:      "Send"
+                              , closeLabel:     "Close"
+
+                              , messageSuccess: "Your feedback was sent succesfully."
+                              , messageError:   "There was an error sending your feedback to the server."
+                              , formDescription:    "Please describe the issue you are experiencing"
+                              , highlightDescription:    "Highlight or blackout important information"
+                              , highlight:    "Highlight"
+                              , blackout:    "Blackout"
+                              , issue:    "Issue"
+                              };
+var i18n = Object.create(default_message_strings);
+var custom_message_strings = Object.create(i18n);
+i18n.label          = "Сообщить об ошибке";
+i18n.header         = "Сообщить об ошибке";
+i18n.nextLabel      = "Далее";
+i18n.reviewLabel    = "Проверить";
+i18n.sendLabel      = "Отправить";
+i18n.closeLabel     = "Закрыть";
+
+i18n.messageSuccess = "Ваше сообщение успешно отправлено.";
+i18n.messageError   = "Произошла ошибка при отправке сообщения на сервер.";
+i18n.formDescription = "Пожалуйста, опишите проблему с которой вы столкнулись";
+i18n.highlightDescription = "Выделите или спрячьте важную информацию";
+i18n.highlight = "Выделить";
+i18n.blackout = "Спрятать";
+i18n.issue = "Ваше сообщение";
 if ( window.Feedback !== undefined ) { 
     return; 
 }
@@ -82,20 +131,9 @@ window.Feedback = function( options ) {
     options = options || {};
 
     // default properties
-    options.label = options.label || "Send Feedback";
-    options.header = options.header || "Send Feedback";
     options.url = options.url || "/";
     options.adapter = options.adapter || new window.Feedback.XHR( options.url );
-    
-    options.nextLabel = options.nextLabel || "Continue";
-    options.reviewLabel = options.reviewLabel || "Review";
-    options.sendLabel = options.sendLabel || "Send";
-    options.closeLabel = options.closeLabel || "Close";
-    
-    options.messageSuccess = options.messageSuccess || "Your feedback was sent successfully.";
-    options.messageError = options.messageError || "There was an error sending your feedback to the server.";
-    
-  
+
     if (options.pages === undefined ) {
         options.pages = [
             new window.Feedback.Form(),
@@ -138,7 +176,7 @@ window.Feedback = function( options ) {
 
             // build header element
             modalHeader.appendChild( a );
-            modalHeader.appendChild( element("h3", options.header ) );
+            modalHeader.appendChild( element("h3", _('header') ) );
             modalHeader.className =  "feedback-header";
 
             modalBody.className = "feedback-body";
@@ -149,7 +187,7 @@ window.Feedback = function( options ) {
 
 
             // Next button
-            nextButton = element( "button", options.nextLabel );
+            nextButton = element( "button", _('nextLabel') );
 
             nextButton.className =  "feedback-btn";
             nextButton.onclick = function() {
@@ -179,12 +217,12 @@ window.Feedback = function( options ) {
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {
-                        nextButton.firstChild.nodeValue = options.sendLabel;
+                        nextButton.firstChild.nodeValue = _('sendLabel');
                     }
                     
                     // if next page is review page, change button label
                     if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {   
-                        nextButton.firstChild.nodeValue = options.reviewLabel;
+                        nextButton.firstChild.nodeValue = _('reviewLabel');
                     }
                         
 
@@ -264,9 +302,9 @@ window.Feedback = function( options ) {
                 };
                 
                 if ( success === true ) {
-                    modalBody.appendChild( document.createTextNode( options.messageSuccess ) );
+                    modalBody.appendChild( document.createTextNode( _('messageSuccess') ) );
                 } else {
-                    modalBody.appendChild( document.createTextNode( options.messageError ) );
+                    modalBody.appendChild( document.createTextNode( _('messageError') ) );
                 }
                 
             } );
@@ -280,7 +318,7 @@ window.Feedback = function( options ) {
 
     options = options || {};
 
-    button = element( "button", options.label );
+    button = element( "button", _('label') );
     button.className = "feedback-btn feedback-bottom-right";
 
     button.setAttribute(H2C_IGNORE, true);
@@ -322,8 +360,8 @@ window.Feedback.Form = function( elements ) {
 
     this.elements = elements || [{
         type: "textarea",
-        name: "Issue",
-        label: "Please describe the issue you are experiencing",
+        name: _('issue'),
+        label: _('formDescription'),
         required: false
     }];
 
@@ -628,8 +666,8 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             highlightClose.style.top =  "-50px";
 
         },
-        blackoutButton = element("a", "Blackout"),
-        highlightButton = element("a", "Highlight"),
+        blackoutButton = element("a", _("blackout")),
+        highlightButton = element("a", _("highlight")),
         previousElement;
 
 
@@ -653,7 +691,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", "Highlight or blackout important information") );
+        this.dom.appendChild( element("p", _('highlightDescription')) );
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
