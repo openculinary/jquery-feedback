@@ -11,17 +11,16 @@ The script is based on the <a href="http://html2canvas.hertzen.com/">html2canvas
 No plugins, no flash, no interaction needed from the server, just pure JavaScript!
 
 ## Building feedback.js ##
-1. Install rake and uglifier at the command line if you don't already have it (uglifier is only needed if you are going to compile the minified version)
+1. Install gulp and uglifier at the command line if you don't already have it (uglifier is only needed if you are going to compile the minified version)
 ```bash
-    gem install rake
-    gem install uglifier
+    npm install gulp gulp-concat
+    npm install gulp-uglify
 ```
 
 2. Navigate to the feedback.js directory in the terminal and run one of the following
 ```bash
-    rake compile_unminified
-    rake compile_minified
-    rake compile_all
+    gulp build
+    gulp build:min
 ```
 
 ## Browser compatibility ##
