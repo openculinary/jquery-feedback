@@ -41,20 +41,6 @@ var default_message_strings = { label:          "Send Feedback"
                               };
 var i18n = Object.create(default_message_strings);
 var custom_message_strings = Object.create(i18n);
-i18n.label          = "Сообщить об ошибке";
-i18n.header         = "Сообщить об ошибке";
-i18n.nextLabel      = "Далее";
-i18n.reviewLabel    = "Проверить";
-i18n.sendLabel      = "Отправить";
-i18n.closeLabel     = "Закрыть";
-
-i18n.messageSuccess = "Ваше сообщение успешно отправлено.";
-i18n.messageError   = "Произошла ошибка при отправке сообщения на сервер.";
-i18n.formDescription = "Пожалуйста, опишите проблему с которой вы столкнулись";
-i18n.highlightDescription = "Выделите или спрячьте важную информацию";
-i18n.highlight = "Выделить";
-i18n.blackout = "Спрятать";
-i18n.issue = "Ваше сообщение";
 if ( window.Feedback !== undefined ) { 
     return; 
 }
@@ -224,7 +210,6 @@ window.Feedback = function( options ) {
                     if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {   
                         nextButton.firstChild.nodeValue = _('reviewLabel');
                     }
-                        
 
                 }
 
@@ -306,7 +291,16 @@ window.Feedback = function( options ) {
                 } else {
                     modalBody.appendChild( document.createTextNode( _('messageError') ) );
                 }
-                
+                //Once the form has been submitted, initialize it.
+
+                var len = options.pages.length;
+                var currentPage = 0;
+                for (; currentPage < len; currentPage++) {
+                    // Delete data from all Form and Screenshot so it does not persist for next feedback.
+                    if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                        options.pages[ currentPage ]._data = undefined;
+                    }
+                }
             } );
   
         }

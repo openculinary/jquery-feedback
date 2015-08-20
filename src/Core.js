@@ -248,7 +248,16 @@ window.Feedback = function( options ) {
                 } else {
                     modalBody.appendChild( document.createTextNode( _('messageError') ) );
                 }
-                
+                //Once the form has been submitted, initialize it.
+
+                var len = options.pages.length;
+                var currentPage = 0;
+                for (; currentPage < len; currentPage++) {
+                    // Delete data from all Form and Screenshot so it does not persist for next feedback.
+                    if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                        options.pages[ currentPage ]._data = undefined;
+                    }
+                }
             } );
   
         }
