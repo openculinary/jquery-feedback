@@ -10,6 +10,61 @@ The script is based on the <a href="http://html2canvas.hertzen.com/">html2canvas
 
 No plugins, no flash, no interaction needed from the server, just pure JavaScript!
 
+## Options ##
+
+Pass to constructor, e.g.
+
+    Feedback({
+        h2cPath:'//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js',
+        url: '/rest/feedback'});
+
+* adapter
+* allowTaint
+* appendTo
+* blackoutClass
+* canvas
+* closeLabel
+* complete
+* e
+* el
+* elements
+* feedback
+* flashcanvas
+* for
+* h2cPath - url to html2canvas
+* hasOwnProperty
+* header - header on the dialog box
+* height
+* highlightClass
+* if
+* iframeDefault
+* ignoreElements
+* j
+* key
+* label - label on the feedback button
+* length
+* letterRendering
+* logging
+* messageError
+* messageSuccess
+* nextLabel - label on the continue button of the first dialog box
+* onparsed
+* onpreloaded
+* onrendered
+* pages - dialogs with user.  defaults to Feedback.Form, Feedback.Screenshot, Feedback.Review
+* proxy
+* renderer
+* reviewLabel
+* sendLabel
+* svgRendering
+* taintTest
+* timeout
+* url - url to post form data
+* useCORS
+* useOverflow
+* width
+
+
 ## Building feedback.js ##
 1. Install gulp and uglifier at the command line if you don't already have it (uglifier is only needed if you are going to compile the minified version)
 ```bash
