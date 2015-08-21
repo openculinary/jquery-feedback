@@ -343,7 +343,7 @@ window.Feedback = function( options ) {
                 emptyElements( modalBody );
                 nextButton.disabled = false;
                 
-                nextButton.firstChild.nodeValue = options.closeLabel;
+                nextButton.firstChild.nodeValue = _('closeLabel');
                 
                 nextButton.onclick = function() {
                     returnMethods.close();
@@ -480,7 +480,7 @@ window.Feedback.Form.prototype.data = function() {
         item = this.elements[ i ];
         data[ item.name ] = item.element.value;
     }
-    
+    data['url'] = window.location.href;
     // cache and return data
     return ( this._data = data );
 };
