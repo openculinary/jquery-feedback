@@ -418,7 +418,7 @@ window.Feedback.Form = function( elements ) {
 
     this.elements = elements || [{
         type: "textarea",
-        name: _('issue'),
+        name: 'issue',
         label: _('formDescription'),
         required: false
     }];
@@ -494,7 +494,7 @@ window.Feedback.Form.prototype.review = function( dom ) {
         item = this.elements[ i ];
         
         if (item.element.value.length > 0) {
-            dom.appendChild( element("label", item.name + ":") );
+            dom.appendChild( element("label", item.label + ":") );
             dom.appendChild( document.createTextNode( item.element.value ) );
             dom.appendChild( document.createElement( "hr" ) );
         }
