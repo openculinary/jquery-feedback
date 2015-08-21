@@ -252,7 +252,7 @@ window.Feedback = function( options ) {
                 emptyElements( modalBody );
                 nextButton.disabled = false;
                 
-                nextButton.firstChild.nodeValue = options.closeLabel;
+                nextButton.firstChild.nodeValue = _('closeLabel');
                 
                 nextButton.onclick = function() {
                     returnMethods.close();
