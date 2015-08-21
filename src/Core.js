@@ -64,6 +64,17 @@ scriptLoader = function( script, func ){
     }
 
 },
+getLang = function() {
+ var lang;
+ if (navigator.languages != undefined)
+    lang = navigator.languages[0];
+ else
+    lang = navigator.language;
+
+ if (lang) {
+     return lang.replace('-','_');
+ }
+},
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",
 currentPage,
@@ -76,6 +87,11 @@ window.Feedback = function( options ) {
     // default properties
     options.url = options.url || "/";
     options.adapter = options.adapter || new window.Feedback.XHR( options.url );
+    options.lang = options.lang || "auto";
+
+    if (options.lang === 'auto')
+        options.lang = getLang();
+    i18n.lang = options.lang;
 
     if (options.pages === undefined ) {
         options.pages = [

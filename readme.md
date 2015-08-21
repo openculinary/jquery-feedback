@@ -33,7 +33,6 @@ Pass to constructor, e.g.
 * for
 * h2cPath - url to html2canvas
 * hasOwnProperty
-* header - header on the dialog box
 * height
 * highlightClass
 * if
@@ -41,12 +40,10 @@ Pass to constructor, e.g.
 * ignoreElements
 * j
 * key
-* label - label on the feedback button
+* lang - "auto" for autodetect from browser or language code like 'ru_RU'
 * length
 * letterRendering
 * logging
-* messageError
-* messageSuccess
 * nextLabel - label on the continue button of the first dialog box
 * onparsed
 * onpreloaded
@@ -54,8 +51,6 @@ Pass to constructor, e.g.
 * pages - dialogs with user.  defaults to Feedback.Form, Feedback.Screenshot, Feedback.Review
 * proxy
 * renderer
-* reviewLabel
-* sendLabel
 * svgRendering
 * taintTest
 * timeout

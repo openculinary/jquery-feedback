@@ -20,27 +20,75 @@
 
 // Message getter function
 function _(s) {
-  return custom_message_strings[s];
+  return i18n.gettext(s);
 }
 
-// Define message inheritnace
-var default_message_strings = { label:          "Send Feedback"
-                              , header:         "Send Feedback"
-                              , nextLabel:      "Continue"
-                              , reviewLabel:    "Review"
-                              , sendLabel:      "Send"
-                              , closeLabel:     "Close"
+// Define default messages
+var default_message_strings = {
+  label:          "Send Feedback",
+  header: "Send Feedback",
+  nextLabel: "Continue",
+  reviewLabel:    "Review",
+  sendLabel: "Send",
+  closeLabel:     "Close",
+  messageSuccess: "Your feedback was sent succesfully.",
+  messageError: "There was an error sending your feedback to the server.",
+  formDescription: "Please describe the issue you are experiencing",
+  highlightDescription: "Highlight or blackout important information",
+  highlight: "Highlight",
+  blackout:    "Blackout",
+  issue: "Issue"
+};
 
-                              , messageSuccess: "Your feedback was sent succesfully."
-                              , messageError:   "There was an error sending your feedback to the server."
-                              , formDescription:    "Please describe the issue you are experiencing"
-                              , highlightDescription:    "Highlight or blackout important information"
-                              , highlight:    "Highlight"
-                              , blackout:    "Blackout"
-                              , issue:    "Issue"
-                              };
-var i18n = Object.create(default_message_strings);
-var custom_message_strings = Object.create(i18n);
+var i18n = Object.create({
+  'default': default_message_strings,
+  'lang': 'default',
+  gettext: function(s) {
+    if (this[this.lang] && this[this.lang][s]) {
+      return this[this.lang][s];
+    } else if (this['default'][s]) {
+      return this['default'][s];
+    } else {
+      return s
+    }
+  }
+});
+i18n['es_MX'] = {
+  label : "Env?e sus comentarios",
+  header : "Env?e sus comentarios",
+  nextLabel : "Continuar",
+  reviewLabel : "Revise",
+  sendLabel : "Enviar",
+  closeLabel : "Cerrar",
+
+  messageSuccess : "Su reacci?n ha sido enviado con ?xito.",
+  messageError : "Se ha producido un error al enviar sus comentarios en el servidor.",
+};
+i18n['es_MX'] = {
+  label: "Enviar coment?rios",
+  header : "Enviar coment?rios",
+  nextLabel : "Continuar",
+  reviewLabel : "Revisar",
+  sendLabel : "Enviar",
+  closeLabel : "Fechar",
+  messageSuccess : "Seu coment?rio foi enviado com sucesso.",
+  messageError : "Houve um erro ao enviar seu coment?rio ao servidor."
+};
+i18n['ru_RU'] = {
+  label: "Сообщить об ошибке",
+  header: "Сообщить об ошибке",
+  nextLabel: "Далее",
+  reviewLabel: "Далее",
+  sendLabel: "Отправить",
+  closeLabel: "Закрыть",
+  messageSuccess: "Ваше сообщение успешно отправлено.",
+  messageError: "Произошла ошибка при отправке сообщения на сервер.",
+  formDescription: "Пожалуйста, опишите проблему с которой вы столкнулись",
+  highlightDescription: "Выделите или спрячьте важную информацию",
+  highlight: "Выделить",
+  blackout: "Спрятать",
+  issue: "Ваше сообщение",
+};
 if ( window.Feedback !== undefined ) { 
     return; 
 }
@@ -107,6 +155,17 @@ scriptLoader = function( script, func ){
     }
 
 },
+getLang = function() {
+ var lang;
+ if (navigator.languages != undefined)
+    lang = navigator.languages[0];
+ else
+    lang = navigator.language;
+
+ if (lang) {
+     return lang.replace('-','_');
+ }
+},
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",
 currentPage,
@@ -119,6 +178,11 @@ window.Feedback = function( options ) {
     // default properties
     options.url = options.url || "/";
     options.adapter = options.adapter || new window.Feedback.XHR( options.url );
+    options.lang = options.lang || "auto";
+
+    if (options.lang === 'auto')
+        options.lang = getLang();
+    i18n.lang = options.lang;
 
     if (options.pages === undefined ) {
         options.pages = [
@@ -431,7 +495,7 @@ window.Feedback.Form.prototype.review = function( dom ) {
         
         if (item.element.value.length > 0) {
             dom.appendChild( element("label", item.name + ":") );
-            dom.appendChild( document.createTextNode( item.element.value.length ) );
+            dom.appendChild( document.createTextNode( item.element.value ) );
             dom.appendChild( document.createElement( "hr" ) );
         }
         
