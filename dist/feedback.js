@@ -25,18 +25,18 @@ function _(s) {
 
 // Define default messages
 var default_message_strings = {
-  label:          "Send Feedback",
-  header: "Send Feedback",
+  label: "Feedback",
+  header: "Send your Feedback",
   nextLabel: "Continue",
-  reviewLabel:    "Review",
+  reviewLabel: "Review",
   sendLabel: "Send",
-  closeLabel:     "Close",
-  messageSuccess: "Your feedback was sent succesfully.",
-  messageError: "There was an error sending your feedback to the server.",
+  closeLabel: "Close",
+  messageSuccess: "Your feedback was sent successfully.",
+  messageError: "There was an error sending your feedback to our server.",
   formDescription: "Please describe the issue you are experiencing",
   highlightDescription: "Highlight or blackout important information",
   highlight: "Highlight",
-  blackout:    "Blackout",
+  blackout: "Blackout",
   issue: "Issue"
 };
 
@@ -53,6 +53,22 @@ var i18n = Object.create({
     }
   }
 });
+i18n['de_DE'] = {
+  label: "Ihre Meinung",
+  header: "Senden Sie Ihre Meinung",
+  nextLabel: "Weiter",
+  reviewLabel: "Überprüfen",
+  sendLabel: "Senden",
+  closeLabel: "Schliessen",
+  messageSuccess: "Ihre Meinung wurde erfolgreich gesendet.",
+  messageError: "Fehler beim senden Ihrer Meinung an unser Server.",
+  formDescription: "Bitte beschreiben Sie das Problem das bei Ihnen auftritt",
+  highlightDescription: "Wichtige Informationen markieren oder verdunkeln",
+  highlight: "Markieren",
+  blackout: "Verdunkeln",
+  issue: "Problem"
+};
+
 i18n['es_MX'] = {
   label : "Env?e sus comentarios",
   header : "Env?e sus comentarios",
@@ -64,6 +80,22 @@ i18n['es_MX'] = {
   messageSuccess : "Su reacci?n ha sido enviado con ?xito.",
   messageError : "Se ha producido un error al enviar sus comentarios en el servidor.",
 };
+i18n['it_IT'] = {
+  label: "Commenta",
+  header: "Invia il tuo commento",
+  nextLabel: "Continua",
+  reviewLabel: "Rivedi",
+  sendLabel: "Invia",
+  closeLabel: "Chiudi",
+  messageSuccess: "Il tuo commento è stato inviato con successo.",
+  messageError: "C'è stato un errore nell'invio del tuo commento al nostro server.",
+  formDescription: "Per favore descrivi il problema",
+  highlightDescription: "Evidenzia o nascondi le informazioni importanti",
+  highlight: "Evidenzia",
+  blackout: "Nascondi",
+  issue: "Problema"
+};
+
 i18n['es_MX'] = {
   label: "Enviar coment?rios",
   header : "Enviar coment?rios",
@@ -87,7 +119,7 @@ i18n['ru_RU'] = {
   highlightDescription: "Выделите или спрячьте важную информацию",
   highlight: "Выделить",
   blackout: "Спрятать",
-  issue: "Ваше сообщение",
+  issue: "Ваше сообщение"
 };
 if ( window.Feedback !== undefined ) { 
     return; 
