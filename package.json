@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/simevo/feedback.js/issues"
   },
-  "homepage": "https://github.com/simevo/feedback.js#readme"
+  "homepage": "https://github.com/simevo/feedback.js#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^1.5.1"
+  }
 }
