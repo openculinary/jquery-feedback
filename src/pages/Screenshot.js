@@ -48,8 +48,12 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         // delegate mouse move event for body
         this.mouseMoveEvent = function( e ) {
 
+            // fix SVG errors
+            var className = e.target.className;
+            className = className.baseVal !== undefined ? className.baseVal : className;
+
             // set close button
-            if ( e.target !== previousElement && (e.target.className.indexOf( $this.options.blackoutClass ) !== -1 || e.target.className.indexOf( $this.options.highlightClass ) !== -1)) {
+            if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
 
                 var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
                 left = Math.max( left, 10 );
