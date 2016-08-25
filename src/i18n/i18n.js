@@ -36,8 +36,9 @@ var i18n = Object.create({
   'default': default_message_strings,
   'lang': 'default',
   gettext: function(s) {
-    if (this[this.lang] && this[this.lang][s]) {
-      return this[this.lang][s];
+    var message_strings = this[this.lang] || this[this.lang.substring(0, 2)];
+    if (message_strings && message_strings[s]) {
+      return message_strings[s];
     } else if (this['default'][s]) {
       return this['default'][s];
     } else {

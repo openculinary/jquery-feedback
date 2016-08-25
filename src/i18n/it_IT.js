@@ -13,3 +13,4 @@ i18n.it_IT = {
   blackout: "Nascondi",
   issue: "Problema"
 };
+i18n.it = i18n.it_IT;

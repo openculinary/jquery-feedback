@@ -13,3 +13,4 @@ i18n.ru_RU = {
   blackout: "Спрятать",
   issue: "Ваше сообщение"
 };
+i18n.ru = i18n.ru_RU;

@@ -13,3 +13,4 @@ i18n.pt_BR = {
   blackout: "Ocultar",
   issue: "Problema"
 };
+i18n.pt = i18n.pt_BR;

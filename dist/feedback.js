@@ -44,8 +44,9 @@ var i18n = Object.create({
   'default': default_message_strings,
   'lang': 'default',
   gettext: function(s) {
-    if (this[this.lang] && this[this.lang][s]) {
-      return this[this.lang][s];
+    var message_strings = this[this.lang] || this[this.lang.substring(0, 2)];
+    if (message_strings && message_strings[s]) {
+      return message_strings[s];
     } else if (this['default'][s]) {
       return this['default'][s];
     } else {
@@ -53,6 +54,7 @@ var i18n = Object.create({
     }
   }
 });
+
 i18n.de_DE = {
   label: "Ihre Meinung",
   header: "Senden Sie Ihre Meinung",
@@ -68,6 +70,7 @@ i18n.de_DE = {
   blackout: "Verdunkeln",
   issue: "Problem"
 };
+i18n.de = i18n.de_DE;
 
 i18n.es_MX = {
   label: "Comentarios",
@@ -84,6 +87,8 @@ i18n.es_MX = {
   blackout: "Ocultar",
   issue: "Problema"
 };
+i18n.es = i18n.es_MX;
+
 i18n.it_IT = {
   label: "Commenta",
   header: "Invia il tuo commento",
@@ -99,6 +104,7 @@ i18n.it_IT = {
   blackout: "Nascondi",
   issue: "Problema"
 };
+i18n.it = i18n.it_IT;
 
 i18n.pt_BR = {
   label: "Comentários",
@@ -115,6 +121,8 @@ i18n.pt_BR = {
   blackout: "Ocultar",
   issue: "Problema"
 };
+i18n.pt = i18n.pt_BR;
+
 i18n.ru_RU = {
   label: "Сообщить об ошибке",
   header: "Сообщить об ошибке",
@@ -130,6 +138,8 @@ i18n.ru_RU = {
   blackout: "Спрятать",
   issue: "Ваше сообщение"
 };
+i18n.ru = i18n.ru_RU;
+
 if ( window.Feedback !== undefined ) { 
     return; 
 }
@@ -195,15 +205,17 @@ scriptLoader = function( script, func ){
 
 },
 getLang = function() {
- var lang;
- if (navigator.languages !== undefined)
-    lang = navigator.languages[0];
- else
-    lang = navigator.language;
+    var lang;
+    if (navigator.languages !== undefined) {
+        lang = navigator.languages[0];
+    } else {
+        lang = navigator.language;
+    }
 
- if (lang) {
-     return lang.replace('-','_');
- }
+    log('language = ' + lang);
+    if (lang) {
+        return lang.replace('-','_');
+    }
 },
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",

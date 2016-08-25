@@ -63,15 +63,17 @@ scriptLoader = function( script, func ){
 
 },
 getLang = function() {
- var lang;
- if (navigator.languages !== undefined)
-    lang = navigator.languages[0];
- else
-    lang = navigator.language;
+    var lang;
+    if (navigator.languages !== undefined) {
+        lang = navigator.languages[0];
+    } else {
+        lang = navigator.language;
+    }
 
- if (lang) {
-     return lang.replace('-','_');
- }
+    log('language = ' + lang);
+    if (lang) {
+        return lang.replace('-','_');
+    }
 },
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",

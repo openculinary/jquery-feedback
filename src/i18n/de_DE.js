@@ -13,3 +13,4 @@ i18n.de_DE = {
   blackout: "Verdunkeln",
   issue: "Problem"
 };
+i18n.de = i18n.de_DE;
