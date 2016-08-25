@@ -66,7 +66,7 @@ scriptLoader = function( script, func ){
 },
 getLang = function() {
  var lang;
- if (navigator.languages != undefined)
+ if (navigator.languages !== undefined)
     lang = navigator.languages[0];
  else
     lang = navigator.language;

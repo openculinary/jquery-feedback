@@ -34,12 +34,13 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
 
+    var $this = this;
+
     if ( this.h2cDone ) {
         emptyElements( this.dom );
         nextButton.disabled = false;
-        
-        var $this = this,
-        feedbackHighlightElement = "feedback-highlight-element",
+
+        var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
 
         var action = true;
@@ -251,8 +252,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
     } else {
         // still loading html2canvas
-        var args = arguments,
-        $this = this;
+        var args = arguments;
 
         if ( nextButton.disabled !== true) {
             this.dom.appendChild( loader() );

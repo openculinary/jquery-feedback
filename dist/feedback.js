@@ -49,11 +49,11 @@ var i18n = Object.create({
     } else if (this['default'][s]) {
       return this['default'][s];
     } else {
-      return s
+      return s;
     }
   }
 });
-i18n['de_DE'] = {
+i18n.de_DE = {
   label: "Ihre Meinung",
   header: "Senden Sie Ihre Meinung",
   nextLabel: "Weiter",
@@ -69,18 +69,22 @@ i18n['de_DE'] = {
   issue: "Problem"
 };
 
-i18n['es_MX'] = {
-  label : "Env?e sus comentarios",
-  header : "Env?e sus comentarios",
-  nextLabel : "Continuar",
-  reviewLabel : "Revise",
-  sendLabel : "Enviar",
-  closeLabel : "Cerrar",
-
-  messageSuccess : "Su reacci?n ha sido enviado con ?xito.",
-  messageError : "Se ha producido un error al enviar sus comentarios en el servidor.",
+i18n.es_MX = {
+  label: "Comentarios",
+  header: "Envíe sus comentarios",
+  nextLabel: "Continuar",
+  reviewLabel: "Revisar",
+  sendLabel: "Enviar",
+  closeLabel: "Cerrar",
+  messageSuccess: "Sus comentarios fueron enviados con éxito.",
+  messageError: "Hubo un error al enviar sus comentarios a nuestro servidor.",
+  formDescription: "Por favor describa el problema que está experimentando",
+  highlightDescription: "Resaltar o ocultar información importante",
+  highlight: "Resaltar",
+  blackout: "Ocultar",
+  issue: "Problema"
 };
-i18n['it_IT'] = {
+i18n.it_IT = {
   label: "Commenta",
   header: "Invia il tuo commento",
   nextLabel: "Continua",
@@ -96,17 +100,22 @@ i18n['it_IT'] = {
   issue: "Problema"
 };
 
-i18n['es_MX'] = {
-  label: "Enviar coment?rios",
-  header : "Enviar coment?rios",
-  nextLabel : "Continuar",
-  reviewLabel : "Revisar",
-  sendLabel : "Enviar",
-  closeLabel : "Fechar",
-  messageSuccess : "Seu coment?rio foi enviado com sucesso.",
-  messageError : "Houve um erro ao enviar seu coment?rio ao servidor."
+i18n.pt_BR = {
+  label: "Comentários",
+  header: "Envie seus comentários",
+  nextLabel: "Prossegue",
+  reviewLabel: "Revisa",
+  sendLabel: "Envia",
+  closeLabel: "Fecha",
+  messageSuccess: "Seus comentários foram enviados com sucesso.",
+  messageError: "Houve um erro ao enviar os seus comentários para o nosso servidor.",
+  formDescription: "Por favor, descreva o problema que está ocorrendo",
+  highlightDescription: "Destaque ou oculte informação importante",
+  highlight: "Destacar",
+  blackout: "Ocultar",
+  issue: "Problema"
 };
-i18n['ru_RU'] = {
+i18n.ru_RU = {
   label: "Сообщить об ошибке",
   header: "Сообщить об ошибке",
   nextLabel: "Далее",
@@ -189,7 +198,7 @@ scriptLoader = function( script, func ){
 },
 getLang = function() {
  var lang;
- if (navigator.languages != undefined)
+ if (navigator.languages !== undefined)
     lang = navigator.languages[0];
  else
     lang = navigator.language;
@@ -512,7 +521,7 @@ window.Feedback.Form.prototype.data = function() {
         item = this.elements[ i ];
         data[ item.name ] = item.element.value;
     }
-    data['url'] = window.location.href;
+    data.url = window.location.href;
     // cache and return data
     return ( this._data = data );
 };
@@ -598,12 +607,13 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
 
+    var $this = this;
+
     if ( this.h2cDone ) {
         emptyElements( this.dom );
         nextButton.disabled = false;
-        
-        var $this = this,
-        feedbackHighlightElement = "feedback-highlight-element",
+
+        var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
 
         var action = true;
@@ -815,8 +825,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
     } else {
         // still loading html2canvas
-        var args = arguments,
-        $this = this;
+        var args = arguments;
 
         if ( nextButton.disabled !== true) {
             this.dom.appendChild( loader() );

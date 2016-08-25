@@ -41,7 +41,7 @@ var i18n = Object.create({
     } else if (this['default'][s]) {
       return this['default'][s];
     } else {
-      return s
+      return s;
     }
   }
 });

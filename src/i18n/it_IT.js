@@ -1,4 +1,4 @@
-i18n['it_IT'] = {
+i18n.it_IT = {
   label: "Commenta",
   header: "Invia il tuo commento",
   nextLabel: "Continua",
