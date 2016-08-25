@@ -21,23 +21,23 @@ No plugins, no flash, no interaction needed from the server, just pure JavaScrip
 
 ## Try it out locally (frontend + backend) ##
 
-1. start a webserver in the root of feedback.js:
+- start a webserver in the root of feedback.js:
 ```bash
     python -m SimpleHTTPServer
 ```
 
-2. start the supplied sample backend:
+- start the supplied sample backend:
 ```bash
     ./sample_backend.py
 ```
 
-3. open the http://localhost:8000/examples/ URL in the browser
+- open the http://localhost:8000/examples/ URL in the browser
 
-4. submit a feedback, and ignore the error (it's caused by CORS)
+- submit a feedback, and ignore the error (it's caused by CORS)
 
-5. watch the information gathered at the client side as logged by the sample backend
+- watch the information gathered at the client side as logged by the sample backend
 
-6. examine the screenshot which the backend saves in the screenshot.png file
+- examine the screenshot which the backend saves in the screenshot.png file
 
 ## Options ##
 
@@ -90,13 +90,13 @@ Pass to constructor, e.g.
 
 ## Building feedback.js ##
 
-1. Install gulp and uglifier at the command line if you don't already have it (uglifier is only needed if you are going to compile the minified version)
+- Install gulp and uglifier at the command line if you don't already have it (uglifier is only needed if you are going to compile the minified version)
 ```bash
     npm install gulp gulp-concat
     npm install gulp-uglify
 ```
 
-2. Navigate to the feedback.js directory in the terminal and run one of the following
+- Navigate to the feedback.js directory in the terminal and run one of the following
 ```bash
     gulp build
     gulp build:min
