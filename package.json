@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ItsJonQ/feedback.js.git"
+    "url": "git+https://github.com/simevo/feedback.js.git"
   },
-  "author": "",
+  "author": "Niklas von Hertzen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ItsJonQ/feedback.js/issues"
+    "url": "https://github.com/simevo/feedback.js/issues"
   },
-  "homepage": "https://github.com/ItsJonQ/feedback.js#readme"
+  "homepage": "https://github.com/simevo/feedback.js#readme"
 }
