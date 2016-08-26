@@ -47,46 +47,39 @@ Pass to constructor, e.g.
         h2cPath:'//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js',
         url: '/rest/feedback'});
 
-* adapter
-* allowTaint
-* appendTo
-* blackoutClass
+Available options:
+
+* adapter - sends the data overriding the default adapter in src/send/xhr.js
+* appendTo - DOM element where to add the feedback button, defaults to document.body
+* blackoutClass - CSS class to use for elements that have been blacked out by the user during the screenshot review, defaults to feedback-blackedout
 * canvas
-* closeLabel
+* closeLabel- override the label of the closing popup, defaults to "Close", can change to "Thanks for the feedback"
 * complete
 * e
 * el
 * elements
 * feedback
-* flashcanvas
 * for
 * h2cPath - url to html2canvas
-* hasOwnProperty
-* height
-* highlightClass
-* if
-* iframeDefault
-* ignoreElements
+* highlightClass - CSS class to use for elements that have been highlighted by the user during the screenshot review, defaults to  feedback-highlighted
 * j
 * key
 * lang - "auto" for autodetect from browser or language code like 'ru_RU'
-* length
+* nextLabel - label on the continue button of the first dialog box
+* pages - dialogs with user.  defaults to Feedback.Form, Feedback.Screenshot, Feedback.Review
+* url - url to post form data
+
+html2canvas options (see http://html2canvas.hertzen.com/documentation.html#available-options):
+* allowTaint
+* background
+* height
 * letterRendering
 * logging
-* nextLabel - label on the continue button of the first dialog box
-* onparsed
-* onpreloaded
-* onrendered
-* pages - dialogs with user.  defaults to Feedback.Form, Feedback.Screenshot, Feedback.Review
 * proxy
-* renderer
-* svgRendering
 * taintTest
 * timeout
-* url - url to post form data
-* useCORS
-* useOverflow
 * width
+* useCORS
 
 ## Building feedback.js ##
 
