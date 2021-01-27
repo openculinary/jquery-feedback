@@ -24,12 +24,6 @@ No plugins, no flash, no interaction needed from the server, just pure JavaScrip
     rake compile_all
 ```
 
-## Browser compatibility ##
-
- - Firefox 3.5+
- - Newer versions of Google Chrome, Safari & Opera
- - IE9
-
 ## License ##
  
 feedback.js is released under the MIT license:
