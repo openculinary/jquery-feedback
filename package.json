@@ -1,0 +1,30 @@
+{
+  "name": "jquery-feedback",
+  "version": "0.0.1-beta.0",
+  "description": "Feedback form with screenshot",
+  "keywords": [
+    "jquery",
+    "feedback"
+  ],
+  "homepage": "https://github.com/openculinary/jquery-feedback/",
+  "license": "MIT",
+  "author": {
+    "name": "Niklas von Hertzen",
+    "url": "https://github.com/niklasvh/"
+  },
+  "contributors": [
+    {
+      "name": "James Addison",
+      "url": "https://github.com/jayaddison/"
+    }
+  ],
+  "browser": "feedback.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openculinary/jquery-feedback.git/"
+  },
+  "dependencies": {
+    "html2canvas": "^1.0.0-rc.7",
+    "jquery": "^3.5.1"
+  }
+}
