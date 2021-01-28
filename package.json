@@ -1,5 +1,5 @@
 {
-  "name": "jquery-feedback",
+  "name": "@openculinary/jquery-feedback",
   "version": "0.0.1-beta.0",
   "description": "Feedback form with screenshot",
   "keywords": [
