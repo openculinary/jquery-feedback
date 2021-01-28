@@ -26,5 +26,9 @@
   "dependencies": {
     "html2canvas": "^1.0.0-rc.7",
     "jquery": "^3.5.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
   }
 }
