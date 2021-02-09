@@ -18,7 +18,7 @@ def test():
     postdata = bottle.request.body.read()
 
     # skip the initial 'data=' prolog
-    payload = urllib.unquote_plus(postdata[5:])
+    payload = urllib.parse.unquote(postdata[5:])
     alldata = json.loads(payload)
 
     data = alldata[0]
