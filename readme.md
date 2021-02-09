@@ -23,7 +23,7 @@ No plugins, no flash, no interaction needed from the server, just pure JavaScrip
 
 - start a webserver in the root of feedback.js:
 ```bash
-    python -m http.server
+    python -m http.server --bind 127.0.0.1
 ```
 
 - start the supplied sample backend:
