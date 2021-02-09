@@ -55,10 +55,11 @@ def test():
     # skip the initial 'data:image/png;base64,' prolog
     encoded_image = alldata[1][22:]
     image = base64.b64decode(encoded_image)
-    png = open("screenshot.png", "wb")
-    png.write(image)
 
-    return bottle.HTTPResponse(status=201, body='OK')
+    with open("screenshot.png", "wb") as png:
+        png.write(image)
+
+    return bottle.HTTPResponse(status=200, body='OK')
 
 
 if __name__ == '__main__':
