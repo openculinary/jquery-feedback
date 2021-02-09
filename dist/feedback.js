@@ -6,6 +6,140 @@
  Released under MIT License
 */
 (function( window, document, undefined ) {
+/*
+  This allows custom messages and languages in the feedback.js library.
+  The presidence order for messages is: Custom Message -> i18l -> defaults
+  --------------------
+  -Change Language: Include or create a language file. See examples at src/i18n/
+  -Change Messages: Include or create a custom_message_strings override file
+
+  Example:
+    custom_message_strings.header         = "Please, send us your thoughts";
+    custom_message_strings.messageSuccess = "Woah, we succeeded!";
+*/
+
+// Message getter function
+function _(s) {
+  return i18n.gettext(s);
+}
+
+// Define default messages
+var default_message_strings = {
+  label: "Feedback",
+  header: "Send your Feedback",
+  nextLabel: "Continue",
+  reviewLabel: "Review",
+  sendLabel: "Send",
+  closeLabel: "Close",
+  messageSuccess: "Your feedback was sent successfully.",
+  messageError: "There was an error sending your feedback to our server.",
+  formDescription: "Please describe the issue you are experiencing",
+  highlightDescription: "Highlight or blackout important information",
+  highlight: "Highlight",
+  blackout: "Blackout",
+  issue: "Issue"
+};
+
+var i18n = Object.create({
+  'default': default_message_strings,
+  'lang': 'default',
+  gettext: function(s) {
+    var message_strings = this[this.lang] || this[this.lang.substring(0, 2)];
+    if (message_strings && message_strings[s]) {
+      return message_strings[s];
+    } else if (this['default'][s]) {
+      return this['default'][s];
+    } else {
+      return s;
+    }
+  }
+});
+
+i18n.de_DE = {
+  label: "Ihre Meinung",
+  header: "Senden Sie Ihre Meinung",
+  nextLabel: "Weiter",
+  reviewLabel: "Überprüfen",
+  sendLabel: "Senden",
+  closeLabel: "Schliessen",
+  messageSuccess: "Ihre Meinung wurde erfolgreich gesendet.",
+  messageError: "Fehler beim senden Ihrer Meinung an unser Server.",
+  formDescription: "Bitte beschreiben Sie das Problem das bei Ihnen auftritt",
+  highlightDescription: "Wichtige Informationen markieren oder verdunkeln",
+  highlight: "Markieren",
+  blackout: "Verdunkeln",
+  issue: "Problem"
+};
+i18n.de = i18n.de_DE;
+
+i18n.es_MX = {
+  label: "Comentarios",
+  header: "Envíe sus comentarios",
+  nextLabel: "Continuar",
+  reviewLabel: "Revisar",
+  sendLabel: "Enviar",
+  closeLabel: "Cerrar",
+  messageSuccess: "Sus comentarios fueron enviados con éxito.",
+  messageError: "Hubo un error al enviar sus comentarios a nuestro servidor.",
+  formDescription: "Por favor describa el problema que está experimentando",
+  highlightDescription: "Resaltar o ocultar información importante",
+  highlight: "Resaltar",
+  blackout: "Ocultar",
+  issue: "Problema"
+};
+i18n.es = i18n.es_MX;
+
+i18n.it_IT = {
+  label: "Commenta",
+  header: "Invia il tuo commento",
+  nextLabel: "Continua",
+  reviewLabel: "Rivedi",
+  sendLabel: "Invia",
+  closeLabel: "Chiudi",
+  messageSuccess: "Il tuo commento è stato inviato con successo.",
+  messageError: "C'è stato un errore nell'invio del tuo commento al nostro server.",
+  formDescription: "Per favore descrivi il problema",
+  highlightDescription: "Evidenzia o nascondi le informazioni importanti",
+  highlight: "Evidenzia",
+  blackout: "Nascondi",
+  issue: "Problema"
+};
+i18n.it = i18n.it_IT;
+
+i18n.pt_BR = {
+  label: "Comentários",
+  header: "Envie seus comentários",
+  nextLabel: "Prossegue",
+  reviewLabel: "Revisa",
+  sendLabel: "Envia",
+  closeLabel: "Fecha",
+  messageSuccess: "Seus comentários foram enviados com sucesso.",
+  messageError: "Houve um erro ao enviar os seus comentários para o nosso servidor.",
+  formDescription: "Por favor, descreva o problema que está ocorrendo",
+  highlightDescription: "Destaque ou oculte informação importante",
+  highlight: "Destacar",
+  blackout: "Ocultar",
+  issue: "Problema"
+};
+i18n.pt = i18n.pt_BR;
+
+i18n.ru_RU = {
+  label: "Сообщить об ошибке",
+  header: "Сообщить об ошибке",
+  nextLabel: "Далее",
+  reviewLabel: "Далее",
+  sendLabel: "Отправить",
+  closeLabel: "Закрыть",
+  messageSuccess: "Ваше сообщение успешно отправлено.",
+  messageError: "Произошла ошибка при отправке сообщения на сервер.",
+  formDescription: "Пожалуйста, опишите проблему с которой вы столкнулись",
+  highlightDescription: "Выделите или спрячьте важную информацию",
+  highlight: "Выделить",
+  blackout: "Спрятать",
+  issue: "Ваше сообщение"
+};
+i18n.ru = i18n.ru_RU;
+
 if ( window.Feedback !== undefined ) { 
     return; 
 }
@@ -16,12 +150,10 @@ var log = function( msg ) {
 },
 // function to remove elements, input as arrays
 removeElements = function( remove ) {
-    for (var i = 0, len = remove.length; i < len; i++ ) {
-        var item = Array.prototype.pop.call( remove );
-        if ( item !== undefined ) {
-            if (item.parentNode !== null ) { // check that the item was actually added to DOM
-                item.parentNode.removeChild( item );
-            }
+    for (var i = remove.length-1; i >= 0; i-- ) {
+        var item = remove[i];
+        if (item && item.parentNode) { // check that the item was actually added to DOM
+            item.parentNode.removeChild( item );
         }
     }
 },
@@ -72,6 +204,19 @@ scriptLoader = function( script, func ){
     }
 
 },
+getLang = function() {
+    var lang;
+    if (navigator.languages !== undefined) {
+        lang = navigator.languages[0];
+    } else {
+        lang = navigator.language;
+    }
+
+    log('language = ' + lang);
+    if (lang) {
+        return lang.replace('-','_');
+    }
+},
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",
 currentPage,
@@ -82,20 +227,14 @@ window.Feedback = function( options ) {
     options = options || {};
 
     // default properties
-    options.label = options.label || "Send Feedback";
-    options.header = options.header || "Send Feedback";
     options.url = options.url || "/";
     options.adapter = options.adapter || new window.Feedback.XHR( options.url );
-    
-    options.nextLabel = options.nextLabel || "Continue";
-    options.reviewLabel = options.reviewLabel || "Review";
-    options.sendLabel = options.sendLabel || "Send";
-    options.closeLabel = options.closeLabel || "Close";
-    
-    options.messageSuccess = options.messageSuccess || "Your feedback was sent succesfully.";
-    options.messageError = options.messageError || "There was an error sending your feedback to the server.";
-    
-  
+    options.lang = options.lang || "auto";
+
+    if (options.lang === 'auto')
+        options.lang = getLang();
+    i18n.lang = options.lang;
+
     if (options.pages === undefined ) {
         options.pages = [
             new window.Feedback.Form(),
@@ -138,7 +277,7 @@ window.Feedback = function( options ) {
 
             // build header element
             modalHeader.appendChild( a );
-            modalHeader.appendChild( element("h3", options.header ) );
+            modalHeader.appendChild( element("h3", _('header') ) );
             modalHeader.className =  "feedback-header";
 
             modalBody.className = "feedback-body";
@@ -149,7 +288,7 @@ window.Feedback = function( options ) {
 
 
             // Next button
-            nextButton = element( "button", options.nextLabel );
+            nextButton = element( "button", _('nextLabel') );
 
             nextButton.className =  "feedback-btn";
             nextButton.onclick = function() {
@@ -179,14 +318,13 @@ window.Feedback = function( options ) {
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {
-                        nextButton.firstChild.nodeValue = options.sendLabel;
+                        nextButton.firstChild.nodeValue = _('sendLabel');
                     }
                     
                     // if next page is review page, change button label
                     if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {   
-                        nextButton.firstChild.nodeValue = options.reviewLabel;
+                        nextButton.firstChild.nodeValue = _('reviewLabel');
                     }
-                        
 
                 }
 
@@ -256,7 +394,7 @@ window.Feedback = function( options ) {
                 emptyElements( modalBody );
                 nextButton.disabled = false;
                 
-                nextButton.firstChild.nodeValue = options.closeLabel;
+                nextButton.firstChild.nodeValue = _('closeLabel');
                 
                 nextButton.onclick = function() {
                     returnMethods.close();
@@ -264,11 +402,20 @@ window.Feedback = function( options ) {
                 };
                 
                 if ( success === true ) {
-                    modalBody.appendChild( document.createTextNode( options.messageSuccess ) );
+                    modalBody.appendChild( document.createTextNode( _('messageSuccess') ) );
                 } else {
-                    modalBody.appendChild( document.createTextNode( options.messageError ) );
+                    modalBody.appendChild( document.createTextNode( _('messageError') ) );
                 }
-                
+                //Once the form has been submitted, initialize it.
+
+                var len = options.pages.length;
+                var currentPage = 0;
+                for (; currentPage < len; currentPage++) {
+                    // Delete data from all Form and Screenshot so it does not persist for next feedback.
+                    if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                        options.pages[ currentPage ]._data = undefined;
+                    }
+                }
             } );
   
         }
@@ -280,7 +427,7 @@ window.Feedback = function( options ) {
 
     options = options || {};
 
-    button = element( "button", options.label );
+    button = element( "button", _('label') );
     button.className = "feedback-btn feedback-bottom-right";
 
     button.setAttribute(H2C_IGNORE, true);
@@ -322,8 +469,8 @@ window.Feedback.Form = function( elements ) {
 
     this.elements = elements || [{
         type: "textarea",
-        name: "Issue",
-        label: "Please describe the issue you are experiencing",
+        name: 'issue',
+        label: _('formDescription'),
         required: false
     }];
 
@@ -384,7 +531,35 @@ window.Feedback.Form.prototype.data = function() {
         item = this.elements[ i ];
         data[ item.name ] = item.element.value;
     }
-    
+    data.url = window.location.href;
+    data.timeOpened = new Date();
+    data.timezone = (new Date()).getTimezoneOffset()/60;
+    data.pageon = window.location.pathname;
+    data.referrer = document.referrer;
+    data.previousSites = history.length;
+    data.browserName = navigator.appName;
+    data.browserEngine = navigator.product;
+    data.browserVersion1a = navigator.appVersion;
+    data.browserVersion1b = navigator.userAgent;
+    data.browserLanguage = navigator.language;
+    data.browserOnline = navigator.onLine;
+    data.browserPlatform = navigator.platform;
+    data.javaEnabled = navigator.javaEnabled();
+    data.dataCookiesEnabled = navigator.cookieEnabled;
+    data.dataCookies1 = document.cookie;
+    data.dataCookies2 = decodeURIComponent(document.cookie.split(";"));
+    data.dataStorage = localStorage;
+    data.sizeScreenW = screen.width;
+    data.sizeScreenH = screen.height;
+    data.sizeDocW = document.width;
+    data.sizeDocH = document.height;
+    data.sizeInW = innerWidth;
+    data.sizeInH = innerHeight;
+    data.sizeAvailW = screen.availWidth;
+    data.sizeAvailH = screen.availHeight;
+    data.scrColorDepth = screen.colorDepth;
+    data.scrPixelDepth = screen.pixelDepth;
+
     // cache and return data
     return ( this._data = data );
 };
@@ -398,8 +573,8 @@ window.Feedback.Form.prototype.review = function( dom ) {
         item = this.elements[ i ];
         
         if (item.element.value.length > 0) {
-            dom.appendChild( element("label", item.name + ":") );
-            dom.appendChild( document.createTextNode( item.element.value.length ) );
+            dom.appendChild( element("label", item.label + ":") );
+            dom.appendChild( document.createTextNode( item.element.value ) );
             dom.appendChild( document.createElement( "hr" ) );
         }
         
@@ -470,12 +645,13 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
 
+    var $this = this;
+
     if ( this.h2cDone ) {
         emptyElements( this.dom );
         nextButton.disabled = false;
-        
-        var $this = this,
-        feedbackHighlightElement = "feedback-highlight-element",
+
+        var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
 
         var action = true;
@@ -483,8 +659,12 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         // delegate mouse move event for body
         this.mouseMoveEvent = function( e ) {
 
+            // fix SVG errors
+            var className = e.target.className;
+            className = className.baseVal !== undefined ? className.baseVal : className;
+
             // set close button
-            if ( e.target !== previousElement && (e.target.className.indexOf( $this.options.blackoutClass ) !== -1 || e.target.className.indexOf( $this.options.highlightClass ) !== -1)) {
+            if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
 
                 var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
                 left = Math.max( left, 10 );
@@ -628,8 +808,8 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             highlightClose.style.top =  "-50px";
 
         },
-        blackoutButton = element("a", "Blackout"),
-        highlightButton = element("a", "Highlight"),
+        blackoutButton = element("a", _("blackout")),
+        highlightButton = element("a", _("highlight")),
         previousElement;
 
 
@@ -653,7 +833,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", "Highlight or blackout important information") );
+        this.dom.appendChild( element("p", _('highlightDescription')) );
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
@@ -687,8 +867,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
     } else {
         // still loading html2canvas
-        var args = arguments,
-        $this = this;
+        var args = arguments;
 
         if ( nextButton.disabled !== true) {
             this.dom.appendChild( loader() );

@@ -34,12 +34,13 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
 
+    var $this = this;
+
     if ( this.h2cDone ) {
         emptyElements( this.dom );
         nextButton.disabled = false;
-        
-        var $this = this,
-        feedbackHighlightElement = "feedback-highlight-element",
+
+        var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
 
         var action = true;
@@ -47,8 +48,12 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         // delegate mouse move event for body
         this.mouseMoveEvent = function( e ) {
 
+            // fix SVG errors
+            var className = e.target.className;
+            className = className.baseVal !== undefined ? className.baseVal : className;
+
             // set close button
-            if ( e.target !== previousElement && (e.target.className.indexOf( $this.options.blackoutClass ) !== -1 || e.target.className.indexOf( $this.options.highlightClass ) !== -1)) {
+            if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
 
                 var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
                 left = Math.max( left, 10 );
@@ -192,8 +197,8 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             highlightClose.style.top =  "-50px";
 
         },
-        blackoutButton = element("a", "Blackout"),
-        highlightButton = element("a", "Highlight"),
+        blackoutButton = element("a", _("blackout")),
+        highlightButton = element("a", _("highlight")),
         previousElement;
 
 
@@ -217,7 +222,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", "Highlight or blackout important information") );
+        this.dom.appendChild( element("p", _('highlightDescription')) );
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
@@ -251,8 +256,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
     } else {
         // still loading html2canvas
-        var args = arguments,
-        $this = this;
+        var args = arguments;
 
         if ( nextButton.disabled !== true) {
             this.dom.appendChild( loader() );

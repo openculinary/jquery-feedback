@@ -1,0 +1,30 @@
+{
+  "name": "feedback",
+  "description": "Feedback form",
+  "version": "0.0.2",
+  "keywords": [
+    "feedback",
+    "html2canvas"
+  ],
+  "homepage": "http://experiments.hertzen.com/jsfeedback",
+  "license": "MIT",
+  "main": [
+    "./feedback.js"
+  ],
+  "ignore": [
+    "*/.*",
+    "*.json",
+    "src",
+    "examples",
+    "*.yml",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "authors": [
+    "Niklas von Hertzen",
+    "Denis Kopitsa <denis.kopitsa@gmail.com>"
+  ]
+}

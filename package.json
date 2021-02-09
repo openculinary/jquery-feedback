@@ -14,18 +14,49 @@
   },
   "contributors": [
     {
+      "name": "Denis Kopitsa",
+      "url": "https://github.com/dkopitsa/"
+    },
+    {
+      "name": "Q",
+      "url": "https://github.com/ItsJonQ/"
+    },
+    {
+      "name": "Ali",
+      "url": "https://github.com/ali-bugdayci/"
+    },
+    {
+      "name": "Paolo Greppi"
+    },
+    {
+      "name": "Cyril Robert",
+      "url": "https://github.com/cyrilrbt/"
+    },
+    {
       "name": "James Addison",
       "url": "https://github.com/jayaddison/"
     }
   ],
+  "main": "feedback.js",
   "browser": "feedback.js",
+  "directories": {
+    "example": "examples"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/openculinary/jquery-feedback.git/"
   },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "html2canvas": "^1.0.0-rc.7",
     "jquery": "^3.5.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^1.5.1"
   },
   "publishConfig": {
     "access": "public",

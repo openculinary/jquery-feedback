@@ -81,11 +81,13 @@
 
     <!-- Le javascript -->
     <script src="js/jquery.js"></script>
-    <script src="js/feedback.js"></script>
+    <script src="../dist/feedback.js"></script>
     
     <script type="text/javascript">
       $(document).ready(function() {
-        Feedback({h2cPath:'js/html2canvas.js'});
+        Feedback({h2cPath:'js/html2canvas.js',
+          lang: 'auto',
+          url: 'http://localhost:8080'});
       });      
     </script>
 </body></html>
