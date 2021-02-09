@@ -37,8 +37,8 @@
       "url": "https://github.com/jayaddison/"
     }
   ],
-  "main": "feedback.js",
-  "browser": "feedback.js",
+  "main": "dist/feedback.js",
+  "browser": "dist/feedback.min.js",
   "directories": {
     "example": "examples"
   },
