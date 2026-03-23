@@ -882,57 +882,16 @@ window.Feedback.Screenshot.prototype.render = function() {
     this.dom = document.createElement("div");
 
     // execute the html2canvas script
-    var script,
-    $this = this,
-    options = this.options,
-    runH2c = function(){
-        try {
-
-            options.onrendered = options.onrendered || function( canvas ) {
-                $this.h2cCanvas = canvas;
-                $this.h2cDone = true;
-            };
-
-            window.html2canvas([ document.body ], options);
-
-        } catch( e ) {
-
+    var $this = this, options = this.options;
+    $.getScript(options.h2cPath, function() {
+        window.html2canvas(document.body, options).then(function(canvas) {
+            $this.h2cCanvas = canvas;
             $this.h2cDone = true;
-            log("Error in html2canvas: " + e.message);
-        }
-    };
-
-    if ( window.html2canvas === undefined && script === undefined ) {
-
-        // let's load html2canvas library while user is writing message
-
-        script = document.createElement("script");
-        script.src = options.h2cPath || "libs/html2canvas.js";
-        script.onerror = function() {
-            log("Failed to load html2canvas library, check that the path is correctly defined");
-        };
-
-        script.onload = (scriptLoader)(script, function() {
-
-            if (window.html2canvas === undefined) {
-                log("Loaded html2canvas, but library not found");
-                return;
-            }
-
-            window.html2canvas.logging = window.Feedback.debug;
-            runH2c();
-
-
+        }).catch(function(e) {
+            $this.h2cDone = true;
+            console.log("Error in html2canvas: " + e.message);
         });
-
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(script, s);
-
-    } else {
-        // html2canvas already loaded, just run it then
-        runH2c();
-    }
-
+    });
     return this;
 };
 
