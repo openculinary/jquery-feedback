@@ -161,34 +161,6 @@ element = function( name, text ) {
     el.appendChild( document.createTextNode( text ) );
     return el;
 },
-// script onload function to provide support for IE as well
-scriptLoader = function( script, func ){
-
-    if (script.onload === undefined) {
-        // IE lack of support for script onload
-
-        if( script.onreadystatechange !== undefined ) {
-
-            var intervalFunc = function() {
-                if (script.readyState !== "loaded" && script.readyState !== "complete") {
-                    window.setTimeout( intervalFunc, 250 );
-                } else {
-                    // it is loaded
-                    func();
-                }
-            };
-
-            window.setTimeout( intervalFunc, 250 );
-
-        } else {
-            log("ERROR: We can't track when script is loaded");
-        }
-
-    } else {
-        return func;
-    }
-
-},
 getLang = function() {
     var lang;
     if (navigator.languages !== undefined) {
@@ -419,6 +391,7 @@ window.Feedback = function( options ) {
 
     return returnMethods;
 };
+
 window.Feedback.Page = function() {};
 window.Feedback.Page.prototype = {
 
