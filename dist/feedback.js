@@ -158,14 +158,38 @@ loader = function() {
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-emptyElements = function( el ) {
-    var item;
-    while( (( item = el.firstChild ) !== null ? el.removeChild( item ) : false) ) {}
-},
 element = function( name, text ) {
     var el = document.createElement( name );
     el.appendChild( document.createTextNode( text ) );
     return el;
+},
+// script onload function to provide support for IE as well
+scriptLoader = function( script, func ){
+
+    if (script.onload === undefined) {
+        // IE lack of support for script onload
+
+        if( script.onreadystatechange !== undefined ) {
+
+            var intervalFunc = function() {
+                if (script.readyState !== "loaded" && script.readyState !== "complete") {
+                    window.setTimeout( intervalFunc, 250 );
+                } else {
+                    // it is loaded
+                    func();
+                }
+            };
+
+            window.setTimeout( intervalFunc, 250 );
+
+        } else {
+            log("ERROR: We can't track when script is loaded");
+        }
+
+    } else {
+        return func;
+    }
+
 },
 getLang = function() {
     var lang;
@@ -245,7 +269,7 @@ window.Feedback = function( options ) {
 
             modalBody.className = "feedback-body";
 
-            emptyElements( modalBody );
+            $(modalBody).empty();
             currentPage = 0;
             modalBody.appendChild( options.pages[ currentPage++ ].dom );
 
@@ -263,7 +287,7 @@ window.Feedback = function( options ) {
                     }
                 }
                 
-                emptyElements( modalBody );
+                $(modalBody).empty();
 
                 if ( currentPage === len ) {
                     returnMethods.send( options.adapter );
@@ -349,13 +373,13 @@ window.Feedback = function( options ) {
 
             nextButton.disabled = true;
                 
-            emptyElements( modalBody );
+            $(modalBody).empty();
             modalBody.appendChild( loader() );
 
             // send data to adapter for processing
             adapter.send( data, function( success ) {
                 
-                emptyElements( modalBody );
+                $(modalBody).empty();
                 nextButton.disabled = false;
                 
                 nextButton.firstChild.nodeValue = _('closeLabel');
@@ -447,7 +471,7 @@ window.Feedback.Form.prototype = new window.Feedback.Page();
 window.Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
-    emptyElements( this.dom );
+    $(this.dom).empty();
     for (; i < len; i++) {
         item = this.elements[ i ];
 
@@ -559,7 +583,7 @@ window.Feedback.Review.prototype = new window.Feedback.Page();
 window.Feedback.Review.prototype.render = function( pages ) {
 
     var i = 0, len = pages.length, item;
-    emptyElements( this.dom );
+    $(this.dom).empty();
     
     for (; i < len; i++) {
         
@@ -615,7 +639,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
     var $this = this;
 
     if ( this.h2cDone ) {
-        emptyElements( this.dom );
+        $(this.dom).empty();
         nextButton.disabled = false;
 
         var feedbackHighlightElement = "feedback-highlight-element",
