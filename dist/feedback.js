@@ -605,8 +605,8 @@ window.Feedback.Screenshot.prototype.end = function( modal ){
     modal.removeClass("feedback-animate-toside");
 
     // remove event listeners
-    document.body.removeEventListener("mousemove", this.mouseMoveEvent, false);
-    document.body.removeEventListener("click", this.mouseClickEvent, false);
+    $(document.body).off("mousemove", this.mouseMoveEvent);
+    $(document.body).off("click", this.mouseClickEvent);
 
     $(this.h2cCanvas).remove();
 
@@ -796,10 +796,10 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         highlightClose.id = "feedback-highlight-close";
 
 
-        highlightClose.addEventListener("click", function(){
-            removeElement.parentNode.removeChild( removeElement );
+        $(highlightClose).on("click", function(){
+            $(removeElement).remove();
             hideClose();
-        }, false);
+        });
 
         document.body.appendChild( highlightClose );
 
@@ -839,8 +839,8 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         document.body.appendChild( highlightContainer );
 
         // bind mouse delegate events
-        document.body.addEventListener("mousemove", this.mouseMoveEvent, false);
-        document.body.addEventListener("click", this.mouseClickEvent, false);
+        $(document.body).on("mousemove", this.mouseMoveEvent);
+        $(document.body).on("click", this.mouseClickEvent);
 
     } else {
         // still loading html2canvas
