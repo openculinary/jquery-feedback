@@ -148,15 +148,6 @@ if ( window.Feedback !== undefined ) {
 var log = function( msg ) {
     window.console.log( msg );
 },
-// function to remove elements, input as arrays
-removeElements = function( remove ) {
-    for (var i = remove.length-1; i >= 0; i-- ) {
-        var item = remove[i];
-        if (item && item.parentNode) { // check that the item was actually added to DOM
-            item.parentNode.removeChild( item );
-        }
-    }
-},
 loader = function() {
     var div = document.createElement("div"), i = 3;
     div.className = "feedback-loader";
@@ -352,7 +343,8 @@ window.Feedback = function( options ) {
             button.disabled = false;
 
             // remove feedback elements
-            removeElements( [ modal, glass ] );
+            $(modal).remove();
+            $(glass).remove();
 
             // call end event for current page
             if (currentPage > 0 ) {
@@ -629,17 +621,20 @@ window.Feedback.Screenshot.prototype.end = function( modal ){
     document.body.removeEventListener("mousemove", this.mouseMoveEvent, false);
     document.body.removeEventListener("click", this.mouseClickEvent, false);
 
-    removeElements( [this.h2cCanvas] );
+    $(this.h2cCanvas).remove();
 
     this.h2cDone = false;
 
 };
 
 window.Feedback.Screenshot.prototype.close = function(){
-    removeElements( [ this.blackoutBox, this.highlightContainer, this.highlightBox, this.highlightClose ] );
+    $(this.blackoutBox).remove();
+    $(this.highlightContainer).remove();
+    $(this.highlightBox).remove();
+    $(this.highlightClose).remove();
 
-    removeElements( document.getElementsByClassName( this.options.blackoutClass ) );
-    removeElements( document.getElementsByClassName( this.options.highlightClass ) );
+    $("." + this.options.blackoutClass).remove();
+    $("." + this.options.highlightClass).remove();
 
 };
 

@@ -6,15 +6,6 @@ if ( window.Feedback !== undefined ) {
 var log = function( msg ) {
     window.console.log( msg );
 },
-// function to remove elements, input as arrays
-removeElements = function( remove ) {
-    for (var i = remove.length-1; i >= 0; i-- ) {
-        var item = remove[i];
-        if (item && item.parentNode) { // check that the item was actually added to DOM
-            item.parentNode.removeChild( item );
-        }
-    }
-},
 loader = function() {
     var div = document.createElement("div"), i = 3;
     div.className = "feedback-loader";
@@ -210,7 +201,8 @@ window.Feedback = function( options ) {
             button.disabled = false;
 
             // remove feedback elements
-            removeElements( [ modal, glass ] );
+            $(modal).remove();
+            $(glass).remove();
 
             // call end event for current page
             if (currentPage > 0 ) {

@@ -18,17 +18,20 @@ window.Feedback.Screenshot.prototype.end = function( modal ){
     document.body.removeEventListener("mousemove", this.mouseMoveEvent, false);
     document.body.removeEventListener("click", this.mouseClickEvent, false);
 
-    removeElements( [this.h2cCanvas] );
+    $(this.h2cCanvas).remove();
 
     this.h2cDone = false;
 
 };
 
 window.Feedback.Screenshot.prototype.close = function(){
-    removeElements( [ this.blackoutBox, this.highlightContainer, this.highlightBox, this.highlightClose ] );
+    $(this.blackoutBox).remove();
+    $(this.highlightContainer).remove();
+    $(this.highlightBox).remove();
+    $(this.highlightClose).remove();
 
-    removeElements( document.getElementsByClassName( this.options.blackoutClass ) );
-    removeElements( document.getElementsByClassName( this.options.highlightClass ) );
+    $("." + this.options.blackoutClass).remove();
+    $("." + this.options.highlightClass).remove();
 
 };
 
