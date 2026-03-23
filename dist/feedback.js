@@ -655,17 +655,12 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
             // set close button
             else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
+                bounds = getBounds(e.target);
+                $(highlightClose).css({
+                    'left': (window.pageXOffset + bounds.left + bounds.width) + 'px',
+                    'top': (window.pageYOffset + bounds.top) + 'px',
+                });
 
-                var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
-                left = Math.max( left, 10 );
-
-                left = Math.min( left, window.innerWidth - 15 );
-
-                var top = (parseInt(e.target.style.top, 10));
-                top = Math.max( top, 10 );
-
-                highlightClose.style.left = left + "px";
-                highlightClose.style.top = top + "px";
                 removeElement = e.target;
                 clearBox();
                 previousElement = undefined;
