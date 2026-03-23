@@ -391,7 +391,6 @@ window.Feedback = function( options ) {
 
     return returnMethods;
 };
-
 window.Feedback.Page = function() {};
 window.Feedback.Page.prototype = {
 
