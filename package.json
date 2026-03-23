@@ -51,12 +51,12 @@
   },
   "dependencies": {
     "html2canvas": "^1.0.0-rc.7",
-    "jquery": "^3.5.1"
+    "jquery": "^4.0.0"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-concat": "^2.6.0",
-    "gulp-uglify": "^1.5.1"
+    "gulp-uglify": "^3.0.2"
   },
   "publishConfig": {
     "access": "public",
