@@ -10,7 +10,7 @@ window.Feedback.Review.prototype = new window.Feedback.Page();
 window.Feedback.Review.prototype.render = function( pages ) {
 
     var i = 0, len = pages.length, item;
-    emptyElements( this.dom );
+    $(this.dom).empty();
     
     for (; i < len; i++) {
         

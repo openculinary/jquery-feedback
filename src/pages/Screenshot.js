@@ -40,7 +40,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
     var $this = this;
 
     if ( this.h2cDone ) {
-        emptyElements( this.dom );
+        $(this.dom).empty();
         nextButton.disabled = false;
 
         var feedbackHighlightElement = "feedback-highlight-element",

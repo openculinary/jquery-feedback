@@ -16,10 +16,6 @@ loader = function() {
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-emptyElements = function( el ) {
-    var item;
-    while( (( item = el.firstChild ) !== null ? el.removeChild( item ) : false) ) {}
-},
 element = function( name, text ) {
     var el = document.createElement( name );
     el.appendChild( document.createTextNode( text ) );
@@ -131,7 +127,7 @@ window.Feedback = function( options ) {
 
             modalBody.className = "feedback-body";
 
-            emptyElements( modalBody );
+            $(modalBody).empty();
             currentPage = 0;
             modalBody.appendChild( options.pages[ currentPage++ ].dom );
 
@@ -149,7 +145,7 @@ window.Feedback = function( options ) {
                     }
                 }
                 
-                emptyElements( modalBody );
+                $(modalBody).empty();
 
                 if ( currentPage === len ) {
                     returnMethods.send( options.adapter );
@@ -235,13 +231,13 @@ window.Feedback = function( options ) {
 
             nextButton.disabled = true;
                 
-            emptyElements( modalBody );
+            $(modalBody).empty();
             modalBody.appendChild( loader() );
 
             // send data to adapter for processing
             adapter.send( data, function( success ) {
                 
-                emptyElements( modalBody );
+                $(modalBody).empty();
                 nextButton.disabled = false;
                 
                 nextButton.firstChild.nodeValue = _('closeLabel');

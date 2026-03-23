@@ -16,7 +16,7 @@ window.Feedback.Form.prototype = new window.Feedback.Page();
 window.Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
-    emptyElements( this.dom );
+    $(this.dom).empty();
     for (; i < len; i++) {
         item = this.elements[ i ];
 
