@@ -55,8 +55,16 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             var className = e.target.className;
             className = className.baseVal !== undefined ? className.baseVal : className;
 
+            // don't do anything if we are highlighting a close button or body tag
+            if (e.target === document.body || e.target === highlightClose || modal.has(e.target).length) {
+                // we are not gonna blackout the whole page or the close item
+                clearBox();
+                previousElement = e.target;
+                return;
+            }
+
             // set close button
-            if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
+            else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
 
                 var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
                 left = Math.max( left, 10 );
@@ -72,17 +80,9 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
                 clearBox();
                 previousElement = undefined;
                 return;
+            } else {
+              hideClose();
             }
-
-            // don't do anything if we are highlighting a close button or body tag
-            if (e.target === document.body || e.target === highlightClose || modal.has(e.target).length) {
-                // we are not gonna blackout the whole page or the close item
-                clearBox();
-                previousElement = e.target;
-                return;
-            }
-
-            hideClose();
 
             if (e.target !== previousElement ) {
                 previousElement = e.target;
