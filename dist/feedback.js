@@ -149,10 +149,8 @@ var log = function( msg ) {
     window.console.log( msg );
 },
 loader = function() {
-    var div = document.createElement("div"), i = 3;
-    div.className = "feedback-loader";
-    
-    while (i--) { div.appendChild( document.createElement( "span" )); }
+    var div = $('<div />', {'class': 'feedback-loader'});
+    [1, 2, 3].forEach(function() { $('<span />').appendTo(div); });
     return div;
 },
 getBounds = function( el ) {
@@ -207,7 +205,7 @@ getLang = function() {
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",
 currentPage,
-modalBody = document.createElement("div");
+modalBody = $('<div />', {'class': 'feedback-body'});
 
 window.Feedback = function( options ) {
 
@@ -233,7 +231,11 @@ window.Feedback = function( options ) {
     var button,
     modal,
     currentPage,
-    glass = document.createElement("div"),
+    glass = $('<div />', {
+        'class': 'feedback-glass',
+        'style': 'pointer-events: none;',
+        'attr': {[H2C_IGNORE]: true}
+    }),
     returnMethods = {
 
         // open send feedback modal window
@@ -247,31 +249,34 @@ window.Feedback = function( options ) {
                 }
             }
 
-            var a = element("a", "×"),
-            modalHeader = document.createElement("div"),
             // modal container
-            modalFooter = document.createElement("div");
+            var modalFooter = $('<div />', {'class': 'feedback-footer'});
 
-            modal = document.createElement("div");
-            document.body.appendChild( glass );
+            modal = $('<div />', {
+                'class': 'feedback-modal',
+                'attr': {[H2C_IGNORE]: true}
+            });
+            $(document.body).append(glass);
 
             // modal close button
-            a.className =  "feedback-close";
-            a.onclick = returnMethods.close;
-            a.href = "#";
+            var modalClose = $('<a />', {
+                'class': 'feedback-close',
+                'text': '×',
+                'href': '#',
+                'click': returnMethods.close
+            });
 
-            button.disabled = true;
+            button.prop("disabled", true);
 
             // build header element
-            modalHeader.appendChild( a );
-            modalHeader.appendChild( element("h3", _('header') ) );
-            modalHeader.className =  "feedback-header";
+            var modalHeader = $('<div />', {'class': 'feedback-header'});
+            modalHeader.append(modalClose);
+            modalHeader.append($('<h3 />', {'text': _('header')}));
 
-            modalBody.className = "feedback-body";
+            modalBody.empty();
 
-            $(modalBody).empty();
             currentPage = 0;
-            modalBody.appendChild( options.pages[ currentPage++ ].dom );
+            modalBody.append($(options.pages[ currentPage++ ].dom));
 
 
             // Next button
@@ -281,7 +286,7 @@ window.Feedback = function( options ) {
             nextButton.onclick = function() {
                 
                 if (currentPage > 0 ) {
-                    if ( options.pages[ currentPage - 1 ].end( modal ) === false ) {
+                    if ( options.pages[ currentPage - 1 ].end( modal[0] ) === false ) {
                         // page failed validation, cancel onclick
                         return;
                     }
@@ -293,7 +298,7 @@ window.Feedback = function( options ) {
                     returnMethods.send( options.adapter );
                 } else {
 
-                    options.pages[ currentPage ].start( modal, modalHeader, modalFooter, nextButton );
+                    options.pages[ currentPage ].start( modal[0], modalHeader[0], modalFooter[0], nextButton );
                     
                     if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {
                         // create DOM for review page, based on collected data
@@ -301,7 +306,7 @@ window.Feedback = function( options ) {
                     }
                     
                     // add page DOM to modal
-                    modalBody.appendChild( options.pages[ currentPage++ ].dom );
+                    modalBody.append($(options.pages[ currentPage++ ].dom));
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {
@@ -317,26 +322,19 @@ window.Feedback = function( options ) {
 
             };
 
-            modalFooter.className = "feedback-footer";
-            modalFooter.appendChild( nextButton );
+            modalFooter.append($(nextButton));
 
+            modal.append(modalHeader);
+            modal.append(modalBody);
+            modal.append(modalFooter);
 
-            modal.className =  "feedback-modal";
-            modal.setAttribute(H2C_IGNORE, true); // don't render in html2canvas
-
-
-            modal.appendChild( modalHeader );
-            modal.appendChild( modalBody );
-            modal.appendChild( modalFooter );
-
-            document.body.appendChild( modal );
+            $(document.body).append(modal);
         },
-
 
         // close modal window
         close: function() {
 
-            button.disabled = false;
+            button.prop("disabled", false);
 
             // remove feedback elements
             $(modal).remove();
@@ -344,7 +342,7 @@ window.Feedback = function( options ) {
 
             // call end event for current page
             if (currentPage > 0 ) {
-                options.pages[ currentPage - 1 ].end( modal );
+                options.pages[ currentPage - 1 ].end( modal[0] );
             }
                 
             // call close events for all pages    
@@ -374,7 +372,7 @@ window.Feedback = function( options ) {
             nextButton.disabled = true;
                 
             $(modalBody).empty();
-            modalBody.appendChild( loader() );
+            $(modalBody).append(loader());
 
             // send data to adapter for processing
             adapter.send( data, function( success ) {
@@ -390,9 +388,9 @@ window.Feedback = function( options ) {
                 };
                 
                 if ( success === true ) {
-                    modalBody.appendChild( document.createTextNode( _('messageSuccess') ) );
+                    modalBody.text(_('messageSuccess'));
                 } else {
-                    modalBody.appendChild( document.createTextNode( _('messageError') ) );
+                    modalBody.text(_('messageError'));
                 }
                 //Once the form has been submitted, initialize it.
 
@@ -409,23 +407,16 @@ window.Feedback = function( options ) {
         }
     };
 
-    glass.className = "feedback-glass";
-    glass.style.pointerEvents = "none";
-    glass.setAttribute(H2C_IGNORE, true);
+    button = $('<button />', {
+        'class': 'feedback-btn feedback-bottom-right',
+        'text': _('label'),
+        'attr': {[H2C_IGNORE]: true},
+        'click': returnMethods.open
+    });
 
     options = options || {};
+    $(options.appendTo || document.body).append(button);
 
-    button = element( "button", _('label') );
-    button.className = "feedback-btn feedback-bottom-right";
-
-    button.setAttribute(H2C_IGNORE, true);
-
-    button.onclick = returnMethods.open;
-    
-    if ( options.appendTo !== null ) {
-        ((options.appendTo !== undefined) ? options.appendTo : document.body).appendChild( button );
-    }
-    
     return returnMethods;
 };
 window.Feedback.Page = function() {};
@@ -861,7 +852,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         var args = arguments;
 
         if ( nextButton.disabled !== true) {
-            this.dom.appendChild( loader() );
+            $(this.dom).append(loader());
         }
 
         nextButton.disabled = true;

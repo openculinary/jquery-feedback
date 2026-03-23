@@ -262,7 +262,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         var args = arguments;
 
         if ( nextButton.disabled !== true) {
-            this.dom.appendChild( loader() );
+            $(this.dom).append(loader());
         }
 
         nextButton.disabled = true;
