@@ -12,7 +12,7 @@ window.Feedback.Screenshot = function( options ) {
 window.Feedback.Screenshot.prototype = new window.Feedback.Page();
 
 window.Feedback.Screenshot.prototype.end = function( modal ){
-    modal.className = modal.className.replace(/feedback\-animate\-toside/, "");
+    modal.removeClass("feedback-animate-toside");
 
     // remove event listeners
     document.body.removeEventListener("mousemove", this.mouseMoveEvent, false);
@@ -35,7 +35,7 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 };
 
-window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
+window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
     var $this = this;
 
@@ -75,7 +75,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             }
 
             // don't do anything if we are highlighting a close button or body tag
-            if (e.target.nodeName === "BODY" ||  e.target === highlightClose || e.target === modal || e.target === nextButton || e.target.parentNode === modal || e.target.parentNode === modalHeader) {
+            if (e.target === document.body || e.target === highlightClose || modal.has(e.target).length) {
                 // we are not gonna blackout the whole page or the close item
                 clearBox();
                 previousElement = e.target;
@@ -205,7 +205,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         previousElement;
 
 
-        modal.className += ' feedback-animate-toside';
+        modal.addClass('feedback-animate-toside');
 
 
         highlightClose.id = "feedback-highlight-close";

@@ -144,7 +144,7 @@ window.Feedback = function( options ) {
             nextButton.onclick = function() {
                 
                 if (currentPage > 0 ) {
-                    if ( options.pages[ currentPage - 1 ].end( modal[0] ) === false ) {
+                    if ( options.pages[ currentPage - 1 ].end( modal ) === false ) {
                         // page failed validation, cancel onclick
                         return;
                     }
@@ -156,7 +156,7 @@ window.Feedback = function( options ) {
                     returnMethods.send( options.adapter );
                 } else {
 
-                    options.pages[ currentPage ].start( modal[0], modalHeader[0], modalFooter[0], nextButton );
+                    options.pages[ currentPage ].start( modal, nextButton );
                     
                     if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {
                         // create DOM for review page, based on collected data
@@ -200,7 +200,7 @@ window.Feedback = function( options ) {
 
             // call end event for current page
             if (currentPage > 0 ) {
-                options.pages[ currentPage - 1 ].end( modal[0] );
+                options.pages[ currentPage - 1 ].end( modal );
             }
                 
             // call close events for all pages    
