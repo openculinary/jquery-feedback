@@ -950,5 +950,4 @@ Feedback.XHR.prototype.send = function(data, callback) {
         error: function() { callback(false) }
     });
 };
-
 })( window, document );
