@@ -361,11 +361,9 @@ window.Feedback = function( options ) {
                 }
                 //Once the form has been submitted, initialize it.
 
-                var len = options.pages.length;
-                var currentPage = 0;
-                for (; currentPage < len; currentPage++) {
-                    // Close each page, allowing for per-page cleanup logic
-                    options.pages[ currentPage ].close();
+                // call close events for all pages, allowing per-page cleanup
+                for (var i = 0, len = options.pages.length; i < len; i++) {
+                    options.pages[ i ].close();
                 }
             } );
   
