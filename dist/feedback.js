@@ -360,8 +360,7 @@ window.Feedback = function( options ) {
                     modalBody.text(_('messageError'));
                 }
                 //Once the form has been submitted, initialize it.
-
-                // call close events for all pages, allowing per-page cleanup
+                // this includes clearing the data collected for feedback
                 for (var i = 0, len = options.pages.length; i < len; i++) {
                     options.pages[ i ].close();
                 }
