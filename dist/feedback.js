@@ -148,61 +148,18 @@ if ( window.Feedback !== undefined ) {
 var log = function( msg ) {
     window.console.log( msg );
 },
-// function to remove elements, input as arrays
-removeElements = function( remove ) {
-    for (var i = remove.length-1; i >= 0; i-- ) {
-        var item = remove[i];
-        if (item && item.parentNode) { // check that the item was actually added to DOM
-            item.parentNode.removeChild( item );
-        }
-    }
-},
 loader = function() {
-    var div = document.createElement("div"), i = 3;
-    div.className = "feedback-loader";
-    
-    while (i--) { div.appendChild( document.createElement( "span" )); }
+    var div = $('<div />', {'class': 'feedback-loader'});
+    [1, 2, 3].forEach(function() { $('<span />').appendTo(div); });
     return div;
 },
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-emptyElements = function( el ) {
-    var item;
-    while( (( item = el.firstChild ) !== null ? el.removeChild( item ) : false) ) {}
-},
 element = function( name, text ) {
     var el = document.createElement( name );
     el.appendChild( document.createTextNode( text ) );
     return el;
-},
-// script onload function to provide support for IE as well
-scriptLoader = function( script, func ){
-
-    if (script.onload === undefined) {
-        // IE lack of support for script onload
-
-        if( script.onreadystatechange !== undefined ) {
-
-            var intervalFunc = function() {
-                if (script.readyState !== "loaded" && script.readyState !== "complete") {
-                    window.setTimeout( intervalFunc, 250 );
-                } else {
-                    // it is loaded
-                    func();
-                }
-            };
-
-            window.setTimeout( intervalFunc, 250 );
-
-        } else {
-            log("ERROR: We can't track when script is loaded");
-        }
-
-    } else {
-        return func;
-    }
-
 },
 getLang = function() {
     var lang;
@@ -220,7 +177,7 @@ getLang = function() {
 nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",
 currentPage,
-modalBody = document.createElement("div");
+modalBody = $('<div />', {'class': 'feedback-body'});
 
 window.Feedback = function( options ) {
 
@@ -228,7 +185,7 @@ window.Feedback = function( options ) {
 
     // default properties
     options.url = options.url || "/";
-    options.adapter = options.adapter || new window.Feedback.XHR( options.url );
+    options.adapter = options.adapter || new Feedback.XHR(options.url);
     options.lang = options.lang || "auto";
 
     if (options.lang === 'auto')
@@ -237,16 +194,20 @@ window.Feedback = function( options ) {
 
     if (options.pages === undefined ) {
         options.pages = [
-            new window.Feedback.Form(),
-            new window.Feedback.Screenshot( options ),
-            new window.Feedback.Review()
+            new Feedback.Form(),
+            new Feedback.Screenshot(options),
+            new Feedback.Review()
         ];
     }
 
     var button,
     modal,
     currentPage,
-    glass = document.createElement("div"),
+    glass = $('<div />', {
+        'class': 'feedback-glass',
+        'style': 'pointer-events: none;',
+        'attr': {[H2C_IGNORE]: true}
+    }),
     returnMethods = {
 
         // open send feedback modal window
@@ -255,36 +216,39 @@ window.Feedback = function( options ) {
             currentPage = 0;
             for (; currentPage < len; currentPage++) {
                 // create DOM for each page in the wizard
-                if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                     options.pages[ currentPage ].render();
                 }
             }
 
-            var a = element("a", "×"),
-            modalHeader = document.createElement("div"),
             // modal container
-            modalFooter = document.createElement("div");
+            var modalFooter = $('<div />', {'class': 'feedback-footer'});
 
-            modal = document.createElement("div");
-            document.body.appendChild( glass );
+            modal = $('<div />', {
+                'class': 'feedback-modal',
+                'attr': {[H2C_IGNORE]: true}
+            });
+            $(document.body).append(glass);
 
             // modal close button
-            a.className =  "feedback-close";
-            a.onclick = returnMethods.close;
-            a.href = "#";
+            var modalClose = $('<a />', {
+                'class': 'feedback-close',
+                'text': '×',
+                'href': '#',
+                'click': returnMethods.close
+            });
 
-            button.disabled = true;
+            button.prop("disabled", true);
 
             // build header element
-            modalHeader.appendChild( a );
-            modalHeader.appendChild( element("h3", _('header') ) );
-            modalHeader.className =  "feedback-header";
+            var modalHeader = $('<div />', {'class': 'feedback-header'});
+            modalHeader.append(modalClose);
+            modalHeader.append($('<h3 />', {'text': _('header')}));
 
-            modalBody.className = "feedback-body";
+            modalBody.empty();
 
-            emptyElements( modalBody );
             currentPage = 0;
-            modalBody.appendChild( options.pages[ currentPage++ ].dom );
+            modalBody.append($(options.pages[ currentPage++ ].dom));
 
 
             // Next button
@@ -300,21 +264,21 @@ window.Feedback = function( options ) {
                     }
                 }
                 
-                emptyElements( modalBody );
+                $(modalBody).empty();
 
                 if ( currentPage === len ) {
                     returnMethods.send( options.adapter );
                 } else {
 
-                    options.pages[ currentPage ].start( modal, modalHeader, modalFooter, nextButton );
+                    options.pages[ currentPage ].start( modal, nextButton );
                     
-                    if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {
+                    if (options.pages[currentPage] instanceof Feedback.Review) {
                         // create DOM for review page, based on collected data
                         options.pages[ currentPage ].render( options.pages );
                     }
                     
                     // add page DOM to modal
-                    modalBody.appendChild( options.pages[ currentPage++ ].dom );
+                    modalBody.append($(options.pages[ currentPage++ ].dom));
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {
@@ -322,7 +286,7 @@ window.Feedback = function( options ) {
                     }
                     
                     // if next page is review page, change button label
-                    if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {   
+                    if (options.pages[currentPage] instanceof Feedback.Review) {
                         nextButton.firstChild.nodeValue = _('reviewLabel');
                     }
 
@@ -330,29 +294,23 @@ window.Feedback = function( options ) {
 
             };
 
-            modalFooter.className = "feedback-footer";
-            modalFooter.appendChild( nextButton );
+            modalFooter.append($(nextButton));
 
+            modal.append(modalHeader);
+            modal.append(modalBody);
+            modal.append(modalFooter);
 
-            modal.className =  "feedback-modal";
-            modal.setAttribute(H2C_IGNORE, true); // don't render in html2canvas
-
-
-            modal.appendChild( modalHeader );
-            modal.appendChild( modalBody );
-            modal.appendChild( modalFooter );
-
-            document.body.appendChild( modal );
+            $(document.body).append(modal);
         },
-
 
         // close modal window
         close: function() {
 
-            button.disabled = false;
+            button.prop("disabled", false);
 
             // remove feedback elements
-            removeElements( [ modal, glass ] );
+            $(modal).remove();
+            $(glass).remove();
 
             // call end event for current page
             if (currentPage > 0 ) {
@@ -372,7 +330,7 @@ window.Feedback = function( options ) {
         send: function( adapter ) {
             
             // make sure send adapter is of right prototype
-            if ( !(adapter instanceof window.Feedback.Send) ) {
+            if (!(adapter instanceof Feedback.Send)) {
                 throw new Error( "Adapter is not an instance of Feedback.Send" );
             }
             
@@ -385,13 +343,13 @@ window.Feedback = function( options ) {
 
             nextButton.disabled = true;
                 
-            emptyElements( modalBody );
-            modalBody.appendChild( loader() );
+            $(modalBody).empty();
+            $(modalBody).append(loader());
 
             // send data to adapter for processing
             adapter.send( data, function( success ) {
                 
-                emptyElements( modalBody );
+                $(modalBody).empty();
                 nextButton.disabled = false;
                 
                 nextButton.firstChild.nodeValue = _('closeLabel');
@@ -402,9 +360,9 @@ window.Feedback = function( options ) {
                 };
                 
                 if ( success === true ) {
-                    modalBody.appendChild( document.createTextNode( _('messageSuccess') ) );
+                    modalBody.text(_('messageSuccess'));
                 } else {
-                    modalBody.appendChild( document.createTextNode( _('messageError') ) );
+                    modalBody.text(_('messageError'));
                 }
                 //Once the form has been submitted, initialize it.
 
@@ -412,7 +370,7 @@ window.Feedback = function( options ) {
                 var currentPage = 0;
                 for (; currentPage < len; currentPage++) {
                     // Delete data from all Form and Screenshot so it does not persist for next feedback.
-                    if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                    if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                         options.pages[ currentPage ]._data = undefined;
                     }
                 }
@@ -421,27 +379,20 @@ window.Feedback = function( options ) {
         }
     };
 
-    glass.className = "feedback-glass";
-    glass.style.pointerEvents = "none";
-    glass.setAttribute(H2C_IGNORE, true);
+    button = $('<button />', {
+        'class': 'feedback-btn feedback-bottom-right',
+        'text': _('label'),
+        'attr': {[H2C_IGNORE]: true},
+        'click': returnMethods.open
+    });
 
     options = options || {};
+    $(options.appendTo || document.body).append(button);
 
-    button = element( "button", _('label') );
-    button.className = "feedback-btn feedback-bottom-right";
-
-    button.setAttribute(H2C_IGNORE, true);
-
-    button.onclick = returnMethods.open;
-    
-    if ( options.appendTo !== null ) {
-        ((options.appendTo !== undefined) ? options.appendTo : document.body).appendChild( button );
-    }
-    
     return returnMethods;
 };
-window.Feedback.Page = function() {};
-window.Feedback.Page.prototype = {
+Feedback.Page = function() {};
+Feedback.Page.prototype = {
 
     render: function( dom ) {
         this.dom = dom;
@@ -458,14 +409,14 @@ window.Feedback.Page.prototype = {
     end: function() { return true; }
 
 };
-window.Feedback.Send = function() {};
-window.Feedback.Send.prototype = {
+Feedback.Send = function() {};
+Feedback.Send.prototype = {
 
     send: function() {}
 
 };
 
-window.Feedback.Form = function( elements ) {
+Feedback.Form = function(elements) {
 
     this.elements = elements || [{
         type: "textarea",
@@ -478,12 +429,12 @@ window.Feedback.Form = function( elements ) {
 
 };
 
-window.Feedback.Form.prototype = new window.Feedback.Page();
+Feedback.Form.prototype = new Feedback.Page();
 
-window.Feedback.Form.prototype.render = function() {
+Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
-    emptyElements( this.dom );
+    $(this.dom).empty();
     for (; i < len; i++) {
         item = this.elements[ i ];
 
@@ -499,7 +450,7 @@ window.Feedback.Form.prototype.render = function() {
 
 };
 
-window.Feedback.Form.prototype.end = function() {
+Feedback.Form.prototype.end = function() {
     // form validation  
     var i = 0, len = this.elements.length, item;
     for (; i < len; i++) {
@@ -518,7 +469,7 @@ window.Feedback.Form.prototype.end = function() {
     
 };
 
-window.Feedback.Form.prototype.data = function() {
+Feedback.Form.prototype.data = function() {
     
     if ( this._data !== undefined ) {
         // return cached value
@@ -565,7 +516,7 @@ window.Feedback.Form.prototype.data = function() {
 };
 
 
-window.Feedback.Form.prototype.review = function( dom ) {
+Feedback.Form.prototype.review = function( dom ) {
   
     var i = 0, item, len = this.elements.length;
       
@@ -583,19 +534,19 @@ window.Feedback.Form.prototype.review = function( dom ) {
     return dom;
      
 };
-window.Feedback.Review = function() {
+Feedback.Review = function() {
 
     this.dom = document.createElement("div");
     this.dom.className = "feedback-review";
 
 };
 
-window.Feedback.Review.prototype = new window.Feedback.Page();
+Feedback.Review.prototype = new Feedback.Page();
 
-window.Feedback.Review.prototype.render = function( pages ) {
+Feedback.Review.prototype.render = function( pages ) {
 
     var i = 0, len = pages.length, item;
-    emptyElements( this.dom );
+    $(this.dom).empty();
     
     for (; i < len; i++) {
         
@@ -611,7 +562,7 @@ window.Feedback.Review.prototype.render = function( pages ) {
 
 
 
-window.Feedback.Screenshot = function( options ) {
+Feedback.Screenshot = function( options ) {
     this.options = options || {};
 
     this.options.blackoutClass = this.options.blackoutClass || 'feedback-blackedout';
@@ -620,35 +571,38 @@ window.Feedback.Screenshot = function( options ) {
     this.h2cDone = false;
 };
 
-window.Feedback.Screenshot.prototype = new window.Feedback.Page();
+Feedback.Screenshot.prototype = new Feedback.Page();
 
-window.Feedback.Screenshot.prototype.end = function( modal ){
-    modal.className = modal.className.replace(/feedback\-animate\-toside/, "");
+Feedback.Screenshot.prototype.end = function( modal ){
+    modal.removeClass("feedback-animate-toside");
 
     // remove event listeners
-    document.body.removeEventListener("mousemove", this.mouseMoveEvent, false);
-    document.body.removeEventListener("click", this.mouseClickEvent, false);
+    $(document.body).off("mousemove", this.mouseMoveEvent);
+    $(document.body).off("click", this.mouseClickEvent);
 
-    removeElements( [this.h2cCanvas] );
+    $(this.h2cCanvas).remove();
 
     this.h2cDone = false;
 
 };
 
-window.Feedback.Screenshot.prototype.close = function(){
-    removeElements( [ this.blackoutBox, this.highlightContainer, this.highlightBox, this.highlightClose ] );
+Feedback.Screenshot.prototype.close = function(){
+    $(this.blackoutBox).remove();
+    $(this.highlightContainer).remove();
+    $(this.highlightBox).remove();
+    $(this.highlightClose).remove();
 
-    removeElements( document.getElementsByClassName( this.options.blackoutClass ) );
-    removeElements( document.getElementsByClassName( this.options.highlightClass ) );
+    $("." + this.options.blackoutClass).remove();
+    $("." + this.options.highlightClass).remove();
 
 };
 
-window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
+Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
     var $this = this;
 
     if ( this.h2cDone ) {
-        emptyElements( this.dom );
+        $(this.dom).empty();
         nextButton.disabled = false;
 
         var feedbackHighlightElement = "feedback-highlight-element",
@@ -663,34 +617,29 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             var className = e.target.className;
             className = className.baseVal !== undefined ? className.baseVal : className;
 
-            // set close button
-            if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
-
-                var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
-                left = Math.max( left, 10 );
-
-                left = Math.min( left, window.innerWidth - 15 );
-
-                var top = (parseInt(e.target.style.top, 10));
-                top = Math.max( top, 10 );
-
-                highlightClose.style.left = left + "px";
-                highlightClose.style.top = top + "px";
-                removeElement = e.target;
-                clearBox();
-                previousElement = undefined;
-                return;
-            }
-
             // don't do anything if we are highlighting a close button or body tag
-            if (e.target.nodeName === "BODY" ||  e.target === highlightClose || e.target === modal || e.target === nextButton || e.target.parentNode === modal || e.target.parentNode === modalHeader) {
+            if (e.target === document.body || e.target === highlightClose || modal.has(e.target).length) {
                 // we are not gonna blackout the whole page or the close item
                 clearBox();
                 previousElement = e.target;
                 return;
             }
 
-            hideClose();
+            // set close button
+            else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
+                bounds = getBounds(e.target);
+                $(highlightClose).css({
+                    'left': (window.pageXOffset + bounds.left + bounds.width) + 'px',
+                    'top': (window.pageYOffset + bounds.top) + 'px',
+                });
+
+                removeElement = e.target;
+                clearBox();
+                previousElement = undefined;
+                return;
+            } else {
+              hideClose();
+            }
 
             if (e.target !== previousElement ) {
                 previousElement = e.target;
@@ -813,16 +762,16 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         previousElement;
 
 
-        modal.className += ' feedback-animate-toside';
+        modal.addClass('feedback-animate-toside');
 
 
         highlightClose.id = "feedback-highlight-close";
 
 
-        highlightClose.addEventListener("click", function(){
-            removeElement.parentNode.removeChild( removeElement );
+        $(highlightClose).on("click", function(){
+            $(removeElement).remove();
             hideClose();
-        }, false);
+        });
 
         document.body.appendChild( highlightClose );
 
@@ -862,15 +811,15 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         document.body.appendChild( highlightContainer );
 
         // bind mouse delegate events
-        document.body.addEventListener("mousemove", this.mouseMoveEvent, false);
-        document.body.addEventListener("click", this.mouseClickEvent, false);
+        $(document.body).on("mousemove", this.mouseMoveEvent);
+        $(document.body).on("click", this.mouseClickEvent);
 
     } else {
         // still loading html2canvas
         var args = arguments;
 
         if ( nextButton.disabled !== true) {
-            this.dom.appendChild( loader() );
+            $(this.dom).append(loader());
         }
 
         nextButton.disabled = true;
@@ -882,66 +831,25 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
 };
 
-window.Feedback.Screenshot.prototype.render = function() {
+Feedback.Screenshot.prototype.render = function() {
 
     this.dom = document.createElement("div");
 
     // execute the html2canvas script
-    var script,
-    $this = this,
-    options = this.options,
-    runH2c = function(){
-        try {
-
-            options.onrendered = options.onrendered || function( canvas ) {
-                $this.h2cCanvas = canvas;
-                $this.h2cDone = true;
-            };
-
-            window.html2canvas([ document.body ], options);
-
-        } catch( e ) {
-
+    var $this = this, options = this.options;
+    $.getScript(options.h2cPath, function() {
+        window.html2canvas(document.body, options).then(function(canvas) {
+            $this.h2cCanvas = canvas;
             $this.h2cDone = true;
-            log("Error in html2canvas: " + e.message);
-        }
-    };
-
-    if ( window.html2canvas === undefined && script === undefined ) {
-
-        // let's load html2canvas library while user is writing message
-
-        script = document.createElement("script");
-        script.src = options.h2cPath || "libs/html2canvas.js";
-        script.onerror = function() {
-            log("Failed to load html2canvas library, check that the path is correctly defined");
-        };
-
-        script.onload = (scriptLoader)(script, function() {
-
-            if (window.html2canvas === undefined) {
-                log("Loaded html2canvas, but library not found");
-                return;
-            }
-
-            window.html2canvas.logging = window.Feedback.debug;
-            runH2c();
-
-
+        }).catch(function(e) {
+            $this.h2cDone = true;
+            console.log("Error in html2canvas: " + e.message);
         });
-
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(script, s);
-
-    } else {
-        // html2canvas already loaded, just run it then
-        runH2c();
-    }
-
+    });
     return this;
 };
 
-window.Feedback.Screenshot.prototype.data = function() {
+Feedback.Screenshot.prototype.data = function() {
 
     if ( this._data !== undefined ) {
         return this._data;
@@ -1017,7 +925,7 @@ window.Feedback.Screenshot.prototype.data = function() {
 };
 
 
-window.Feedback.Screenshot.prototype.review = function( dom ) {
+Feedback.Screenshot.prototype.review = function( dom ) {
   
     var data = this.data();
     if ( data !== undefined ) {
@@ -1028,28 +936,18 @@ window.Feedback.Screenshot.prototype.review = function( dom ) {
     }
     
 };
-window.Feedback.XHR = function( url ) {
-    
-    this.xhr = new XMLHttpRequest();
+Feedback.XHR = function(url) {
     this.url = url;
-
 };
 
-window.Feedback.XHR.prototype = new window.Feedback.Send();
+Feedback.XHR.prototype = new Feedback.Send();
 
-window.Feedback.XHR.prototype.send = function( data, callback ) {
-    
-    var xhr = this.xhr;
-    
-    xhr.onreadystatechange = function() {
-        if( xhr.readyState == 4 ){
-            callback( (xhr.status === 200) );
-        }
-    };
-    
-    xhr.open( "POST", this.url, true);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send( "data=" + encodeURIComponent( window.JSON.stringify( data ) ) );
-     
+Feedback.XHR.prototype.send = function(data, callback) {
+    $.post({
+        url: this.url,
+        data: {data: JSON.stringify(data)},
+        success: function() { callback(true) },
+        error: function() { callback(false) }
+    });
 };
 })( window, document );

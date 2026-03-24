@@ -1,5 +1,5 @@
-window.Feedback.Page = function() {};
-window.Feedback.Page.prototype = {
+Feedback.Page = function() {};
+Feedback.Page.prototype = {
 
     render: function( dom ) {
         this.dom = dom;

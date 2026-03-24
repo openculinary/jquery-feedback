@@ -1,5 +1,5 @@
-window.Feedback.Send = function() {};
-window.Feedback.Send.prototype = {
+Feedback.Send = function() {};
+Feedback.Send.prototype = {
 
     send: function() {}
 

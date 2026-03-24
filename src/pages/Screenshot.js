@@ -1,6 +1,6 @@
 
 
-window.Feedback.Screenshot = function( options ) {
+Feedback.Screenshot = function( options ) {
     this.options = options || {};
 
     this.options.blackoutClass = this.options.blackoutClass || 'feedback-blackedout';
@@ -9,35 +9,38 @@ window.Feedback.Screenshot = function( options ) {
     this.h2cDone = false;
 };
 
-window.Feedback.Screenshot.prototype = new window.Feedback.Page();
+Feedback.Screenshot.prototype = new Feedback.Page();
 
-window.Feedback.Screenshot.prototype.end = function( modal ){
-    modal.className = modal.className.replace(/feedback\-animate\-toside/, "");
+Feedback.Screenshot.prototype.end = function( modal ){
+    modal.removeClass("feedback-animate-toside");
 
     // remove event listeners
-    document.body.removeEventListener("mousemove", this.mouseMoveEvent, false);
-    document.body.removeEventListener("click", this.mouseClickEvent, false);
+    $(document.body).off("mousemove", this.mouseMoveEvent);
+    $(document.body).off("click", this.mouseClickEvent);
 
-    removeElements( [this.h2cCanvas] );
+    $(this.h2cCanvas).remove();
 
     this.h2cDone = false;
 
 };
 
-window.Feedback.Screenshot.prototype.close = function(){
-    removeElements( [ this.blackoutBox, this.highlightContainer, this.highlightBox, this.highlightClose ] );
+Feedback.Screenshot.prototype.close = function(){
+    $(this.blackoutBox).remove();
+    $(this.highlightContainer).remove();
+    $(this.highlightBox).remove();
+    $(this.highlightClose).remove();
 
-    removeElements( document.getElementsByClassName( this.options.blackoutClass ) );
-    removeElements( document.getElementsByClassName( this.options.highlightClass ) );
+    $("." + this.options.blackoutClass).remove();
+    $("." + this.options.highlightClass).remove();
 
 };
 
-window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
+Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
     var $this = this;
 
     if ( this.h2cDone ) {
-        emptyElements( this.dom );
+        $(this.dom).empty();
         nextButton.disabled = false;
 
         var feedbackHighlightElement = "feedback-highlight-element",
@@ -52,34 +55,29 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             var className = e.target.className;
             className = className.baseVal !== undefined ? className.baseVal : className;
 
-            // set close button
-            if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
-
-                var left = (parseInt(e.target.style.left, 10) +  parseInt(e.target.style.width, 10));
-                left = Math.max( left, 10 );
-
-                left = Math.min( left, window.innerWidth - 15 );
-
-                var top = (parseInt(e.target.style.top, 10));
-                top = Math.max( top, 10 );
-
-                highlightClose.style.left = left + "px";
-                highlightClose.style.top = top + "px";
-                removeElement = e.target;
-                clearBox();
-                previousElement = undefined;
-                return;
-            }
-
             // don't do anything if we are highlighting a close button or body tag
-            if (e.target.nodeName === "BODY" ||  e.target === highlightClose || e.target === modal || e.target === nextButton || e.target.parentNode === modal || e.target.parentNode === modalHeader) {
+            if (e.target === document.body || e.target === highlightClose || modal.has(e.target).length) {
                 // we are not gonna blackout the whole page or the close item
                 clearBox();
                 previousElement = e.target;
                 return;
             }
 
-            hideClose();
+            // set close button
+            else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
+                bounds = getBounds(e.target);
+                $(highlightClose).css({
+                    'left': (window.pageXOffset + bounds.left + bounds.width) + 'px',
+                    'top': (window.pageYOffset + bounds.top) + 'px',
+                });
+
+                removeElement = e.target;
+                clearBox();
+                previousElement = undefined;
+                return;
+            } else {
+              hideClose();
+            }
 
             if (e.target !== previousElement ) {
                 previousElement = e.target;
@@ -202,16 +200,16 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         previousElement;
 
 
-        modal.className += ' feedback-animate-toside';
+        modal.addClass('feedback-animate-toside');
 
 
         highlightClose.id = "feedback-highlight-close";
 
 
-        highlightClose.addEventListener("click", function(){
-            removeElement.parentNode.removeChild( removeElement );
+        $(highlightClose).on("click", function(){
+            $(removeElement).remove();
             hideClose();
-        }, false);
+        });
 
         document.body.appendChild( highlightClose );
 
@@ -251,15 +249,15 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
         document.body.appendChild( highlightContainer );
 
         // bind mouse delegate events
-        document.body.addEventListener("mousemove", this.mouseMoveEvent, false);
-        document.body.addEventListener("click", this.mouseClickEvent, false);
+        $(document.body).on("mousemove", this.mouseMoveEvent);
+        $(document.body).on("click", this.mouseClickEvent);
 
     } else {
         // still loading html2canvas
         var args = arguments;
 
         if ( nextButton.disabled !== true) {
-            this.dom.appendChild( loader() );
+            $(this.dom).append(loader());
         }
 
         nextButton.disabled = true;
@@ -271,66 +269,25 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
 };
 
-window.Feedback.Screenshot.prototype.render = function() {
+Feedback.Screenshot.prototype.render = function() {
 
     this.dom = document.createElement("div");
 
     // execute the html2canvas script
-    var script,
-    $this = this,
-    options = this.options,
-    runH2c = function(){
-        try {
-
-            options.onrendered = options.onrendered || function( canvas ) {
-                $this.h2cCanvas = canvas;
-                $this.h2cDone = true;
-            };
-
-            window.html2canvas([ document.body ], options);
-
-        } catch( e ) {
-
+    var $this = this, options = this.options;
+    $.getScript(options.h2cPath, function() {
+        window.html2canvas(document.body, options).then(function(canvas) {
+            $this.h2cCanvas = canvas;
             $this.h2cDone = true;
-            log("Error in html2canvas: " + e.message);
-        }
-    };
-
-    if ( window.html2canvas === undefined && script === undefined ) {
-
-        // let's load html2canvas library while user is writing message
-
-        script = document.createElement("script");
-        script.src = options.h2cPath || "libs/html2canvas.js";
-        script.onerror = function() {
-            log("Failed to load html2canvas library, check that the path is correctly defined");
-        };
-
-        script.onload = (scriptLoader)(script, function() {
-
-            if (window.html2canvas === undefined) {
-                log("Loaded html2canvas, but library not found");
-                return;
-            }
-
-            window.html2canvas.logging = window.Feedback.debug;
-            runH2c();
-
-
+        }).catch(function(e) {
+            $this.h2cDone = true;
+            console.log("Error in html2canvas: " + e.message);
         });
-
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(script, s);
-
-    } else {
-        // html2canvas already loaded, just run it then
-        runH2c();
-    }
-
+    });
     return this;
 };
 
-window.Feedback.Screenshot.prototype.data = function() {
+Feedback.Screenshot.prototype.data = function() {
 
     if ( this._data !== undefined ) {
         return this._data;
@@ -406,7 +363,7 @@ window.Feedback.Screenshot.prototype.data = function() {
 };
 
 
-window.Feedback.Screenshot.prototype.review = function( dom ) {
+Feedback.Screenshot.prototype.review = function( dom ) {
   
     var data = this.data();
     if ( data !== undefined ) {
