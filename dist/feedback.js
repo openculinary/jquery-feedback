@@ -360,14 +360,9 @@ window.Feedback = function( options ) {
                     modalBody.text(_('messageError'));
                 }
                 //Once the form has been submitted, initialize it.
-
-                var len = options.pages.length;
-                var currentPage = 0;
-                for (; currentPage < len; currentPage++) {
-                    // Delete data from all Form and Screenshot so it does not persist for next feedback.
-                    if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                        options.pages[ currentPage ]._data = undefined;
-                    }
+                // this includes clearing the data collected for feedback
+                for (var i = 0, len = options.pages.length; i < len; i++) {
+                    options.pages[ i ].close();
                 }
             } );
   
@@ -462,6 +457,10 @@ Feedback.Form.prototype.end = function() {
     
     return true;
     
+};
+
+Feedback.Form.prototype.close = function(){
+    this._data = undefined;
 };
 
 Feedback.Form.prototype.data = function() {
@@ -582,6 +581,8 @@ Feedback.Screenshot.prototype.end = function( modal ){
 };
 
 Feedback.Screenshot.prototype.close = function(){
+    this._data = undefined;
+
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();
