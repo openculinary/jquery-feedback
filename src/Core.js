@@ -222,10 +222,8 @@ window.Feedback = function( options ) {
                 var len = options.pages.length;
                 var currentPage = 0;
                 for (; currentPage < len; currentPage++) {
-                    // Delete data from all Form and Screenshot so it does not persist for next feedback.
-                    if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                        options.pages[ currentPage ]._data = undefined;
-                    }
+                    // Close each page, allowing for per-page cleanup logic
+                    options.pages[ currentPage ].close();
                 }
             } );
   

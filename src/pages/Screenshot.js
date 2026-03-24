@@ -25,6 +25,8 @@ Feedback.Screenshot.prototype.end = function( modal ){
 };
 
 Feedback.Screenshot.prototype.close = function(){
+    this._data = undefined;
+
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();

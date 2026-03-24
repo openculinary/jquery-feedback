@@ -51,6 +51,10 @@ Feedback.Form.prototype.end = function() {
     
 };
 
+Feedback.Form.prototype.close = function(){
+    this._data = undefined;
+};
+
 Feedback.Form.prototype.data = function() {
     
     if ( this._data !== undefined ) {

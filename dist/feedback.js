@@ -364,10 +364,8 @@ window.Feedback = function( options ) {
                 var len = options.pages.length;
                 var currentPage = 0;
                 for (; currentPage < len; currentPage++) {
-                    // Delete data from all Form and Screenshot so it does not persist for next feedback.
-                    if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                        options.pages[ currentPage ]._data = undefined;
-                    }
+                    // Close each page, allowing for per-page cleanup logic
+                    options.pages[ currentPage ].close();
                 }
             } );
   
@@ -462,6 +460,10 @@ Feedback.Form.prototype.end = function() {
     
     return true;
     
+};
+
+Feedback.Form.prototype.close = function(){
+    this._data = undefined;
 };
 
 Feedback.Form.prototype.data = function() {
@@ -582,6 +584,8 @@ Feedback.Screenshot.prototype.end = function( modal ){
 };
 
 Feedback.Screenshot.prototype.close = function(){
+    this._data = undefined;
+
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();
