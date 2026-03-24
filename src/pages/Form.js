@@ -1,4 +1,4 @@
-window.Feedback.Form = function( elements ) {
+Feedback.Form = function(elements) {
 
     this.elements = elements || [{
         type: "textarea",
@@ -11,9 +11,9 @@ window.Feedback.Form = function( elements ) {
 
 };
 
-window.Feedback.Form.prototype = new window.Feedback.Page();
+Feedback.Form.prototype = new Feedback.Page();
 
-window.Feedback.Form.prototype.render = function() {
+Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
     $(this.dom).empty();
@@ -32,7 +32,7 @@ window.Feedback.Form.prototype.render = function() {
 
 };
 
-window.Feedback.Form.prototype.end = function() {
+Feedback.Form.prototype.end = function() {
     // form validation  
     var i = 0, len = this.elements.length, item;
     for (; i < len; i++) {
@@ -51,7 +51,7 @@ window.Feedback.Form.prototype.end = function() {
     
 };
 
-window.Feedback.Form.prototype.data = function() {
+Feedback.Form.prototype.data = function() {
     
     if ( this._data !== undefined ) {
         // return cached value
@@ -98,7 +98,7 @@ window.Feedback.Form.prototype.data = function() {
 };
 
 
-window.Feedback.Form.prototype.review = function( dom ) {
+Feedback.Form.prototype.review = function( dom ) {
   
     var i = 0, item, len = this.elements.length;
       

@@ -43,7 +43,7 @@ window.Feedback = function( options ) {
 
     // default properties
     options.url = options.url || "/";
-    options.adapter = options.adapter || new window.Feedback.XHR( options.url );
+    options.adapter = options.adapter || new Feedback.XHR(options.url);
     options.lang = options.lang || "auto";
 
     if (options.lang === 'auto')
@@ -52,9 +52,9 @@ window.Feedback = function( options ) {
 
     if (options.pages === undefined ) {
         options.pages = [
-            new window.Feedback.Form(),
-            new window.Feedback.Screenshot( options ),
-            new window.Feedback.Review()
+            new Feedback.Form(),
+            new Feedback.Screenshot(options),
+            new Feedback.Review()
         ];
     }
 
@@ -74,7 +74,7 @@ window.Feedback = function( options ) {
             currentPage = 0;
             for (; currentPage < len; currentPage++) {
                 // create DOM for each page in the wizard
-                if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                     options.pages[ currentPage ].render();
                 }
             }
@@ -130,7 +130,7 @@ window.Feedback = function( options ) {
 
                     options.pages[ currentPage ].start( modal, nextButton );
                     
-                    if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {
+                    if (options.pages[currentPage] instanceof Feedback.Review) {
                         // create DOM for review page, based on collected data
                         options.pages[ currentPage ].render( options.pages );
                     }
@@ -144,7 +144,7 @@ window.Feedback = function( options ) {
                     }
                     
                     // if next page is review page, change button label
-                    if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {   
+                    if (options.pages[currentPage] instanceof Feedback.Review) {
                         nextButton.firstChild.nodeValue = _('reviewLabel');
                     }
 
@@ -188,7 +188,7 @@ window.Feedback = function( options ) {
         send: function( adapter ) {
             
             // make sure send adapter is of right prototype
-            if ( !(adapter instanceof window.Feedback.Send) ) {
+            if (!(adapter instanceof Feedback.Send)) {
                 throw new Error( "Adapter is not an instance of Feedback.Send" );
             }
             
@@ -228,7 +228,7 @@ window.Feedback = function( options ) {
                 var currentPage = 0;
                 for (; currentPage < len; currentPage++) {
                     // Delete data from all Form and Screenshot so it does not persist for next feedback.
-                    if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                    if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                         options.pages[ currentPage ]._data = undefined;
                     }
                 }

@@ -185,7 +185,7 @@ window.Feedback = function( options ) {
 
     // default properties
     options.url = options.url || "/";
-    options.adapter = options.adapter || new window.Feedback.XHR( options.url );
+    options.adapter = options.adapter || new Feedback.XHR(options.url);
     options.lang = options.lang || "auto";
 
     if (options.lang === 'auto')
@@ -194,9 +194,9 @@ window.Feedback = function( options ) {
 
     if (options.pages === undefined ) {
         options.pages = [
-            new window.Feedback.Form(),
-            new window.Feedback.Screenshot( options ),
-            new window.Feedback.Review()
+            new Feedback.Form(),
+            new Feedback.Screenshot(options),
+            new Feedback.Review()
         ];
     }
 
@@ -216,7 +216,7 @@ window.Feedback = function( options ) {
             currentPage = 0;
             for (; currentPage < len; currentPage++) {
                 // create DOM for each page in the wizard
-                if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                     options.pages[ currentPage ].render();
                 }
             }
@@ -272,7 +272,7 @@ window.Feedback = function( options ) {
 
                     options.pages[ currentPage ].start( modal, nextButton );
                     
-                    if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {
+                    if (options.pages[currentPage] instanceof Feedback.Review) {
                         // create DOM for review page, based on collected data
                         options.pages[ currentPage ].render( options.pages );
                     }
@@ -286,7 +286,7 @@ window.Feedback = function( options ) {
                     }
                     
                     // if next page is review page, change button label
-                    if ( options.pages[ currentPage ] instanceof window.Feedback.Review ) {   
+                    if (options.pages[currentPage] instanceof Feedback.Review) {
                         nextButton.firstChild.nodeValue = _('reviewLabel');
                     }
 
@@ -330,7 +330,7 @@ window.Feedback = function( options ) {
         send: function( adapter ) {
             
             // make sure send adapter is of right prototype
-            if ( !(adapter instanceof window.Feedback.Send) ) {
+            if (!(adapter instanceof Feedback.Send)) {
                 throw new Error( "Adapter is not an instance of Feedback.Send" );
             }
             
@@ -370,7 +370,7 @@ window.Feedback = function( options ) {
                 var currentPage = 0;
                 for (; currentPage < len; currentPage++) {
                     // Delete data from all Form and Screenshot so it does not persist for next feedback.
-                    if ( !(options.pages[ currentPage ] instanceof window.Feedback.Review) ) {
+                    if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                         options.pages[ currentPage ]._data = undefined;
                     }
                 }
@@ -391,8 +391,8 @@ window.Feedback = function( options ) {
 
     return returnMethods;
 };
-window.Feedback.Page = function() {};
-window.Feedback.Page.prototype = {
+Feedback.Page = function() {};
+Feedback.Page.prototype = {
 
     render: function( dom ) {
         this.dom = dom;
@@ -409,14 +409,14 @@ window.Feedback.Page.prototype = {
     end: function() { return true; }
 
 };
-window.Feedback.Send = function() {};
-window.Feedback.Send.prototype = {
+Feedback.Send = function() {};
+Feedback.Send.prototype = {
 
     send: function() {}
 
 };
 
-window.Feedback.Form = function( elements ) {
+Feedback.Form = function(elements) {
 
     this.elements = elements || [{
         type: "textarea",
@@ -429,9 +429,9 @@ window.Feedback.Form = function( elements ) {
 
 };
 
-window.Feedback.Form.prototype = new window.Feedback.Page();
+Feedback.Form.prototype = new Feedback.Page();
 
-window.Feedback.Form.prototype.render = function() {
+Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
     $(this.dom).empty();
@@ -450,7 +450,7 @@ window.Feedback.Form.prototype.render = function() {
 
 };
 
-window.Feedback.Form.prototype.end = function() {
+Feedback.Form.prototype.end = function() {
     // form validation  
     var i = 0, len = this.elements.length, item;
     for (; i < len; i++) {
@@ -469,7 +469,7 @@ window.Feedback.Form.prototype.end = function() {
     
 };
 
-window.Feedback.Form.prototype.data = function() {
+Feedback.Form.prototype.data = function() {
     
     if ( this._data !== undefined ) {
         // return cached value
@@ -516,7 +516,7 @@ window.Feedback.Form.prototype.data = function() {
 };
 
 
-window.Feedback.Form.prototype.review = function( dom ) {
+Feedback.Form.prototype.review = function( dom ) {
   
     var i = 0, item, len = this.elements.length;
       
@@ -534,16 +534,16 @@ window.Feedback.Form.prototype.review = function( dom ) {
     return dom;
      
 };
-window.Feedback.Review = function() {
+Feedback.Review = function() {
 
     this.dom = document.createElement("div");
     this.dom.className = "feedback-review";
 
 };
 
-window.Feedback.Review.prototype = new window.Feedback.Page();
+Feedback.Review.prototype = new Feedback.Page();
 
-window.Feedback.Review.prototype.render = function( pages ) {
+Feedback.Review.prototype.render = function( pages ) {
 
     var i = 0, len = pages.length, item;
     $(this.dom).empty();
@@ -562,7 +562,7 @@ window.Feedback.Review.prototype.render = function( pages ) {
 
 
 
-window.Feedback.Screenshot = function( options ) {
+Feedback.Screenshot = function( options ) {
     this.options = options || {};
 
     this.options.blackoutClass = this.options.blackoutClass || 'feedback-blackedout';
@@ -571,9 +571,9 @@ window.Feedback.Screenshot = function( options ) {
     this.h2cDone = false;
 };
 
-window.Feedback.Screenshot.prototype = new window.Feedback.Page();
+Feedback.Screenshot.prototype = new Feedback.Page();
 
-window.Feedback.Screenshot.prototype.end = function( modal ){
+Feedback.Screenshot.prototype.end = function( modal ){
     modal.removeClass("feedback-animate-toside");
 
     // remove event listeners
@@ -586,7 +586,7 @@ window.Feedback.Screenshot.prototype.end = function( modal ){
 
 };
 
-window.Feedback.Screenshot.prototype.close = function(){
+Feedback.Screenshot.prototype.close = function(){
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();
@@ -597,7 +597,7 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 };
 
-window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
+Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
     var $this = this;
 
@@ -831,7 +831,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 };
 
-window.Feedback.Screenshot.prototype.render = function() {
+Feedback.Screenshot.prototype.render = function() {
 
     this.dom = document.createElement("div");
 
@@ -849,7 +849,7 @@ window.Feedback.Screenshot.prototype.render = function() {
     return this;
 };
 
-window.Feedback.Screenshot.prototype.data = function() {
+Feedback.Screenshot.prototype.data = function() {
 
     if ( this._data !== undefined ) {
         return this._data;
@@ -925,7 +925,7 @@ window.Feedback.Screenshot.prototype.data = function() {
 };
 
 
-window.Feedback.Screenshot.prototype.review = function( dom ) {
+Feedback.Screenshot.prototype.review = function( dom ) {
   
     var data = this.data();
     if ( data !== undefined ) {
@@ -936,13 +936,13 @@ window.Feedback.Screenshot.prototype.review = function( dom ) {
     }
     
 };
-window.Feedback.XHR = function(url) {
+Feedback.XHR = function(url) {
     this.url = url;
 };
 
-window.Feedback.XHR.prototype = new window.Feedback.Send();
+Feedback.XHR.prototype = new Feedback.Send();
 
-window.Feedback.XHR.prototype.send = function(data, callback) {
+Feedback.XHR.prototype.send = function(data, callback) {
     $.post({
         url: this.url,
         data: {data: JSON.stringify(data)},
@@ -950,4 +950,5 @@ window.Feedback.XHR.prototype.send = function(data, callback) {
         error: function() { callback(false) }
     });
 };
+
 })( window, document );

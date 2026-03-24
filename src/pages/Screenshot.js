@@ -1,6 +1,6 @@
 
 
-window.Feedback.Screenshot = function( options ) {
+Feedback.Screenshot = function( options ) {
     this.options = options || {};
 
     this.options.blackoutClass = this.options.blackoutClass || 'feedback-blackedout';
@@ -9,9 +9,9 @@ window.Feedback.Screenshot = function( options ) {
     this.h2cDone = false;
 };
 
-window.Feedback.Screenshot.prototype = new window.Feedback.Page();
+Feedback.Screenshot.prototype = new Feedback.Page();
 
-window.Feedback.Screenshot.prototype.end = function( modal ){
+Feedback.Screenshot.prototype.end = function( modal ){
     modal.removeClass("feedback-animate-toside");
 
     // remove event listeners
@@ -24,7 +24,7 @@ window.Feedback.Screenshot.prototype.end = function( modal ){
 
 };
 
-window.Feedback.Screenshot.prototype.close = function(){
+Feedback.Screenshot.prototype.close = function(){
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();
@@ -35,7 +35,7 @@ window.Feedback.Screenshot.prototype.close = function(){
 
 };
 
-window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
+Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
     var $this = this;
 
@@ -269,7 +269,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 };
 
-window.Feedback.Screenshot.prototype.render = function() {
+Feedback.Screenshot.prototype.render = function() {
 
     this.dom = document.createElement("div");
 
@@ -287,7 +287,7 @@ window.Feedback.Screenshot.prototype.render = function() {
     return this;
 };
 
-window.Feedback.Screenshot.prototype.data = function() {
+Feedback.Screenshot.prototype.data = function() {
 
     if ( this._data !== undefined ) {
         return this._data;
@@ -363,7 +363,7 @@ window.Feedback.Screenshot.prototype.data = function() {
 };
 
 
-window.Feedback.Screenshot.prototype.review = function( dom ) {
+Feedback.Screenshot.prototype.review = function( dom ) {
   
     var data = this.data();
     if ( data !== undefined ) {
