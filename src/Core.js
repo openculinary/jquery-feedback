@@ -2,11 +2,7 @@ if ( window.Feedback !== undefined ) {
     return; 
 }
 
-// log proxy function
-var log = function( msg ) {
-    window.console.log( msg );
-},
-loader = function() {
+var loader = function() {
     var div = $('<div />', {'class': 'feedback-loader'});
     [1, 2, 3].forEach(function() { $('<span />').appendTo(div); });
     return div;
@@ -27,7 +23,6 @@ getLang = function() {
         lang = navigator.language;
     }
 
-    log('language = ' + lang);
     if (lang) {
         return lang.replace('-','_');
     }
