@@ -777,7 +777,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         // still loading html2canvas
         var args = arguments;
 
-        if ( nextButton.prop("disabled", true) ) {
+        if ( nextButton.prop("disabled") !== true) {
             this.dom.append(loader());
         }
 
