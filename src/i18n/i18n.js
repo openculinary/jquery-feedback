@@ -39,8 +39,8 @@ var i18n = Object.create({
     var message_strings = this[this.lang] || this[this.lang.substring(0, 2)];
     if (message_strings && message_strings[s]) {
       return message_strings[s];
-    } else if (this['default'][s]) {
-      return this['default'][s];
+    } else if (this.default[s]) {
+      return this.default[s];
     } else {
       return s;
     }
