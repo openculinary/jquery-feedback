@@ -447,7 +447,7 @@ Feedback.Form.prototype.end = function() {
         item = this.elements[ i ];
 
         // check that all required fields are entered
-        if ( item.required === true && item.element.text().length === 0) {
+        if ( item.required === true && item.element.val().length === 0) {
             item.element.addClass("feedback-error");
             return false;
         } else {
@@ -474,7 +474,7 @@ Feedback.Form.prototype.data = function() {
     
     for (; i < len; i++) {
         item = this.elements[ i ];
-        data[ item.name ] = item.element.text();
+        data[ item.name ] = item.element.val();
     }
     data.url = window.location.href;
     data.timeOpened = new Date();
@@ -515,10 +515,10 @@ Feedback.Form.prototype.review = function(dom) {
     for (; i < len; i++) {
         item = this.elements[ i ];
         
-        if (item.element.text().length > 0) {
+        if (item.element.val().length > 0) {
             var labelText = item.label + ":";
             var label = $("<label />", {"text": labelText});
-            var fieldValue = item.element.text();
+            var fieldValue = item.element.val();
             dom.append(label);
             dom.append(fieldValue);
             dom.append($("<hr />"));
