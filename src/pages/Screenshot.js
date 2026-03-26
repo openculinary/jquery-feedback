@@ -68,7 +68,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             // set close button
             else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
                 bounds = getBounds(e.target);
-                $(highlightClose).css({
+                highlightClose.css({
                     'left': (window.pageXOffset + bounds.left + bounds.width) + 'px',
                     'top': (window.pageYOffset + bounds.top) + 'px',
                 });
@@ -214,7 +214,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         modal.addClass('feedback-animate-toside');
 
 
-        $(highlightClose).on("click", function(){
+        highlightClose.on("click", function(){
             $(removeElement).remove();
             hideClose();
         });
