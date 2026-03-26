@@ -669,7 +669,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 
             if ( action === false) {
-                if ( blackoutBox[0].getAttribute(dataExclude) === "false") {
+                if ( blackoutBox.attr(dataExclude) === "false") {
                     var blackout = blackoutBox.clone();
                     blackout.attr("id", undefined);
                     blackout.addClass($this.options.blackoutClass);
@@ -678,7 +678,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
                     previousElement = undefined;
                 }
             } else {
-                if ( highlightBox[0].getAttribute(dataExclude) === "false") {
+                if ( highlightBox.attr(dataExclude) === "false") {
 
                     highlightBox.addClass($this.options.highlightClass);
                     highlightBox.removeClass("feedback-highlight-element");
@@ -727,17 +727,17 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         },
         clearBox = function() {
             
-            clearBoxEl(blackoutBox[0]);
-            clearBoxEl(highlightBox[0]);
+            clearBoxEl(blackoutBox);
+            clearBoxEl(highlightBox);
 
             window.clearTimeout( timer );
         },
         clearBoxEl = function( el ) {
-            el.style.left =  "-5px";
-            el.style.top =  "-5px";
-            el.style.width = "0px";
-            el.style.height = "0px";
-            el.setAttribute(dataExclude, true);
+            el.css("left", "-5px");
+            el.css("top", "-5px");
+            el.css("width", "0px");
+            el.css("height", "0px");
+            el.attr(dataExclude, true);
         },
         hideClose = function() {
             highlightClose.css("left", "-50px");
