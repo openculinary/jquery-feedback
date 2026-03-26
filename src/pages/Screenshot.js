@@ -123,14 +123,11 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
             if ( action === false) {
                 if ( blackoutBox[0].getAttribute(dataExclude) === "false") {
-                    var blackout = document.createElement("div");
-                    blackout.className = $this.options.blackoutClass;
-                    blackout.style.left = blackoutBox[0].style.left;
-                    blackout.style.top = blackoutBox[0].style.top;
-                    blackout.style.width = blackoutBox[0].style.width;
-                    blackout.style.height = blackoutBox[0].style.height;
+                    var blackout = blackoutBox.clone();
+                    blackout.attr("id", undefined);
+                    blackout.addClass($this.options.blackoutClass);
 
-                    document.body.appendChild( blackout );
+                    $(document.body).append( blackout );
                     previousElement = undefined;
                 }
             } else {
