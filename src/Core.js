@@ -132,12 +132,12 @@ window.Feedback = function( options ) {
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {
-                        nextButton.firstChild.nodeValue = _('sendLabel');
+                        nextButton.text(_('sendLabel'));
                     }
                     
                     // if next page is review page, change button label
                     if (options.pages[currentPage] instanceof Feedback.Review) {
-                        nextButton.firstChild.nodeValue = _('reviewLabel');
+                        nextButton.text(_('reviewLabel'));
                     }
 
                 }
