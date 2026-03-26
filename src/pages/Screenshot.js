@@ -228,15 +228,14 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         this.dom.append($("<p />", {"text": _("highlightDescription")}));
 
         // add highlight and blackout buttons
-        for (var i = 0; i < 2; i++ ) {
-            buttonItem[i].addClass('feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse'));
-            buttonItem[i].on("click", buttonClickFunction);
+        $.each(buttonItem, (_, button) => {
+            button.addClass('feedback-btn feedback-btn-small');
+            button.addClass(button === highlightButton ? 'active' : 'feedback-btn-inverse');
+            button.on("click", buttonClickFunction);
 
-            this.dom.append(buttonItem[i]);
+            this.dom.append(button);
             this.dom.append(" ");
-        }
-
-
+        });
 
         highlightContainer.id = "feedback-highlight-container";
         highlightContainer.style.width = this.h2cCanvas.width + "px";

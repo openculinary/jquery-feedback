@@ -60,14 +60,10 @@ window.Feedback = function( options ) {
 
         // open send feedback modal window
         open: function() {
-            var lastPage = options.pages.length;
-            currentPage = 0;
-            for (; currentPage < lastPage; currentPage++) {
-                // create DOM for each page in the wizard
-                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                    options.pages[ currentPage ].render();
-                }
-            }
+            $.each(options.pages, (_, page) => {
+              if (page instanceof Feedback.Review) return;
+              page.render();
+            });
 
             // modal container
             var modalFooter = $('<div />', {'class': 'feedback-footer'});
@@ -116,6 +112,7 @@ window.Feedback = function( options ) {
                 
                 $(modalBody).empty();
 
+                var lastPage = options.pages.length;
                 if ( currentPage === lastPage ) {
                     returnMethods.send( options.adapter );
                 } else {
@@ -168,9 +165,9 @@ window.Feedback = function( options ) {
             }
                 
             // call close events for all pages    
-            for (var i = 0, len = options.pages.length; i < len; i++) {
-                options.pages[ i ].close();
-            }
+            $.each(options.pages, (_, page) => {
+                page.close();
+            });
 
             return false;
 
@@ -185,11 +182,12 @@ window.Feedback = function( options ) {
             }
             
             // fetch data from all pages   
-            for (var i = 0, len = options.pages.length, data = [], p = 0, tmp; i < len; i++) {
-                if ( (tmp = options.pages[ i ].data()) !== false ) {
-                    data[ p++ ] = tmp;
-                }
-            }
+            var data = [], tmp;
+            $.each(options.pages, (i, page) => {
+              if (tmp = page.data() !== false) {
+                data.push(tmp);
+              }
+            });
 
             nextButton.prop("disabled", true);
                 
@@ -216,9 +214,9 @@ window.Feedback = function( options ) {
                 }
                 //Once the form has been submitted, initialize it.
                 // this includes clearing the data collected for feedback
-                for (var i = 0, len = options.pages.length; i < len; i++) {
-                    options.pages[ i ].close();
-                }
+                $.each(options.pages, (_, page) => {
+                  page.close();
+                });
             } );
   
         }

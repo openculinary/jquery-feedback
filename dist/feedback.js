@@ -202,14 +202,10 @@ window.Feedback = function( options ) {
 
         // open send feedback modal window
         open: function() {
-            var lastPage = options.pages.length;
-            currentPage = 0;
-            for (; currentPage < lastPage; currentPage++) {
-                // create DOM for each page in the wizard
-                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                    options.pages[ currentPage ].render();
-                }
-            }
+            $.each(options.pages, (_, page) => {
+              if (page instanceof Feedback.Review) return;
+              page.render();
+            });
 
             // modal container
             var modalFooter = $('<div />', {'class': 'feedback-footer'});
@@ -258,6 +254,7 @@ window.Feedback = function( options ) {
                 
                 $(modalBody).empty();
 
+                var lastPage = options.pages.length;
                 if ( currentPage === lastPage ) {
                     returnMethods.send( options.adapter );
                 } else {
@@ -310,9 +307,9 @@ window.Feedback = function( options ) {
             }
                 
             // call close events for all pages    
-            for (var i = 0, len = options.pages.length; i < len; i++) {
-                options.pages[ i ].close();
-            }
+            $.each(options.pages, (_, page) => {
+                page.close();
+            });
 
             return false;
 
@@ -327,11 +324,12 @@ window.Feedback = function( options ) {
             }
             
             // fetch data from all pages   
-            for (var i = 0, len = options.pages.length, data = [], p = 0, tmp; i < len; i++) {
-                if ( (tmp = options.pages[ i ].data()) !== false ) {
-                    data[ p++ ] = tmp;
-                }
-            }
+            var data = [], tmp;
+            $.each(options.pages, (i, page) => {
+              if (tmp = page.data() !== false) {
+                data.push(tmp);
+              }
+            });
 
             nextButton.prop("disabled", true);
                 
@@ -358,9 +356,9 @@ window.Feedback = function( options ) {
                 }
                 //Once the form has been submitted, initialize it.
                 // this includes clearing the data collected for feedback
-                for (var i = 0, len = options.pages.length; i < len; i++) {
-                    options.pages[ i ].close();
-                }
+                $.each(options.pages, (_, page) => {
+                  page.close();
+                });
             } );
   
         }
@@ -404,7 +402,6 @@ Feedback.Send.prototype = {
 };
 
 Feedback.Form = function(elements) {
-
     this.elements = elements || [{
         type: "textarea",
         name: 'issue',
@@ -413,19 +410,14 @@ Feedback.Form = function(elements) {
     }];
 
     this.dom = $("<div />");
-
 };
 
 Feedback.Form.prototype = new Feedback.Page();
 
 Feedback.Form.prototype.render = function() {
-
-    var i = 0, len = this.elements.length, item;
     this.dom.empty();
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-
-        switch( item.type ) {
+    $.each(this.elements, (_, item) => {
+        switch(item.type) {
             case "textarea":
                 var labelText = item.label + (item.required === true ? " *" : "");
                 var label = $("<label />", {"text": labelText});
@@ -434,29 +426,22 @@ Feedback.Form.prototype.render = function() {
                 this.dom.append(formField);
                 break;
         }
-    }
-
+    });
     return this;
-
 };
 
 Feedback.Form.prototype.end = function() {
     // form validation  
-    var i = 0, len = this.elements.length, item;
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-
+    $.each(this.elements, (_, item) => {
         // check that all required fields are entered
-        if ( item.required === true && item.element.val().length === 0) {
+        if (item.required === true && item.element.val().length === 0) {
             item.element.addClass("feedback-error");
             return false;
         } else {
             item.element.removeClass();
         }
-    }
-    
+    });
     return true;
-    
 };
 
 Feedback.Form.prototype.close = function(){
@@ -464,18 +449,16 @@ Feedback.Form.prototype.close = function(){
 };
 
 Feedback.Form.prototype.data = function() {
-    
-    if ( this._data !== undefined ) {
+    if (this._data !== undefined) {
         // return cached value
         return this._data;
     }
-    
-    var i = 0, len = this.elements.length, item, data = {};
-    
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-        data[ item.name ] = item.element.val();
-    }
+
+    var data = {};
+    $.each(this.elements, (_, item) => {
+        data[item.name] = item.element.val();
+    });
+
     data.url = window.location.href;
     data.timeOpened = new Date();
     data.timezone = (new Date()).getTimezoneOffset()/60;
@@ -506,15 +489,12 @@ Feedback.Form.prototype.data = function() {
     data.scrPixelDepth = screen.pixelDepth;
 
     // cache and return data
-    return ( this._data = data );
+    return this._data = data;
 };
 
 
 Feedback.Form.prototype.review = function(dom) {
-    var i = 0, item, len = this.elements.length;
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-        
+    $.each(this.elements, (_, item) => {
         if (item.element.val().length > 0) {
             var labelText = item.label + ":";
             var label = $("<label />", {"text": labelText});
@@ -523,7 +503,7 @@ Feedback.Form.prototype.review = function(dom) {
             dom.append(fieldValue);
             dom.append($("<hr />"));
         }
-    }
+    });
     return dom;
 };
 Feedback.Review = function() {
@@ -533,18 +513,12 @@ Feedback.Review = function() {
 Feedback.Review.prototype = new Feedback.Page();
 
 Feedback.Review.prototype.render = function( pages ) {
-    var i = 0, len = pages.length, item;
     this.dom.empty();
-    
-    for (; i < len; i++) {
-        // get preview DOM items
-        pages[ i ].review(this.dom);
-    }
-
+    $.each(pages, (_, page) => {
+        page.review(this.dom);
+    });
     return this;
 };
-
-
 
 
 Feedback.Screenshot = function( options ) {
@@ -775,15 +749,14 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         this.dom.append($("<p />", {"text": _("highlightDescription")}));
 
         // add highlight and blackout buttons
-        for (var i = 0; i < 2; i++ ) {
-            buttonItem[i].addClass('feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse'));
-            buttonItem[i].on("click", buttonClickFunction);
+        $.each(buttonItem, (_, button) => {
+            button.addClass('feedback-btn feedback-btn-small');
+            button.addClass(button === highlightButton ? 'active' : 'feedback-btn-inverse');
+            button.on("click", buttonClickFunction);
 
-            this.dom.append(buttonItem[i]);
+            this.dom.append(button);
             this.dom.append(" ");
-        }
-
-
+        });
 
         highlightContainer.id = "feedback-highlight-container";
         highlightContainer.style.width = this.h2cCanvas.width + "px";
