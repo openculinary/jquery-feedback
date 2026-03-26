@@ -243,7 +243,7 @@ window.Feedback = function( options ) {
             modalBody.empty();
 
             currentPage = 0;
-            modalBody.append($(options.pages[ currentPage++ ].dom));
+            modalBody.append(options.pages[ currentPage++ ].dom);
 
 
             // Next button
@@ -273,7 +273,7 @@ window.Feedback = function( options ) {
                     }
                     
                     // add page DOM to modal
-                    modalBody.append($(options.pages[ currentPage++ ].dom));
+                    modalBody.append(options.pages[ currentPage++ ].dom);
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {
@@ -384,7 +384,7 @@ window.Feedback = function( options ) {
 Feedback.Page = function() {};
 Feedback.Page.prototype = {
 
-    render: function( dom ) {
+    render: function(dom) {
         this.dom = dom;
     },
     start: function() {},
@@ -415,7 +415,7 @@ Feedback.Form = function(elements) {
         required: false
     }];
 
-    this.dom = document.createElement("div");
+    this.dom = $("<div />");
 
 };
 
@@ -424,14 +424,17 @@ Feedback.Form.prototype = new Feedback.Page();
 Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
-    $(this.dom).empty();
+    this.dom.empty();
     for (; i < len; i++) {
         item = this.elements[ i ];
 
         switch( item.type ) {
             case "textarea":
-                this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
-                this.dom.appendChild( ( item.element = document.createElement("textarea")) );
+                var labelText = item.label + (item.required === true ? " *" : "");
+                var label = $("<label />", {"text": labelText});
+                var formField = item.element = $("<textarea />");
+                this.dom.append(label);
+                this.dom.append(formField);
                 break;
         }
     }
@@ -447,11 +450,11 @@ Feedback.Form.prototype.end = function() {
         item = this.elements[ i ];
 
         // check that all required fields are entered
-        if ( item.required === true && item.element.value.length === 0) {
-            item.element.className = "feedback-error";
+        if ( item.required === true && item.element.text().length === 0) {
+            item.element.addClass("feedback-error");
             return false;
         } else {
-            item.element.className = "";
+            item.element.removeClass();
         }
     }
     
@@ -474,7 +477,7 @@ Feedback.Form.prototype.data = function() {
     
     for (; i < len; i++) {
         item = this.elements[ i ];
-        data[ item.name ] = item.element.value;
+        data[ item.name ] = item.element.text();
     }
     data.url = window.location.href;
     data.timeOpened = new Date();
@@ -510,47 +513,38 @@ Feedback.Form.prototype.data = function() {
 };
 
 
-Feedback.Form.prototype.review = function( dom ) {
-  
+Feedback.Form.prototype.review = function(dom) {
     var i = 0, item, len = this.elements.length;
-      
     for (; i < len; i++) {
         item = this.elements[ i ];
         
-        if (item.element.value.length > 0) {
-            dom.appendChild( element("label", item.label + ":") );
-            dom.appendChild( document.createTextNode( item.element.value ) );
-            dom.appendChild( document.createElement( "hr" ) );
+        if (item.element.text().length > 0) {
+            var labelText = item.label + ":";
+            var label = $("<label />", {"text": labelText});
+            var fieldValue = item.element.text();
+            dom.append(label);
+            dom.append(fieldValue);
+            dom.append($("<hr />"));
         }
-        
     }
-    
     return dom;
-     
 };
 Feedback.Review = function() {
-
-    this.dom = document.createElement("div");
-    this.dom.className = "feedback-review";
-
+    this.dom = $("<div />", {"class": "feedback-review"});
 };
 
 Feedback.Review.prototype = new Feedback.Page();
 
 Feedback.Review.prototype.render = function( pages ) {
-
     var i = 0, len = pages.length, item;
-    $(this.dom).empty();
+    this.dom.empty();
     
     for (; i < len; i++) {
-        
         // get preview DOM items
-        pages[ i ].review( this.dom );
-
+        pages[ i ].review(this.dom);
     }
 
     return this;
-
 };
 
 
@@ -598,7 +592,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
     var $this = this;
 
     if ( this.h2cDone ) {
-        $(this.dom).empty();
+        this.dom.empty();
         nextButton.disabled = false;
 
         var feedbackHighlightElement = "feedback-highlight-element",
@@ -778,7 +772,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", _('highlightDescription')) );
+        this.dom.append($("<p />", {"text": _("highlightDescription")}));
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
@@ -787,9 +781,9 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             buttonItem[ i ].href = "#";
             buttonItem[ i ].onclick = buttonClickFunction;
 
-            this.dom.appendChild( buttonItem[ i ] );
+            this.dom.append( $(buttonItem[ i ]) );
 
-            this.dom.appendChild( document.createTextNode(" ") );
+            this.dom.append(" ");
 
         }
 
@@ -815,7 +809,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         var args = arguments;
 
         if ( nextButton.disabled !== true) {
-            $(this.dom).append(loader());
+            this.dom.append(loader());
         }
 
         nextButton.disabled = true;
@@ -829,7 +823,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 Feedback.Screenshot.prototype.render = function() {
 
-    this.dom = document.createElement("div");
+    this.dom = $("<div />");
 
     // execute the html2canvas script
     var $this = this, options = this.options;
@@ -921,16 +915,15 @@ Feedback.Screenshot.prototype.data = function() {
 };
 
 
-Feedback.Screenshot.prototype.review = function( dom ) {
-  
+Feedback.Screenshot.prototype.review = function(dom) {
     var data = this.data();
     if ( data !== undefined ) {
-        var img = new Image();
-        img.src = data;
-        img.style.width = "300px";
-        dom.appendChild( img );
+        var img = $("<img />", {
+          "src": data,
+          "style": "width: 300px",
+        });
+        dom.append(img);
     }
-    
 };
 Feedback.XHR = function(url) {
     this.url = url;

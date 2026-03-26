@@ -101,7 +101,7 @@ window.Feedback = function( options ) {
             modalBody.empty();
 
             currentPage = 0;
-            modalBody.append($(options.pages[ currentPage++ ].dom));
+            modalBody.append(options.pages[ currentPage++ ].dom);
 
 
             // Next button
@@ -131,7 +131,7 @@ window.Feedback = function( options ) {
                     }
                     
                     // add page DOM to modal
-                    modalBody.append($(options.pages[ currentPage++ ].dom));
+                    modalBody.append(options.pages[ currentPage++ ].dom);
 
                     // if last page, change button label to send
                     if ( currentPage === len ) {

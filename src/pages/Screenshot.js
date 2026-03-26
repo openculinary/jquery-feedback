@@ -42,7 +42,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
     var $this = this;
 
     if ( this.h2cDone ) {
-        $(this.dom).empty();
+        this.dom.empty();
         nextButton.disabled = false;
 
         var feedbackHighlightElement = "feedback-highlight-element",
@@ -222,7 +222,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", _('highlightDescription')) );
+        this.dom.append($("<p />", {"text": _("highlightDescription")}));
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
@@ -231,9 +231,9 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             buttonItem[ i ].href = "#";
             buttonItem[ i ].onclick = buttonClickFunction;
 
-            this.dom.appendChild( buttonItem[ i ] );
+            this.dom.append( $(buttonItem[ i ]) );
 
-            this.dom.appendChild( document.createTextNode(" ") );
+            this.dom.append(" ");
 
         }
 
@@ -259,7 +259,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         var args = arguments;
 
         if ( nextButton.disabled !== true) {
-            $(this.dom).append(loader());
+            this.dom.append(loader());
         }
 
         nextButton.disabled = true;
@@ -273,7 +273,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 Feedback.Screenshot.prototype.render = function() {
 
-    this.dom = document.createElement("div");
+    this.dom = $("<div />");
 
     // execute the html2canvas script
     var $this = this, options = this.options;
@@ -365,14 +365,13 @@ Feedback.Screenshot.prototype.data = function() {
 };
 
 
-Feedback.Screenshot.prototype.review = function( dom ) {
-  
+Feedback.Screenshot.prototype.review = function(dom) {
     var data = this.data();
     if ( data !== undefined ) {
-        var img = new Image();
-        img.src = data;
-        img.style.width = "300px";
-        dom.appendChild( img );
+        var img = $("<img />", {
+          "src": data,
+          "style": "width: 300px",
+        });
+        dom.append(img);
     }
-    
 };

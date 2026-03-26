@@ -1,7 +1,7 @@
 Feedback.Page = function() {};
 Feedback.Page.prototype = {
 
-    render: function( dom ) {
+    render: function(dom) {
         this.dom = dom;
     },
     start: function() {},
