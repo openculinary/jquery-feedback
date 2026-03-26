@@ -590,7 +590,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
     if ( this.h2cDone ) {
         this.dom.empty();
-        nextButton.disabled = false;
+        nextButton.prop("disabled", false);
 
         var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
@@ -807,11 +807,11 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         // still loading html2canvas
         var args = arguments;
 
-        if ( nextButton.disabled !== true) {
+        if ( nextButton.prop("disabled", true) ) {
             this.dom.append(loader());
         }
 
-        nextButton.disabled = true;
+        nextButton.prop("disabled", true);
 
         window.setTimeout(function(){
             $this.start.apply( $this, args );
