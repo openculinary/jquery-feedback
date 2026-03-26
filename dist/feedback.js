@@ -152,11 +152,6 @@ var loader = function() {
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-element = function( name, text ) {
-    var el = document.createElement( name );
-    el.appendChild( document.createTextNode( text ) );
-    return el;
-},
 getLang = function() {
     var lang;
     if (navigator.languages !== undefined) {
@@ -247,10 +242,12 @@ window.Feedback = function( options ) {
 
 
             // Next button
-            nextButton = element( "button", _('nextLabel') );
+            nextButton = $("<button />", {
+              "text": _('nextLabel'),
+              "class": "feedback-btn",
+            });
 
-            nextButton.className =  "feedback-btn";
-            nextButton.onclick = function() {
+            nextButton.on("click", function() {
                 
                 if (currentPage > 0 ) {
                     if ( options.pages[ currentPage - 1 ].end( modal ) === false ) {
@@ -287,9 +284,9 @@ window.Feedback = function( options ) {
 
                 }
 
-            };
+            });
 
-            modalFooter.append($(nextButton));
+            modalFooter.append(nextButton);
 
             modal.append(modalHeader);
             modal.append(modalBody);
@@ -336,7 +333,7 @@ window.Feedback = function( options ) {
                 }
             }
 
-            nextButton.disabled = true;
+            nextButton.prop("disabled", true);
                 
             $(modalBody).empty();
             $(modalBody).append(loader());
@@ -345,14 +342,14 @@ window.Feedback = function( options ) {
             adapter.send( data, function( success ) {
                 
                 $(modalBody).empty();
-                nextButton.disabled = false;
+                nextButton.prop("disabled", false);
                 
-                nextButton.firstChild.nodeValue = _('closeLabel');
+                nextButton.text(_('closeLabel'));
                 
-                nextButton.onclick = function() {
+                nextButton.on("click", function() {
                     returnMethods.close();
                     return false;  
-                };
+                });
                 
                 if ( success === true ) {
                     modalBody.text(_('messageSuccess'));
@@ -580,7 +577,7 @@ Feedback.Screenshot.prototype.close = function(){
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();
-    $(this.highlightClose).remove();
+    this.highlightClose.remove();
 
     $("." + this.options.blackoutClass).remove();
     $("." + this.options.highlightClass).remove();
@@ -704,7 +701,10 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         };
 
-        this.highlightClose = element("div", "×");
+        this.highlightClose = $("<div />", {
+          "id": "feedback-highlight-close",
+          "text": "×",
+        });
         this.blackoutBox = document.createElement('div');
         this.highlightBox = document.createElement( "canvas" );
         this.highlightContainer = document.createElement('div');
@@ -718,12 +718,12 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         buttonClickFunction = function( e ) {
             e.preventDefault();
             
-            if (blackoutButton.className.indexOf("active") === -1) {
-                blackoutButton.className += " active";
-                highlightButton.className = highlightButton.className.replace(/active/g,"");
+            if (!blackoutButton.hasClass("active")) {
+                blackoutButton.addClass("active");
+                highlightButton.removeClass("active");
             } else {
-                highlightButton.className += " active";
-                blackoutButton.className = blackoutButton.className.replace(/active/g,"");
+                highlightButton.addClass("active");
+                blackoutButton.removeClass("active");
             }
 
             action = !action;
@@ -743,19 +743,22 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             el.setAttribute(dataExclude, true);
         },
         hideClose = function() {
-            highlightClose.style.left =  "-50px";
-            highlightClose.style.top =  "-50px";
+            highlightClose.css("left", "-50px");
+            highlightClose.css("top", "-50px");
 
         },
-        blackoutButton = element("a", _("blackout")),
-        highlightButton = element("a", _("highlight")),
+        blackoutButton = $("<a />", {
+          "href": "#",
+          "text": _("blackout"),
+        }),
+        highlightButton = $("<a />", {
+          "href": "#",
+          "text": _("highlight"),
+        }),
         previousElement;
 
 
         modal.addClass('feedback-animate-toside');
-
-
-        highlightClose.id = "feedback-highlight-close";
 
 
         $(highlightClose).on("click", function(){
@@ -763,7 +766,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             hideClose();
         });
 
-        document.body.appendChild( highlightClose );
+        $(document.body).append(highlightClose);
 
 
         this.h2cCanvas.className = 'feedback-canvas';
@@ -776,15 +779,11 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
-            buttonItem[ i ].className = 'feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse');
+            buttonItem[i].addClass('feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse'));
+            buttonItem[i].on("click", buttonClickFunction);
 
-            buttonItem[ i ].href = "#";
-            buttonItem[ i ].onclick = buttonClickFunction;
-
-            this.dom.append( $(buttonItem[ i ]) );
-
+            this.dom.append(buttonItem[i]);
             this.dom.append(" ");
-
         }
 
 

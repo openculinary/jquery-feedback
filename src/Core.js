@@ -10,11 +10,6 @@ var loader = function() {
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-element = function( name, text ) {
-    var el = document.createElement( name );
-    el.appendChild( document.createTextNode( text ) );
-    return el;
-},
 getLang = function() {
     var lang;
     if (navigator.languages !== undefined) {
@@ -105,10 +100,12 @@ window.Feedback = function( options ) {
 
 
             // Next button
-            nextButton = element( "button", _('nextLabel') );
+            nextButton = $("<button />", {
+              "text": _('nextLabel'),
+              "class": "feedback-btn",
+            });
 
-            nextButton.className =  "feedback-btn";
-            nextButton.onclick = function() {
+            nextButton.on("click", function() {
                 
                 if (currentPage > 0 ) {
                     if ( options.pages[ currentPage - 1 ].end( modal ) === false ) {
@@ -145,9 +142,9 @@ window.Feedback = function( options ) {
 
                 }
 
-            };
+            });
 
-            modalFooter.append($(nextButton));
+            modalFooter.append(nextButton);
 
             modal.append(modalHeader);
             modal.append(modalBody);
@@ -194,7 +191,7 @@ window.Feedback = function( options ) {
                 }
             }
 
-            nextButton.disabled = true;
+            nextButton.prop("disabled", true);
                 
             $(modalBody).empty();
             $(modalBody).append(loader());
@@ -203,14 +200,14 @@ window.Feedback = function( options ) {
             adapter.send( data, function( success ) {
                 
                 $(modalBody).empty();
-                nextButton.disabled = false;
+                nextButton.prop("disabled", false);
                 
-                nextButton.firstChild.nodeValue = _('closeLabel');
+                nextButton.text(_('closeLabel'));
                 
-                nextButton.onclick = function() {
+                nextButton.on("click", function() {
                     returnMethods.close();
                     return false;  
-                };
+                });
                 
                 if ( success === true ) {
                     modalBody.text(_('messageSuccess'));

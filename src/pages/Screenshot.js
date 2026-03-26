@@ -30,7 +30,7 @@ Feedback.Screenshot.prototype.close = function(){
     $(this.blackoutBox).remove();
     $(this.highlightContainer).remove();
     $(this.highlightBox).remove();
-    $(this.highlightClose).remove();
+    this.highlightClose.remove();
 
     $("." + this.options.blackoutClass).remove();
     $("." + this.options.highlightClass).remove();
@@ -154,7 +154,10 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         };
 
-        this.highlightClose = element("div", "×");
+        this.highlightClose = $("<div />", {
+          "id": "feedback-highlight-close",
+          "text": "×",
+        });
         this.blackoutBox = document.createElement('div');
         this.highlightBox = document.createElement( "canvas" );
         this.highlightContainer = document.createElement('div');
@@ -168,12 +171,12 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         buttonClickFunction = function( e ) {
             e.preventDefault();
             
-            if (blackoutButton.className.indexOf("active") === -1) {
-                blackoutButton.className += " active";
-                highlightButton.className = highlightButton.className.replace(/active/g,"");
+            if (!blackoutButton.hasClass("active")) {
+                blackoutButton.addClass("active");
+                highlightButton.removeClass("active");
             } else {
-                highlightButton.className += " active";
-                blackoutButton.className = blackoutButton.className.replace(/active/g,"");
+                highlightButton.addClass("active");
+                blackoutButton.removeClass("active");
             }
 
             action = !action;
@@ -193,19 +196,22 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             el.setAttribute(dataExclude, true);
         },
         hideClose = function() {
-            highlightClose.style.left =  "-50px";
-            highlightClose.style.top =  "-50px";
+            highlightClose.css("left", "-50px");
+            highlightClose.css("top", "-50px");
 
         },
-        blackoutButton = element("a", _("blackout")),
-        highlightButton = element("a", _("highlight")),
+        blackoutButton = $("<a />", {
+          "href": "#",
+          "text": _("blackout"),
+        }),
+        highlightButton = $("<a />", {
+          "href": "#",
+          "text": _("highlight"),
+        }),
         previousElement;
 
 
         modal.addClass('feedback-animate-toside');
-
-
-        highlightClose.id = "feedback-highlight-close";
 
 
         $(highlightClose).on("click", function(){
@@ -213,7 +219,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             hideClose();
         });
 
-        document.body.appendChild( highlightClose );
+        $(document.body).append(highlightClose);
 
 
         this.h2cCanvas.className = 'feedback-canvas';
@@ -226,15 +232,11 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         // add highlight and blackout buttons
         for (var i = 0; i < 2; i++ ) {
-            buttonItem[ i ].className = 'feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse');
+            buttonItem[i].addClass('feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse'));
+            buttonItem[i].on("click", buttonClickFunction);
 
-            buttonItem[ i ].href = "#";
-            buttonItem[ i ].onclick = buttonClickFunction;
-
-            this.dom.append( $(buttonItem[ i ]) );
-
+            this.dom.append(buttonItem[i]);
             this.dom.append(" ");
-
         }
 
 
