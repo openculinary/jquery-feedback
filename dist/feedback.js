@@ -574,9 +574,9 @@ Feedback.Screenshot.prototype.end = function( modal ){
 Feedback.Screenshot.prototype.close = function(){
     this._data = undefined;
 
-    $(this.blackoutBox).remove();
+    this.blackoutBox.remove();
     $(this.highlightContainer).remove();
-    $(this.highlightBox).remove();
+    this.highlightBox.remove();
     this.highlightClose.remove();
 
     $("." + this.options.blackoutClass).remove();
@@ -638,9 +638,9 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
                     item;
 
                     if ( action === false ) {
-                        item = blackoutBox;
+                        item = blackoutBox[0];
                     } else {
-                        item = highlightBox;
+                        item = highlightBox[0];
                         item.width = bounds.width;
                         item.height = bounds.height;
                         ctx.drawImage($this.h2cCanvas, window.pageXOffset + bounds.left, window.pageYOffset + bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height );
@@ -669,29 +669,29 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 
             if ( action === false) {
-                if ( blackoutBox.getAttribute(dataExclude) === "false") {
+                if ( blackoutBox[0].getAttribute(dataExclude) === "false") {
                     var blackout = document.createElement("div");
                     blackout.className = $this.options.blackoutClass;
-                    blackout.style.left = blackoutBox.style.left;
-                    blackout.style.top = blackoutBox.style.top;
-                    blackout.style.width = blackoutBox.style.width;
-                    blackout.style.height = blackoutBox.style.height;
+                    blackout.style.left = blackoutBox[0].style.left;
+                    blackout.style.top = blackoutBox[0].style.top;
+                    blackout.style.width = blackoutBox[0].style.width;
+                    blackout.style.height = blackoutBox[0].style.height;
 
                     document.body.appendChild( blackout );
                     previousElement = undefined;
                 }
             } else {
-                if ( highlightBox.getAttribute(dataExclude) === "false") {
+                if ( highlightBox[0].getAttribute(dataExclude) === "false") {
 
-                    highlightBox.className += " " + $this.options.highlightClass;
-                    highlightBox.className = highlightBox.className.replace(/feedback\-highlight\-element/g,"");
-                    $this.highlightBox = highlightBox = document.createElement('canvas');
+                    highlightBox.addClass($this.options.highlightClass);
+                    highlightBox.removeClass("feedback-highlight-element");
+                    $this.highlightBox = highlightBox = $('<canvas />');
 
-                    ctx = highlightBox.getContext("2d");
+                    ctx = highlightBox[0].getContext("2d");
 
-                    highlightBox.className += " " + feedbackHighlightElement;
+                    highlightBox.addClass(feedbackHighlightElement);
 
-                    document.body.appendChild( highlightBox );
+                    $(document.body).append( highlightBox );
                     clearBox();
                     previousElement = undefined;
                 }
@@ -705,8 +705,8 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
           "id": "feedback-highlight-close",
           "text": "×",
         });
-        this.blackoutBox = document.createElement('div');
-        this.highlightBox = document.createElement( "canvas" );
+        this.blackoutBox = $('<div />');
+        this.highlightBox = $( "<canvas />" );
         this.highlightContainer = document.createElement('div');
         var timer,
         highlightClose = this.highlightClose,
@@ -714,7 +714,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         blackoutBox = this.blackoutBox,
         highlightContainer = this.highlightContainer,
         removeElement,
-        ctx = highlightBox.getContext("2d"),
+        ctx = highlightBox[0].getContext("2d"),
         buttonClickFunction = function( e ) {
             e.preventDefault();
             
@@ -730,8 +730,8 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         },
         clearBox = function() {
             
-            clearBoxEl(blackoutBox);
-            clearBoxEl(highlightBox);
+            clearBoxEl(blackoutBox[0]);
+            clearBoxEl(highlightBox[0]);
 
             window.clearTimeout( timer );
         },
@@ -792,10 +792,10 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         highlightContainer.style.width = this.h2cCanvas.width + "px";
         highlightContainer.style.height = this.h2cCanvas.height + "px";
 
-        this.highlightBox.className += " " + feedbackHighlightElement;
-        this.blackoutBox.id = "feedback-blackout-element";
-        document.body.appendChild( this.highlightBox );
-        highlightContainer.appendChild( this.blackoutBox );
+        this.highlightBox.addClass(feedbackHighlightElement);
+        this.blackoutBox.attr("id", "feedback-blackout-element");
+        $(document.body).append( this.highlightBox );
+        $(highlightContainer).append( this.blackoutBox );
 
         document.body.appendChild( highlightContainer );
 
