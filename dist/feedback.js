@@ -875,10 +875,10 @@ Feedback.Screenshot.prototype.data = function() {
 
             items.each(function() {
                 var item = this,
-                x = parseInt(item.style.left, 10),
-                y = parseInt(item.style.top, 10),
-                width = parseInt(item.style.width, 10),
-                height = parseInt(item.style.height, 10);
+                x = item.offsetLeft,
+                y = item.offsetTop,
+                width = item.offsetWidth,
+                height = item.offsetHeight;
 
                 ctx.moveTo(x + radius, y);
                 ctx.lineTo(x + width - radius, y);
