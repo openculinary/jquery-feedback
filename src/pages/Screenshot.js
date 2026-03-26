@@ -134,7 +134,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
                 if ( highlightBox.attr(dataExclude) === "false") {
 
                     highlightBox.addClass($this.options.highlightClass);
-                    highlightBox.removeClass("feedback-highlight-element");
+                    highlightBox.removeClass(feedbackHighlightElement);
                     $this.highlightBox = highlightBox = $('<canvas />');
 
                     ctx = highlightBox[0].getContext("2d");
