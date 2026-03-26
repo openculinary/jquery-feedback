@@ -303,14 +303,13 @@ Feedback.Screenshot.prototype.data = function() {
         ctx.fillStyle = "#000";
 
         // draw blackouts
-        Array.prototype.slice.call( document.getElementsByClassName('feedback-blackedout'), 0).forEach( function( item ) {
-            var bounds = getBounds( item );
+        $(".feedback-blackedout").each(function() {
+            var bounds = getBounds(this);
             ctx.fillRect( bounds.left, bounds.top, bounds.width, bounds.height );
         });
 
         // draw highlights
-        var items = Array.prototype.slice.call( document.getElementsByClassName('feedback-highlighted'), 0);
-
+        var items = $(".feedback-highlighted");
         if (items.length > 0 ) {
 
             // copy canvas
@@ -327,9 +326,9 @@ Feedback.Screenshot.prototype.data = function() {
 
             ctx.beginPath();
 
-            items.forEach( function( item ) {
-
-                var x = parseInt(item.style.left, 10),
+            items.each(function() {
+                var item = this,
+                x = parseInt(item.style.left, 10),
                 y = parseInt(item.style.top, 10),
                 width = parseInt(item.style.width, 10),
                 height = parseInt(item.style.height, 10);
@@ -343,7 +342,6 @@ Feedback.Screenshot.prototype.data = function() {
                 ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
                 ctx.lineTo(x, y + radius);
                 ctx.quadraticCurveTo(x, y, x + radius, y);
-               
             });
             ctx.closePath();
             ctx.clip();
