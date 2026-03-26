@@ -202,9 +202,9 @@ window.Feedback = function( options ) {
 
         // open send feedback modal window
         open: function() {
-            var len = options.pages.length;
+            var lastPage = options.pages.length;
             currentPage = 0;
-            for (; currentPage < len; currentPage++) {
+            for (; currentPage < lastPage; currentPage++) {
                 // create DOM for each page in the wizard
                 if (!(options.pages[currentPage] instanceof Feedback.Review)) {
                     options.pages[ currentPage ].render();
@@ -258,7 +258,7 @@ window.Feedback = function( options ) {
                 
                 $(modalBody).empty();
 
-                if ( currentPage === len ) {
+                if ( currentPage === lastPage ) {
                     returnMethods.send( options.adapter );
                 } else {
 
@@ -273,7 +273,7 @@ window.Feedback = function( options ) {
                     modalBody.append(options.pages[ currentPage++ ].dom);
 
                     // if last page, change button label to send
-                    if ( currentPage === len ) {
+                    if ( currentPage === lastPage ) {
                         nextButton.text(_('sendLabel'));
                     }
                     
