@@ -867,14 +867,14 @@ Feedback.Screenshot.prototype.data = function () {
 
 Feedback.Screenshot.prototype.review = function (dom) {
   var data = this.data();
-  if (data !== undefined) {
-    dom.append(
-      $("<img />", {
-        src: data,
-        style: "width: 300px",
-      }),
-    );
-  }
+  if (!data) return;
+
+  dom.append(
+    $("<img />", {
+      src: data,
+      style: "width: 300px",
+    }),
+  );
 };
 
 Feedback.XHR = function (url) {
