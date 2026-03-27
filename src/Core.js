@@ -198,11 +198,8 @@ window.Feedback = function (options) {
             return false;
           });
 
-          if (success === true) {
-            modalBody.text(_("messageSuccess"));
-          } else {
-            modalBody.text(_("messageError"));
-          }
+          modalBody.text(_(success ? "messageSuccess" : "messageError"));
+
           //Once the form has been submitted, initialize it.
           // this includes clearing the data collected for feedback
           $.each(options.pages, (_, page) => {
