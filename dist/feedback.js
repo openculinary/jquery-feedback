@@ -249,7 +249,7 @@ window.Feedback = function (options) {
             }
           }
 
-          $(modalBody).empty();
+          modalBody.empty();
 
           var lastPage = options.pages.length;
           if (currentPage === lastPage) {
@@ -291,8 +291,8 @@ window.Feedback = function (options) {
         button.prop("disabled", false);
 
         // remove feedback elements
-        $(modal).remove();
-        $(glass).remove();
+        modal.remove();
+        glass.remove();
 
         // call end event for current page
         if (currentPage > 0) {
@@ -325,12 +325,12 @@ window.Feedback = function (options) {
 
         nextButton.prop("disabled", true);
 
-        $(modalBody).empty();
-        $(modalBody).append(loader());
+        modalBody.empty();
+        modalBody.append(loader());
 
         // send data to adapter for processing
         adapter.send(data, function (success) {
-          $(modalBody).empty();
+          modalBody.empty();
           nextButton.prop("disabled", false);
 
           nextButton.text(_("closeLabel"));
