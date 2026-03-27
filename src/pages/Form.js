@@ -18,7 +18,7 @@ Feedback.Form.prototype.render = function () {
   $.each(this.elements, (_, item) => {
     switch (item.type) {
       case "textarea":
-        var labelText = item.label + (item.required === true ? " *" : "");
+        var labelText = item.label + (item.required ? " *" : "");
         var label = $("<label />", { text: labelText });
         var formField = (item.element = $("<textarea />"));
         this.dom.append(label);
