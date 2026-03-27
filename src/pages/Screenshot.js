@@ -1,10 +1,8 @@
 Feedback.Screenshot = function (options) {
   this.options = options || {};
 
-  this.options.blackoutClass =
-    this.options.blackoutClass || "feedback-blackedout";
-  this.options.highlightClass =
-    this.options.highlightClass || "feedback-highlighted";
+  this.options.blackoutClass ||= "feedback-blackedout";
+  this.options.highlightClass ||= "feedback-highlighted";
 
   this.h2cDone = false;
 };
