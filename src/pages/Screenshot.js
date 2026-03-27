@@ -42,8 +42,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
     this.dom.empty();
     nextButton.prop("disabled", false);
 
-    var feedbackHighlightElement = "feedback-highlight-element",
-      dataExclude = "data-exclude";
+    var feedbackHighlightElement = "feedback-highlight-element";
 
     var action = true;
 
@@ -115,7 +114,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
           }
 
           // we are only targetting IE>=9, so window.pageYOffset works fine
-          item.setAttribute(dataExclude, false);
+          $(item).data("exclude", false);
           item.style.left = window.pageXOffset + bounds.left + "px";
           item.style.top = window.pageYOffset + bounds.top + "px";
           item.style.width = bounds.width + "px";
@@ -129,7 +128,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
       e.preventDefault();
 
       if (action === false) {
-        if (blackoutBox.attr(dataExclude) === "false") {
+        if (blackoutBox.data("exclude") === false) {
           var blackout = blackoutBox.clone();
           blackout.attr("id", undefined);
           blackout.addClass($this.options.blackoutClass);
@@ -138,7 +137,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
           previousElement = undefined;
         }
       } else {
-        if (highlightBox.attr(dataExclude) === "false") {
+        if (highlightBox.data("exclude") === false) {
           highlightBox.addClass($this.options.highlightClass);
           highlightBox.removeClass(feedbackHighlightElement);
           $this.highlightBox = highlightBox = $("<canvas />");
@@ -187,7 +186,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
         el.css("top", "-5px");
         el.css("width", "0px");
         el.css("height", "0px");
-        el.attr(dataExclude, true);
+        el.data("exclude", true);
       },
       hideClose = function () {
         highlightClose.css("left", "-50px");
