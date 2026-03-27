@@ -171,13 +171,8 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
       buttonClickFunction = function (e) {
         e.preventDefault();
 
-        if (!blackoutButton.hasClass("active")) {
-          blackoutButton.addClass("active");
-          highlightButton.removeClass("active");
-        } else {
-          highlightButton.addClass("active");
-          blackoutButton.removeClass("active");
-        }
+        highlightButton.toggleClass("active");
+        blackoutButton.toggleClass("active");
 
         action = !action;
       },
