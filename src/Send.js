@@ -1,6 +1,4 @@
-Feedback.Send = function() {};
+Feedback.Send = function () {};
 Feedback.Send.prototype = {
-
-    send: function() {}
-
+  send: function () {},
 };

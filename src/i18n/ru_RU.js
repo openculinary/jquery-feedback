@@ -11,6 +11,6 @@ i18n.ru_RU = {
   highlightDescription: "Выделите или спрячьте важную информацию",
   highlight: "Выделить",
   blackout: "Спрятать",
-  issue: "Ваше сообщение"
+  issue: "Ваше сообщение",
 };
 i18n.ru = i18n.ru_RU;

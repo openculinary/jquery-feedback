@@ -11,6 +11,6 @@ i18n.pt_BR = {
   highlightDescription: "Destaque ou oculte informação importante",
   highlight: "Destacar",
   blackout: "Ocultar",
-  issue: "Problema"
+  issue: "Problema",
 };
 i18n.pt = i18n.pt_BR;
