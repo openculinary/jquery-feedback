@@ -868,11 +868,12 @@ Feedback.Screenshot.prototype.data = function () {
 Feedback.Screenshot.prototype.review = function (dom) {
   var data = this.data();
   if (data !== undefined) {
-    var img = $("<img />", {
-      src: data,
-      style: "width: 300px",
-    });
-    dom.append(img);
+    dom.append(
+      $("<img />", {
+        src: data,
+        style: "width: 300px",
+      }),
+    );
   }
 };
 
