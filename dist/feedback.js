@@ -47,8 +47,8 @@ var i18n = Object.create({
     var message_strings = this[this.lang] || this[this.lang.substring(0, 2)];
     if (message_strings && message_strings[s]) {
       return message_strings[s];
-    } else if (this['default'][s]) {
-      return this['default'][s];
+    } else if (this.default[s]) {
+      return this.default[s];
     } else {
       return s;
     }
@@ -152,11 +152,6 @@ var loader = function() {
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-element = function( name, text ) {
-    var el = document.createElement( name );
-    el.appendChild( document.createTextNode( text ) );
-    return el;
-},
 getLang = function() {
     var lang;
     if (navigator.languages !== undefined) {
@@ -207,14 +202,10 @@ window.Feedback = function( options ) {
 
         // open send feedback modal window
         open: function() {
-            var len = options.pages.length;
-            currentPage = 0;
-            for (; currentPage < len; currentPage++) {
-                // create DOM for each page in the wizard
-                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                    options.pages[ currentPage ].render();
-                }
-            }
+            $.each(options.pages, (_, page) => {
+              if (page instanceof Feedback.Review) return;
+              page.render();
+            });
 
             // modal container
             var modalFooter = $('<div />', {'class': 'feedback-footer'});
@@ -243,14 +234,16 @@ window.Feedback = function( options ) {
             modalBody.empty();
 
             currentPage = 0;
-            modalBody.append($(options.pages[ currentPage++ ].dom));
+            modalBody.append(options.pages[ currentPage++ ].dom);
 
 
             // Next button
-            nextButton = element( "button", _('nextLabel') );
+            nextButton = $("<button />", {
+              "text": _('nextLabel'),
+              "class": "feedback-btn",
+            });
 
-            nextButton.className =  "feedback-btn";
-            nextButton.onclick = function() {
+            nextButton.on("click", function() {
                 
                 if (currentPage > 0 ) {
                     if ( options.pages[ currentPage - 1 ].end( modal ) === false ) {
@@ -261,7 +254,8 @@ window.Feedback = function( options ) {
                 
                 $(modalBody).empty();
 
-                if ( currentPage === len ) {
+                var lastPage = options.pages.length;
+                if ( currentPage === lastPage ) {
                     returnMethods.send( options.adapter );
                 } else {
 
@@ -273,23 +267,23 @@ window.Feedback = function( options ) {
                     }
                     
                     // add page DOM to modal
-                    modalBody.append($(options.pages[ currentPage++ ].dom));
+                    modalBody.append(options.pages[ currentPage++ ].dom);
 
                     // if last page, change button label to send
-                    if ( currentPage === len ) {
-                        nextButton.firstChild.nodeValue = _('sendLabel');
+                    if ( currentPage === lastPage ) {
+                        nextButton.text(_('sendLabel'));
                     }
                     
                     // if next page is review page, change button label
                     if (options.pages[currentPage] instanceof Feedback.Review) {
-                        nextButton.firstChild.nodeValue = _('reviewLabel');
+                        nextButton.text(_('reviewLabel'));
                     }
 
                 }
 
-            };
+            });
 
-            modalFooter.append($(nextButton));
+            modalFooter.append(nextButton);
 
             modal.append(modalHeader);
             modal.append(modalBody);
@@ -313,9 +307,9 @@ window.Feedback = function( options ) {
             }
                 
             // call close events for all pages    
-            for (var i = 0, len = options.pages.length; i < len; i++) {
-                options.pages[ i ].close();
-            }
+            $.each(options.pages, (_, page) => {
+                page.close();
+            });
 
             return false;
 
@@ -330,13 +324,14 @@ window.Feedback = function( options ) {
             }
             
             // fetch data from all pages   
-            for (var i = 0, len = options.pages.length, data = [], p = 0, tmp; i < len; i++) {
-                if ( (tmp = options.pages[ i ].data()) !== false ) {
-                    data[ p++ ] = tmp;
-                }
-            }
+            var data = [], tmp;
+            $.each(options.pages, (i, page) => {
+              if (tmp = page.data() !== false) {
+                data.push(tmp);
+              }
+            });
 
-            nextButton.disabled = true;
+            nextButton.prop("disabled", true);
                 
             $(modalBody).empty();
             $(modalBody).append(loader());
@@ -345,14 +340,14 @@ window.Feedback = function( options ) {
             adapter.send( data, function( success ) {
                 
                 $(modalBody).empty();
-                nextButton.disabled = false;
+                nextButton.prop("disabled", false);
                 
-                nextButton.firstChild.nodeValue = _('closeLabel');
+                nextButton.text(_('closeLabel'));
                 
-                nextButton.onclick = function() {
+                nextButton.on("click", function() {
                     returnMethods.close();
                     return false;  
-                };
+                });
                 
                 if ( success === true ) {
                     modalBody.text(_('messageSuccess'));
@@ -361,9 +356,9 @@ window.Feedback = function( options ) {
                 }
                 //Once the form has been submitted, initialize it.
                 // this includes clearing the data collected for feedback
-                for (var i = 0, len = options.pages.length; i < len; i++) {
-                    options.pages[ i ].close();
-                }
+                $.each(options.pages, (_, page) => {
+                  page.close();
+                });
             } );
   
         }
@@ -384,7 +379,7 @@ window.Feedback = function( options ) {
 Feedback.Page = function() {};
 Feedback.Page.prototype = {
 
-    render: function( dom ) {
+    render: function(dom) {
         this.dom = dom;
     },
     start: function() {},
@@ -407,7 +402,6 @@ Feedback.Send.prototype = {
 };
 
 Feedback.Form = function(elements) {
-
     this.elements = elements || [{
         type: "textarea",
         name: 'issue',
@@ -415,48 +409,39 @@ Feedback.Form = function(elements) {
         required: false
     }];
 
-    this.dom = document.createElement("div");
-
+    this.dom = $("<div />");
 };
 
 Feedback.Form.prototype = new Feedback.Page();
 
 Feedback.Form.prototype.render = function() {
-
-    var i = 0, len = this.elements.length, item;
-    $(this.dom).empty();
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-
-        switch( item.type ) {
+    this.dom.empty();
+    $.each(this.elements, (_, item) => {
+        switch(item.type) {
             case "textarea":
-                this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
-                this.dom.appendChild( ( item.element = document.createElement("textarea")) );
+                var labelText = item.label + (item.required === true ? " *" : "");
+                var label = $("<label />", {"text": labelText});
+                var formField = item.element = $("<textarea />");
+                this.dom.append(label);
+                this.dom.append(formField);
                 break;
         }
-    }
-
+    });
     return this;
-
 };
 
 Feedback.Form.prototype.end = function() {
     // form validation  
-    var i = 0, len = this.elements.length, item;
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-
+    $.each(this.elements, (_, item) => {
         // check that all required fields are entered
-        if ( item.required === true && item.element.value.length === 0) {
-            item.element.className = "feedback-error";
+        if (item.required === true && item.element.val().length === 0) {
+            item.element.addClass("feedback-error");
             return false;
         } else {
-            item.element.className = "";
+            item.element.removeClass();
         }
-    }
-    
+    });
     return true;
-    
 };
 
 Feedback.Form.prototype.close = function(){
@@ -464,18 +449,16 @@ Feedback.Form.prototype.close = function(){
 };
 
 Feedback.Form.prototype.data = function() {
-    
-    if ( this._data !== undefined ) {
+    if (this._data !== undefined) {
         // return cached value
         return this._data;
     }
-    
-    var i = 0, len = this.elements.length, item, data = {};
-    
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-        data[ item.name ] = item.element.value;
-    }
+
+    var data = {};
+    $.each(this.elements, (_, item) => {
+        data[item.name] = item.element.val();
+    });
+
     data.url = window.location.href;
     data.timeOpened = new Date();
     data.timezone = (new Date()).getTimezoneOffset()/60;
@@ -506,54 +489,36 @@ Feedback.Form.prototype.data = function() {
     data.scrPixelDepth = screen.pixelDepth;
 
     // cache and return data
-    return ( this._data = data );
+    return this._data = data;
 };
 
 
-Feedback.Form.prototype.review = function( dom ) {
-  
-    var i = 0, item, len = this.elements.length;
-      
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-        
-        if (item.element.value.length > 0) {
-            dom.appendChild( element("label", item.label + ":") );
-            dom.appendChild( document.createTextNode( item.element.value ) );
-            dom.appendChild( document.createElement( "hr" ) );
+Feedback.Form.prototype.review = function(dom) {
+    $.each(this.elements, (_, item) => {
+        if (item.element.val().length > 0) {
+            var labelText = item.label + ":";
+            var label = $("<label />", {"text": labelText});
+            var fieldValue = item.element.val();
+            dom.append(label);
+            dom.append(fieldValue);
+            dom.append($("<hr />"));
         }
-        
-    }
-    
+    });
     return dom;
-     
 };
 Feedback.Review = function() {
-
-    this.dom = document.createElement("div");
-    this.dom.className = "feedback-review";
-
+    this.dom = $("<div />", {"class": "feedback-review"});
 };
 
 Feedback.Review.prototype = new Feedback.Page();
 
 Feedback.Review.prototype.render = function( pages ) {
-
-    var i = 0, len = pages.length, item;
-    $(this.dom).empty();
-    
-    for (; i < len; i++) {
-        
-        // get preview DOM items
-        pages[ i ].review( this.dom );
-
-    }
-
+    this.dom.empty();
+    $.each(pages, (_, page) => {
+        page.review(this.dom);
+    });
     return this;
-
 };
-
-
 
 
 Feedback.Screenshot = function( options ) {
@@ -583,10 +548,10 @@ Feedback.Screenshot.prototype.end = function( modal ){
 Feedback.Screenshot.prototype.close = function(){
     this._data = undefined;
 
-    $(this.blackoutBox).remove();
+    this.blackoutBox.remove();
     $(this.highlightContainer).remove();
-    $(this.highlightBox).remove();
-    $(this.highlightClose).remove();
+    this.highlightBox.remove();
+    this.highlightClose.remove();
 
     $("." + this.options.blackoutClass).remove();
     $("." + this.options.highlightClass).remove();
@@ -598,8 +563,8 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
     var $this = this;
 
     if ( this.h2cDone ) {
-        $(this.dom).empty();
-        nextButton.disabled = false;
+        this.dom.empty();
+        nextButton.prop("disabled", false);
 
         var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
@@ -624,7 +589,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             // set close button
             else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
                 bounds = getBounds(e.target);
-                $(highlightClose).css({
+                highlightClose.css({
                     'left': (window.pageXOffset + bounds.left + bounds.width) + 'px',
                     'top': (window.pageYOffset + bounds.top) + 'px',
                 });
@@ -647,9 +612,9 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
                     item;
 
                     if ( action === false ) {
-                        item = blackoutBox;
+                        item = blackoutBox[0];
                     } else {
-                        item = highlightBox;
+                        item = highlightBox[0];
                         item.width = bounds.width;
                         item.height = bounds.height;
                         ctx.drawImage($this.h2cCanvas, window.pageXOffset + bounds.left, window.pageYOffset + bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height );
@@ -678,29 +643,26 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 
             if ( action === false) {
-                if ( blackoutBox.getAttribute(dataExclude) === "false") {
-                    var blackout = document.createElement("div");
-                    blackout.className = $this.options.blackoutClass;
-                    blackout.style.left = blackoutBox.style.left;
-                    blackout.style.top = blackoutBox.style.top;
-                    blackout.style.width = blackoutBox.style.width;
-                    blackout.style.height = blackoutBox.style.height;
+                if ( blackoutBox.attr(dataExclude) === "false") {
+                    var blackout = blackoutBox.clone();
+                    blackout.attr("id", undefined);
+                    blackout.addClass($this.options.blackoutClass);
 
-                    document.body.appendChild( blackout );
+                    $(document.body).append( blackout );
                     previousElement = undefined;
                 }
             } else {
-                if ( highlightBox.getAttribute(dataExclude) === "false") {
+                if ( highlightBox.attr(dataExclude) === "false") {
 
-                    highlightBox.className += " " + $this.options.highlightClass;
-                    highlightBox.className = highlightBox.className.replace(/feedback\-highlight\-element/g,"");
-                    $this.highlightBox = highlightBox = document.createElement('canvas');
+                    highlightBox.addClass($this.options.highlightClass);
+                    highlightBox.removeClass(feedbackHighlightElement);
+                    $this.highlightBox = highlightBox = $('<canvas />');
 
-                    ctx = highlightBox.getContext("2d");
+                    ctx = highlightBox[0].getContext("2d");
 
-                    highlightBox.className += " " + feedbackHighlightElement;
+                    highlightBox.addClass(feedbackHighlightElement);
 
-                    document.body.appendChild( highlightBox );
+                    $(document.body).append( highlightBox );
                     clearBox();
                     previousElement = undefined;
                 }
@@ -710,9 +672,12 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         };
 
-        this.highlightClose = element("div", "×");
-        this.blackoutBox = document.createElement('div');
-        this.highlightBox = document.createElement( "canvas" );
+        this.highlightClose = $("<div />", {
+          "id": "feedback-highlight-close",
+          "text": "×",
+        });
+        this.blackoutBox = $('<div />');
+        this.highlightBox = $( "<canvas />" );
         this.highlightContainer = document.createElement('div');
         var timer,
         highlightClose = this.highlightClose,
@@ -720,16 +685,16 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         blackoutBox = this.blackoutBox,
         highlightContainer = this.highlightContainer,
         removeElement,
-        ctx = highlightBox.getContext("2d"),
+        ctx = highlightBox[0].getContext("2d"),
         buttonClickFunction = function( e ) {
             e.preventDefault();
             
-            if (blackoutButton.className.indexOf("active") === -1) {
-                blackoutButton.className += " active";
-                highlightButton.className = highlightButton.className.replace(/active/g,"");
+            if (!blackoutButton.hasClass("active")) {
+                blackoutButton.addClass("active");
+                highlightButton.removeClass("active");
             } else {
-                highlightButton.className += " active";
-                blackoutButton.className = blackoutButton.className.replace(/active/g,"");
+                highlightButton.addClass("active");
+                blackoutButton.removeClass("active");
             }
 
             action = !action;
@@ -742,34 +707,37 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             window.clearTimeout( timer );
         },
         clearBoxEl = function( el ) {
-            el.style.left =  "-5px";
-            el.style.top =  "-5px";
-            el.style.width = "0px";
-            el.style.height = "0px";
-            el.setAttribute(dataExclude, true);
+            el.css("left", "-5px");
+            el.css("top", "-5px");
+            el.css("width", "0px");
+            el.css("height", "0px");
+            el.attr(dataExclude, true);
         },
         hideClose = function() {
-            highlightClose.style.left =  "-50px";
-            highlightClose.style.top =  "-50px";
+            highlightClose.css("left", "-50px");
+            highlightClose.css("top", "-50px");
 
         },
-        blackoutButton = element("a", _("blackout")),
-        highlightButton = element("a", _("highlight")),
+        blackoutButton = $("<a />", {
+          "href": "#",
+          "text": _("blackout"),
+        }),
+        highlightButton = $("<a />", {
+          "href": "#",
+          "text": _("highlight"),
+        }),
         previousElement;
 
 
         modal.addClass('feedback-animate-toside');
 
 
-        highlightClose.id = "feedback-highlight-close";
-
-
-        $(highlightClose).on("click", function(){
+        highlightClose.on("click", function(){
             $(removeElement).remove();
             hideClose();
         });
 
-        document.body.appendChild( highlightClose );
+        $(document.body).append(highlightClose);
 
 
         this.h2cCanvas.className = 'feedback-canvas';
@@ -778,31 +746,26 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", _('highlightDescription')) );
+        this.dom.append($("<p />", {"text": _("highlightDescription")}));
 
         // add highlight and blackout buttons
-        for (var i = 0; i < 2; i++ ) {
-            buttonItem[ i ].className = 'feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse');
+        $.each(buttonItem, (_, button) => {
+            button.addClass('feedback-btn feedback-btn-small');
+            button.addClass(button === highlightButton ? 'active' : 'feedback-btn-inverse');
+            button.on("click", buttonClickFunction);
 
-            buttonItem[ i ].href = "#";
-            buttonItem[ i ].onclick = buttonClickFunction;
-
-            this.dom.appendChild( buttonItem[ i ] );
-
-            this.dom.appendChild( document.createTextNode(" ") );
-
-        }
-
-
+            this.dom.append(button);
+            this.dom.append(" ");
+        });
 
         highlightContainer.id = "feedback-highlight-container";
         highlightContainer.style.width = this.h2cCanvas.width + "px";
         highlightContainer.style.height = this.h2cCanvas.height + "px";
 
-        this.highlightBox.className += " " + feedbackHighlightElement;
-        this.blackoutBox.id = "feedback-blackout-element";
-        document.body.appendChild( this.highlightBox );
-        highlightContainer.appendChild( this.blackoutBox );
+        this.highlightBox.addClass(feedbackHighlightElement);
+        this.blackoutBox.attr("id", "feedback-blackout-element");
+        $(document.body).append( this.highlightBox );
+        $(highlightContainer).append( this.blackoutBox );
 
         document.body.appendChild( highlightContainer );
 
@@ -814,11 +777,11 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         // still loading html2canvas
         var args = arguments;
 
-        if ( nextButton.disabled !== true) {
-            $(this.dom).append(loader());
+        if ( nextButton.prop("disabled") !== true) {
+            this.dom.append(loader());
         }
 
-        nextButton.disabled = true;
+        nextButton.prop("disabled", true);
 
         window.setTimeout(function(){
             $this.start.apply( $this, args );
@@ -829,7 +792,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 Feedback.Screenshot.prototype.render = function() {
 
-    this.dom = document.createElement("div");
+    this.dom = $("<div />");
 
     // execute the html2canvas script
     var $this = this, options = this.options;
@@ -860,14 +823,13 @@ Feedback.Screenshot.prototype.data = function() {
         ctx.fillStyle = "#000";
 
         // draw blackouts
-        Array.prototype.slice.call( document.getElementsByClassName('feedback-blackedout'), 0).forEach( function( item ) {
-            var bounds = getBounds( item );
+        $(".feedback-blackedout").each(function() {
+            var bounds = getBounds(this);
             ctx.fillRect( bounds.left, bounds.top, bounds.width, bounds.height );
         });
 
         // draw highlights
-        var items = Array.prototype.slice.call( document.getElementsByClassName('feedback-highlighted'), 0);
-
+        var items = $(".feedback-highlighted");
         if (items.length > 0 ) {
 
             // copy canvas
@@ -884,12 +846,12 @@ Feedback.Screenshot.prototype.data = function() {
 
             ctx.beginPath();
 
-            items.forEach( function( item ) {
-
-                var x = parseInt(item.style.left, 10),
-                y = parseInt(item.style.top, 10),
-                width = parseInt(item.style.width, 10),
-                height = parseInt(item.style.height, 10);
+            items.each(function() {
+                var item = this,
+                x = item.offsetLeft,
+                y = item.offsetTop,
+                width = item.offsetWidth,
+                height = item.offsetHeight;
 
                 ctx.moveTo(x + radius, y);
                 ctx.lineTo(x + width - radius, y);
@@ -900,7 +862,6 @@ Feedback.Screenshot.prototype.data = function() {
                 ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
                 ctx.lineTo(x, y + radius);
                 ctx.quadraticCurveTo(x, y, x + radius, y);
-               
             });
             ctx.closePath();
             ctx.clip();
@@ -921,16 +882,15 @@ Feedback.Screenshot.prototype.data = function() {
 };
 
 
-Feedback.Screenshot.prototype.review = function( dom ) {
-  
+Feedback.Screenshot.prototype.review = function(dom) {
     var data = this.data();
     if ( data !== undefined ) {
-        var img = new Image();
-        img.src = data;
-        img.style.width = "300px";
-        dom.appendChild( img );
+        var img = $("<img />", {
+          "src": data,
+          "style": "width: 300px",
+        });
+        dom.append(img);
     }
-    
 };
 Feedback.XHR = function(url) {
     this.url = url;

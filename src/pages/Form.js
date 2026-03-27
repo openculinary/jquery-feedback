@@ -1,5 +1,4 @@
 Feedback.Form = function(elements) {
-
     this.elements = elements || [{
         type: "textarea",
         name: 'issue',
@@ -7,48 +6,39 @@ Feedback.Form = function(elements) {
         required: false
     }];
 
-    this.dom = document.createElement("div");
-
+    this.dom = $("<div />");
 };
 
 Feedback.Form.prototype = new Feedback.Page();
 
 Feedback.Form.prototype.render = function() {
-
-    var i = 0, len = this.elements.length, item;
-    $(this.dom).empty();
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-
-        switch( item.type ) {
+    this.dom.empty();
+    $.each(this.elements, (_, item) => {
+        switch(item.type) {
             case "textarea":
-                this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
-                this.dom.appendChild( ( item.element = document.createElement("textarea")) );
+                var labelText = item.label + (item.required === true ? " *" : "");
+                var label = $("<label />", {"text": labelText});
+                var formField = item.element = $("<textarea />");
+                this.dom.append(label);
+                this.dom.append(formField);
                 break;
         }
-    }
-
+    });
     return this;
-
 };
 
 Feedback.Form.prototype.end = function() {
     // form validation  
-    var i = 0, len = this.elements.length, item;
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-
+    $.each(this.elements, (_, item) => {
         // check that all required fields are entered
-        if ( item.required === true && item.element.value.length === 0) {
-            item.element.className = "feedback-error";
+        if (item.required === true && item.element.val().length === 0) {
+            item.element.addClass("feedback-error");
             return false;
         } else {
-            item.element.className = "";
+            item.element.removeClass();
         }
-    }
-    
+    });
     return true;
-    
 };
 
 Feedback.Form.prototype.close = function(){
@@ -56,18 +46,16 @@ Feedback.Form.prototype.close = function(){
 };
 
 Feedback.Form.prototype.data = function() {
-    
-    if ( this._data !== undefined ) {
+    if (this._data !== undefined) {
         // return cached value
         return this._data;
     }
-    
-    var i = 0, len = this.elements.length, item, data = {};
-    
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-        data[ item.name ] = item.element.value;
-    }
+
+    var data = {};
+    $.each(this.elements, (_, item) => {
+        data[item.name] = item.element.val();
+    });
+
     data.url = window.location.href;
     data.timeOpened = new Date();
     data.timezone = (new Date()).getTimezoneOffset()/60;
@@ -98,25 +86,20 @@ Feedback.Form.prototype.data = function() {
     data.scrPixelDepth = screen.pixelDepth;
 
     // cache and return data
-    return ( this._data = data );
+    return this._data = data;
 };
 
 
-Feedback.Form.prototype.review = function( dom ) {
-  
-    var i = 0, item, len = this.elements.length;
-      
-    for (; i < len; i++) {
-        item = this.elements[ i ];
-        
-        if (item.element.value.length > 0) {
-            dom.appendChild( element("label", item.label + ":") );
-            dom.appendChild( document.createTextNode( item.element.value ) );
-            dom.appendChild( document.createElement( "hr" ) );
+Feedback.Form.prototype.review = function(dom) {
+    $.each(this.elements, (_, item) => {
+        if (item.element.val().length > 0) {
+            var labelText = item.label + ":";
+            var label = $("<label />", {"text": labelText});
+            var fieldValue = item.element.val();
+            dom.append(label);
+            dom.append(fieldValue);
+            dom.append($("<hr />"));
         }
-        
-    }
-    
+    });
     return dom;
-     
 };

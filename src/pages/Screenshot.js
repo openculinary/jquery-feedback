@@ -27,10 +27,10 @@ Feedback.Screenshot.prototype.end = function( modal ){
 Feedback.Screenshot.prototype.close = function(){
     this._data = undefined;
 
-    $(this.blackoutBox).remove();
+    this.blackoutBox.remove();
     $(this.highlightContainer).remove();
-    $(this.highlightBox).remove();
-    $(this.highlightClose).remove();
+    this.highlightBox.remove();
+    this.highlightClose.remove();
 
     $("." + this.options.blackoutClass).remove();
     $("." + this.options.highlightClass).remove();
@@ -42,8 +42,8 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
     var $this = this;
 
     if ( this.h2cDone ) {
-        $(this.dom).empty();
-        nextButton.disabled = false;
+        this.dom.empty();
+        nextButton.prop("disabled", false);
 
         var feedbackHighlightElement = "feedback-highlight-element",
         dataExclude = "data-exclude";
@@ -68,7 +68,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             // set close button
             else if ( e.target !== previousElement && (className.indexOf( $this.options.blackoutClass ) !== -1 || className.indexOf( $this.options.highlightClass ) !== -1)) {
                 bounds = getBounds(e.target);
-                $(highlightClose).css({
+                highlightClose.css({
                     'left': (window.pageXOffset + bounds.left + bounds.width) + 'px',
                     'top': (window.pageYOffset + bounds.top) + 'px',
                 });
@@ -91,9 +91,9 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
                     item;
 
                     if ( action === false ) {
-                        item = blackoutBox;
+                        item = blackoutBox[0];
                     } else {
-                        item = highlightBox;
+                        item = highlightBox[0];
                         item.width = bounds.width;
                         item.height = bounds.height;
                         ctx.drawImage($this.h2cCanvas, window.pageXOffset + bounds.left, window.pageYOffset + bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height );
@@ -122,29 +122,26 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 
             if ( action === false) {
-                if ( blackoutBox.getAttribute(dataExclude) === "false") {
-                    var blackout = document.createElement("div");
-                    blackout.className = $this.options.blackoutClass;
-                    blackout.style.left = blackoutBox.style.left;
-                    blackout.style.top = blackoutBox.style.top;
-                    blackout.style.width = blackoutBox.style.width;
-                    blackout.style.height = blackoutBox.style.height;
+                if ( blackoutBox.attr(dataExclude) === "false") {
+                    var blackout = blackoutBox.clone();
+                    blackout.attr("id", undefined);
+                    blackout.addClass($this.options.blackoutClass);
 
-                    document.body.appendChild( blackout );
+                    $(document.body).append( blackout );
                     previousElement = undefined;
                 }
             } else {
-                if ( highlightBox.getAttribute(dataExclude) === "false") {
+                if ( highlightBox.attr(dataExclude) === "false") {
 
-                    highlightBox.className += " " + $this.options.highlightClass;
-                    highlightBox.className = highlightBox.className.replace(/feedback\-highlight\-element/g,"");
-                    $this.highlightBox = highlightBox = document.createElement('canvas');
+                    highlightBox.addClass($this.options.highlightClass);
+                    highlightBox.removeClass(feedbackHighlightElement);
+                    $this.highlightBox = highlightBox = $('<canvas />');
 
-                    ctx = highlightBox.getContext("2d");
+                    ctx = highlightBox[0].getContext("2d");
 
-                    highlightBox.className += " " + feedbackHighlightElement;
+                    highlightBox.addClass(feedbackHighlightElement);
 
-                    document.body.appendChild( highlightBox );
+                    $(document.body).append( highlightBox );
                     clearBox();
                     previousElement = undefined;
                 }
@@ -154,9 +151,12 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         };
 
-        this.highlightClose = element("div", "×");
-        this.blackoutBox = document.createElement('div');
-        this.highlightBox = document.createElement( "canvas" );
+        this.highlightClose = $("<div />", {
+          "id": "feedback-highlight-close",
+          "text": "×",
+        });
+        this.blackoutBox = $('<div />');
+        this.highlightBox = $( "<canvas />" );
         this.highlightContainer = document.createElement('div');
         var timer,
         highlightClose = this.highlightClose,
@@ -164,16 +164,16 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         blackoutBox = this.blackoutBox,
         highlightContainer = this.highlightContainer,
         removeElement,
-        ctx = highlightBox.getContext("2d"),
+        ctx = highlightBox[0].getContext("2d"),
         buttonClickFunction = function( e ) {
             e.preventDefault();
             
-            if (blackoutButton.className.indexOf("active") === -1) {
-                blackoutButton.className += " active";
-                highlightButton.className = highlightButton.className.replace(/active/g,"");
+            if (!blackoutButton.hasClass("active")) {
+                blackoutButton.addClass("active");
+                highlightButton.removeClass("active");
             } else {
-                highlightButton.className += " active";
-                blackoutButton.className = blackoutButton.className.replace(/active/g,"");
+                highlightButton.addClass("active");
+                blackoutButton.removeClass("active");
             }
 
             action = !action;
@@ -186,34 +186,37 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
             window.clearTimeout( timer );
         },
         clearBoxEl = function( el ) {
-            el.style.left =  "-5px";
-            el.style.top =  "-5px";
-            el.style.width = "0px";
-            el.style.height = "0px";
-            el.setAttribute(dataExclude, true);
+            el.css("left", "-5px");
+            el.css("top", "-5px");
+            el.css("width", "0px");
+            el.css("height", "0px");
+            el.attr(dataExclude, true);
         },
         hideClose = function() {
-            highlightClose.style.left =  "-50px";
-            highlightClose.style.top =  "-50px";
+            highlightClose.css("left", "-50px");
+            highlightClose.css("top", "-50px");
 
         },
-        blackoutButton = element("a", _("blackout")),
-        highlightButton = element("a", _("highlight")),
+        blackoutButton = $("<a />", {
+          "href": "#",
+          "text": _("blackout"),
+        }),
+        highlightButton = $("<a />", {
+          "href": "#",
+          "text": _("highlight"),
+        }),
         previousElement;
 
 
         modal.addClass('feedback-animate-toside');
 
 
-        highlightClose.id = "feedback-highlight-close";
-
-
-        $(highlightClose).on("click", function(){
+        highlightClose.on("click", function(){
             $(removeElement).remove();
             hideClose();
         });
 
-        document.body.appendChild( highlightClose );
+        $(document.body).append(highlightClose);
 
 
         this.h2cCanvas.className = 'feedback-canvas';
@@ -222,31 +225,26 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
         var buttonItem = [ highlightButton, blackoutButton ];
 
-        this.dom.appendChild( element("p", _('highlightDescription')) );
+        this.dom.append($("<p />", {"text": _("highlightDescription")}));
 
         // add highlight and blackout buttons
-        for (var i = 0; i < 2; i++ ) {
-            buttonItem[ i ].className = 'feedback-btn feedback-btn-small ' + (i === 0 ? 'active' : 'feedback-btn-inverse');
+        $.each(buttonItem, (_, button) => {
+            button.addClass('feedback-btn feedback-btn-small');
+            button.addClass(button === highlightButton ? 'active' : 'feedback-btn-inverse');
+            button.on("click", buttonClickFunction);
 
-            buttonItem[ i ].href = "#";
-            buttonItem[ i ].onclick = buttonClickFunction;
-
-            this.dom.appendChild( buttonItem[ i ] );
-
-            this.dom.appendChild( document.createTextNode(" ") );
-
-        }
-
-
+            this.dom.append(button);
+            this.dom.append(" ");
+        });
 
         highlightContainer.id = "feedback-highlight-container";
         highlightContainer.style.width = this.h2cCanvas.width + "px";
         highlightContainer.style.height = this.h2cCanvas.height + "px";
 
-        this.highlightBox.className += " " + feedbackHighlightElement;
-        this.blackoutBox.id = "feedback-blackout-element";
-        document.body.appendChild( this.highlightBox );
-        highlightContainer.appendChild( this.blackoutBox );
+        this.highlightBox.addClass(feedbackHighlightElement);
+        this.blackoutBox.attr("id", "feedback-blackout-element");
+        $(document.body).append( this.highlightBox );
+        $(highlightContainer).append( this.blackoutBox );
 
         document.body.appendChild( highlightContainer );
 
@@ -258,11 +256,11 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
         // still loading html2canvas
         var args = arguments;
 
-        if ( nextButton.disabled !== true) {
-            $(this.dom).append(loader());
+        if ( nextButton.prop("disabled") !== true) {
+            this.dom.append(loader());
         }
 
-        nextButton.disabled = true;
+        nextButton.prop("disabled", true);
 
         window.setTimeout(function(){
             $this.start.apply( $this, args );
@@ -273,7 +271,7 @@ Feedback.Screenshot.prototype.start = function( modal, nextButton ) {
 
 Feedback.Screenshot.prototype.render = function() {
 
-    this.dom = document.createElement("div");
+    this.dom = $("<div />");
 
     // execute the html2canvas script
     var $this = this, options = this.options;
@@ -304,14 +302,13 @@ Feedback.Screenshot.prototype.data = function() {
         ctx.fillStyle = "#000";
 
         // draw blackouts
-        Array.prototype.slice.call( document.getElementsByClassName('feedback-blackedout'), 0).forEach( function( item ) {
-            var bounds = getBounds( item );
+        $(".feedback-blackedout").each(function() {
+            var bounds = getBounds(this);
             ctx.fillRect( bounds.left, bounds.top, bounds.width, bounds.height );
         });
 
         // draw highlights
-        var items = Array.prototype.slice.call( document.getElementsByClassName('feedback-highlighted'), 0);
-
+        var items = $(".feedback-highlighted");
         if (items.length > 0 ) {
 
             // copy canvas
@@ -328,12 +325,12 @@ Feedback.Screenshot.prototype.data = function() {
 
             ctx.beginPath();
 
-            items.forEach( function( item ) {
-
-                var x = parseInt(item.style.left, 10),
-                y = parseInt(item.style.top, 10),
-                width = parseInt(item.style.width, 10),
-                height = parseInt(item.style.height, 10);
+            items.each(function() {
+                var item = this,
+                x = item.offsetLeft,
+                y = item.offsetTop,
+                width = item.offsetWidth,
+                height = item.offsetHeight;
 
                 ctx.moveTo(x + radius, y);
                 ctx.lineTo(x + width - radius, y);
@@ -344,7 +341,6 @@ Feedback.Screenshot.prototype.data = function() {
                 ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
                 ctx.lineTo(x, y + radius);
                 ctx.quadraticCurveTo(x, y, x + radius, y);
-               
             });
             ctx.closePath();
             ctx.clip();
@@ -365,14 +361,13 @@ Feedback.Screenshot.prototype.data = function() {
 };
 
 
-Feedback.Screenshot.prototype.review = function( dom ) {
-  
+Feedback.Screenshot.prototype.review = function(dom) {
     var data = this.data();
     if ( data !== undefined ) {
-        var img = new Image();
-        img.src = data;
-        img.style.width = "300px";
-        dom.appendChild( img );
+        var img = $("<img />", {
+          "src": data,
+          "style": "width: 300px",
+        });
+        dom.append(img);
     }
-    
 };

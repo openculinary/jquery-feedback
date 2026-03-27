@@ -10,11 +10,6 @@ var loader = function() {
 getBounds = function( el ) {
     return el.getBoundingClientRect();
 },
-element = function( name, text ) {
-    var el = document.createElement( name );
-    el.appendChild( document.createTextNode( text ) );
-    return el;
-},
 getLang = function() {
     var lang;
     if (navigator.languages !== undefined) {
@@ -65,14 +60,10 @@ window.Feedback = function( options ) {
 
         // open send feedback modal window
         open: function() {
-            var len = options.pages.length;
-            currentPage = 0;
-            for (; currentPage < len; currentPage++) {
-                // create DOM for each page in the wizard
-                if (!(options.pages[currentPage] instanceof Feedback.Review)) {
-                    options.pages[ currentPage ].render();
-                }
-            }
+            $.each(options.pages, (_, page) => {
+              if (page instanceof Feedback.Review) return;
+              page.render();
+            });
 
             // modal container
             var modalFooter = $('<div />', {'class': 'feedback-footer'});
@@ -101,14 +92,16 @@ window.Feedback = function( options ) {
             modalBody.empty();
 
             currentPage = 0;
-            modalBody.append($(options.pages[ currentPage++ ].dom));
+            modalBody.append(options.pages[ currentPage++ ].dom);
 
 
             // Next button
-            nextButton = element( "button", _('nextLabel') );
+            nextButton = $("<button />", {
+              "text": _('nextLabel'),
+              "class": "feedback-btn",
+            });
 
-            nextButton.className =  "feedback-btn";
-            nextButton.onclick = function() {
+            nextButton.on("click", function() {
                 
                 if (currentPage > 0 ) {
                     if ( options.pages[ currentPage - 1 ].end( modal ) === false ) {
@@ -119,7 +112,8 @@ window.Feedback = function( options ) {
                 
                 $(modalBody).empty();
 
-                if ( currentPage === len ) {
+                var lastPage = options.pages.length;
+                if ( currentPage === lastPage ) {
                     returnMethods.send( options.adapter );
                 } else {
 
@@ -131,23 +125,23 @@ window.Feedback = function( options ) {
                     }
                     
                     // add page DOM to modal
-                    modalBody.append($(options.pages[ currentPage++ ].dom));
+                    modalBody.append(options.pages[ currentPage++ ].dom);
 
                     // if last page, change button label to send
-                    if ( currentPage === len ) {
-                        nextButton.firstChild.nodeValue = _('sendLabel');
+                    if ( currentPage === lastPage ) {
+                        nextButton.text(_('sendLabel'));
                     }
                     
                     // if next page is review page, change button label
                     if (options.pages[currentPage] instanceof Feedback.Review) {
-                        nextButton.firstChild.nodeValue = _('reviewLabel');
+                        nextButton.text(_('reviewLabel'));
                     }
 
                 }
 
-            };
+            });
 
-            modalFooter.append($(nextButton));
+            modalFooter.append(nextButton);
 
             modal.append(modalHeader);
             modal.append(modalBody);
@@ -171,9 +165,9 @@ window.Feedback = function( options ) {
             }
                 
             // call close events for all pages    
-            for (var i = 0, len = options.pages.length; i < len; i++) {
-                options.pages[ i ].close();
-            }
+            $.each(options.pages, (_, page) => {
+                page.close();
+            });
 
             return false;
 
@@ -188,13 +182,14 @@ window.Feedback = function( options ) {
             }
             
             // fetch data from all pages   
-            for (var i = 0, len = options.pages.length, data = [], p = 0, tmp; i < len; i++) {
-                if ( (tmp = options.pages[ i ].data()) !== false ) {
-                    data[ p++ ] = tmp;
-                }
-            }
+            var data = [], tmp;
+            $.each(options.pages, (i, page) => {
+              if (tmp = page.data() !== false) {
+                data.push(tmp);
+              }
+            });
 
-            nextButton.disabled = true;
+            nextButton.prop("disabled", true);
                 
             $(modalBody).empty();
             $(modalBody).append(loader());
@@ -203,14 +198,14 @@ window.Feedback = function( options ) {
             adapter.send( data, function( success ) {
                 
                 $(modalBody).empty();
-                nextButton.disabled = false;
+                nextButton.prop("disabled", false);
                 
-                nextButton.firstChild.nodeValue = _('closeLabel');
+                nextButton.text(_('closeLabel'));
                 
-                nextButton.onclick = function() {
+                nextButton.on("click", function() {
                     returnMethods.close();
                     return false;  
-                };
+                });
                 
                 if ( success === true ) {
                     modalBody.text(_('messageSuccess'));
@@ -219,9 +214,9 @@ window.Feedback = function( options ) {
                 }
                 //Once the form has been submitted, initialize it.
                 // this includes clearing the data collected for feedback
-                for (var i = 0, len = options.pages.length; i < len; i++) {
-                    options.pages[ i ].close();
-                }
+                $.each(options.pages, (_, page) => {
+                  page.close();
+                });
             } );
   
         }
