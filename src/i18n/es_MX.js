@@ -11,6 +11,6 @@ i18n.es_MX = {
   highlightDescription: "Resaltar o ocultar información importante",
   highlight: "Resaltar",
   blackout: "Ocultar",
-  issue: "Problema"
+  issue: "Problema",
 };
 i18n.es = i18n.es_MX;

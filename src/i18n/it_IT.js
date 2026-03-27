@@ -11,6 +11,6 @@ i18n.it_IT = {
   highlightDescription: "Evidenzia o nascondi le informazioni importanti",
   highlight: "Evidenzia",
   blackout: "Nascondi",
-  issue: "Problema"
+  issue: "Problema",
 };
 i18n.it = i18n.it_IT;

@@ -11,6 +11,6 @@ i18n.de_DE = {
   highlightDescription: "Wichtige Informationen markieren oder verdunkeln",
   highlight: "Markieren",
   blackout: "Verdunkeln",
-  issue: "Problem"
+  issue: "Problem",
 };
 i18n.de = i18n.de_DE;

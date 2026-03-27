@@ -29,13 +29,13 @@ var default_message_strings = {
   highlightDescription: "Highlight or blackout important information",
   highlight: "Highlight",
   blackout: "Blackout",
-  issue: "Issue"
+  issue: "Issue",
 };
 
 var i18n = Object.create({
-  'default': default_message_strings,
-  'lang': 'default',
-  gettext: function(s) {
+  default: default_message_strings,
+  lang: "default",
+  gettext: function (s) {
     var message_strings = this[this.lang] || this[this.lang.substring(0, 2)];
     if (message_strings && message_strings[s]) {
       return message_strings[s];
@@ -44,5 +44,5 @@ var i18n = Object.create({
     } else {
       return s;
     }
-  }
+  },
 });
