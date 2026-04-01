@@ -183,11 +183,7 @@ window.Feedback = function (options) {
   i18n.lang = options.lang;
 
   if (options.pages === undefined) {
-    options.pages = [
-      new Form(),
-      new Screenshot(options),
-      new Review(),
-    ];
+    options.pages = [new Form(), new Screenshot(options), new Review()];
   }
 
   var button,
