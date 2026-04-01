@@ -318,7 +318,7 @@ window.Feedback = function (options) {
         var data = [],
           tmp;
         $.each(options.pages, (i, page) => {
-          if ((tmp = page.data() !== false)) {
+          if ((tmp = page.data()) !== false) {
             data.push(tmp);
           }
         });
