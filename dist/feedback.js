@@ -366,9 +366,7 @@ window.Feedback = function (options) {
 
 Feedback.Page = function () {};
 Feedback.Page.prototype = {
-  render: function (dom) {
-    this.dom = dom;
-  },
+  render: function () {},
   start: function () {},
   close: function () {},
   data: function () {
