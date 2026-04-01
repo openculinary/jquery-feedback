@@ -193,6 +193,7 @@ window.Feedback = function (options) {
 
           nextButton.text(_("closeLabel"));
 
+          nextButton.off("click");
           nextButton.on("click", function () {
             returnMethods.close();
             return false;
