@@ -578,7 +578,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
         (className.indexOf($this.options.blackoutClass) !== -1 ||
           className.indexOf($this.options.highlightClass) !== -1)
       ) {
-        bounds = getBounds(e.target);
+        var bounds = getBounds(e.target);
         highlightClose.css({
           left: window.pageXOffset + bounds.left + bounds.width + "px",
           top: window.pageYOffset + bounds.top + "px",
