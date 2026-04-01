@@ -42,9 +42,9 @@ window.Feedback = function (options) {
 
   if (options.pages === undefined) {
     options.pages = [
-      new Feedback.Form(),
-      new Feedback.Screenshot(options),
-      new Feedback.Review(),
+      new Form(),
+      new Screenshot(options),
+      new Review(),
     ];
   }
 
@@ -60,7 +60,7 @@ window.Feedback = function (options) {
       // open send feedback modal window
       open: function () {
         $.each(options.pages, (_, page) => {
-          if (page instanceof Feedback.Review) return;
+          if (page instanceof Review) return;
           page.render();
         });
 
@@ -115,7 +115,7 @@ window.Feedback = function (options) {
           } else {
             options.pages[currentPage].start(modal, nextButton);
 
-            if (options.pages[currentPage] instanceof Feedback.Review) {
+            if (options.pages[currentPage] instanceof Review) {
               // create DOM for review page, based on collected data
               options.pages[currentPage].render(options.pages);
             }
@@ -129,7 +129,7 @@ window.Feedback = function (options) {
             }
 
             // if next page is review page, change button label
-            if (options.pages[currentPage] instanceof Feedback.Review) {
+            if (options.pages[currentPage] instanceof Review) {
               nextButton.text(_("reviewLabel"));
             }
           }

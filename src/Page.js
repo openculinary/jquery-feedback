@@ -1,16 +1,13 @@
-Feedback.Page = function () {};
-Feedback.Page.prototype = {
-  render: function () {},
-  start: function () {},
-  close: function () {},
-  data: function () {
+class Page {
+  start() {}
+  render() {}
+  end(modal) {
+    return true;
+  }
+  data() {
     // don't collect data from page by default
     return false;
-  },
-  review: function () {
-    return null;
-  },
-  end: function () {
-    return true;
-  },
-};
+  }
+  review(dom) {}
+  close() {}
+}
