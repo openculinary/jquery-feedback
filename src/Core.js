@@ -41,7 +41,7 @@ window.Feedback = function (options) {
     options.pages = [new Form(), new Screenshot(options), new Review()];
   }
 
-  var button,
+  var activationButton,
     modal,
     currentPage,
     glass = $("<div />", {
@@ -74,7 +74,7 @@ window.Feedback = function (options) {
           click: returnMethods.close,
         });
 
-        button.prop("disabled", true);
+        activationButton.prop("disabled", true);
 
         // build header element
         var modalHeader = $("<div />", { class: "feedback-header" });
@@ -139,7 +139,7 @@ window.Feedback = function (options) {
 
       // close modal window
       close: function () {
-        button.prop("disabled", false);
+        activationButton.prop("disabled", false);
 
         // remove feedback elements
         modal.remove();
@@ -203,7 +203,7 @@ window.Feedback = function (options) {
       },
     };
 
-  button = $("<button />", {
+  activationButton = $("<button />", {
     class: "feedback-btn feedback-bottom-right",
     text: _("label"),
     attr: { [H2C_IGNORE]: true },
@@ -212,7 +212,7 @@ window.Feedback = function (options) {
 
   options = options || {};
   if (options.appendTo !== null)
-    $(options.appendTo || document.body).append(button);
+    $(options.appendTo || document.body).append(activationButton);
 
   return returnMethods;
 };
