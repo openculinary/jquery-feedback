@@ -6,7 +6,9 @@ const H2C_IGNORE = "data-html2canvas-ignore";
 
 var progressIndicator = function () {
     var div = $("<div />", { class: "feedback-loader" });
-    ['*', '*', '*'].forEach(() => { $("<span />").appendTo(div); });
+    ["*", "*", "*"].forEach(() => {
+      $("<span />").appendTo(div);
+    });
     return div;
   },
   getLang = function () {
