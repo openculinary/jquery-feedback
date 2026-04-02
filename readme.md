@@ -49,26 +49,16 @@ Pass to constructor, e.g.
 
 Available options:
 
-* adapter - sends the data overriding the default adapter in src/send/xhr.js
-* appendTo - DOM element where to add the feedback button, defaults to document.body
-* redactClass - CSS class to use for elements that have been redacted by the user during the screenshot review, defaults to feedback-redacted
-* canvas
-* closeLabel- override the label of the closing popup, defaults to "Close", can change to "Thanks for the feedback"
-* complete
-* e
-* el
-* elements
-* feedback
-* for
-* h2cPath - url to html2canvas
-* highlightClass - CSS class to use for elements that have been highlighted by the user during the screenshot review, defaults to  feedback-highlighted
-* j
-* key
-* lang - "auto" for autodetect from browser or language code like 'ru_RU'
-* nextLabel - label on the continue button of the first dialog box
-* pages - dialogs with user.  defaults to Feedback.Form, Feedback.Screenshot, Feedback.Review
-* url - url to post form data
-* redactions - whether to allow redactions.  enabled by default
+* `adapter` - sends the data overriding the default adapter in src/send/xhr.js
+* `appendTo` - DOM element where to add the feedback button, defaults to document.body
+* `highlightClass` - CSS class to use for elements that have been highlighted by the user during the screenshot review, defaults to `feedback-highlighted`
+* `redactClass` - CSS class to use for elements that have been redacted by the user during the screenshot review, defaults to `feedback-redacted`
+* `elements` - prompts and input fields to display during the form entry phase, defaults to a single text entry field
+* `h2cPath` - url to html2canvas
+* `lang` - `auto` for autodetect from browser or language code like `ru_RU`
+* `pages` - dialogs with user.  defaults to `[Form, Screenshot, Review]`
+* `url` - url to post form data
+* `redactions` - whether to offer the user the ability to redact elements during the screenshot review phase, defaults to `true`
 
 html2canvas options (see http://html2canvas.hertzen.com/documentation.html#available-options):
 * allowTaint
