@@ -2,6 +2,8 @@ if (window.Feedback !== undefined) {
   return;
 }
 
+const H2C_IGNORE = "data-html2canvas-ignore";
+
 var loader = function () {
     var div = $("<div />", { class: "feedback-loader" });
     [1, 2, 3].forEach(function () {
@@ -25,7 +27,6 @@ var loader = function () {
     }
   },
   nextButton,
-  H2C_IGNORE = "data-html2canvas-ignore",
   modalBody = $("<div />", { class: "feedback-body" });
 
 window.Feedback = function (options) {
