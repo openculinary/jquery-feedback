@@ -684,12 +684,10 @@ class Screenshot extends Page {
     });
     this.redactBox = $("<div />");
     this.highlightBox = $("<canvas />");
-    this.highlightContainer = $("<div />");
     var timer,
       highlightClose = this.highlightClose,
       highlightBox = this.highlightBox,
       redactBox = this.redactBox,
-      highlightContainer = this.highlightContainer,
       removeElement,
       ctx = highlightBox[0].getContext("2d"),
       clearBox = function () {
@@ -732,15 +730,15 @@ class Screenshot extends Page {
     // add highlight and redact buttons
     this.#addAnnotationButtons();
 
-    highlightContainer.attr("id", "feedback-highlight-container");
-    highlightContainer.css("width", `${this.h2cCanvas.width}px`);
-    highlightContainer.css("height", `${this.h2cCanvas.height}px`);
-
     this.highlightBox.addClass(feedbackHighlightElement);
     this.redactBox.attr("id", "feedback-redact-element");
     $(document.body).append(this.highlightBox);
-    highlightContainer.append(this.redactBox);
 
+    var highlightContainer = this.highlightContainer = $("<div />");
+    highlightContainer.attr("id", "feedback-highlight-container");
+    highlightContainer.css("width", `${this.h2cCanvas.width}px`);
+    highlightContainer.css("height", `${this.h2cCanvas.height}px`);
+    highlightContainer.append(this.redactBox);
     $(document.body).append(highlightContainer);
 
     // bind mouse delegate events
