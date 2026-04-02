@@ -356,7 +356,8 @@ window.Feedback = function (options) {
   });
 
   options = options || {};
-  if (options.appendTo !== null) $(options.appendTo || document.body).append(button);
+  if (options.appendTo !== null)
+    $(options.appendTo || document.body).append(button);
 
   return returnMethods;
 };
