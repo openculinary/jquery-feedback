@@ -176,7 +176,7 @@ window.Feedback = function (options) {
         var data = [],
           tmp;
         $.each(options.pages, (i, page) => {
-          if ((tmp = page.data() !== false)) {
+          if ((tmp = page.data()) !== false) {
             data.push(tmp);
           }
         });
@@ -193,6 +193,7 @@ window.Feedback = function (options) {
 
           nextButton.text(_("closeLabel"));
 
+          nextButton.off("click");
           nextButton.on("click", function () {
             returnMethods.close();
             return false;

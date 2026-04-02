@@ -318,7 +318,7 @@ window.Feedback = function (options) {
         var data = [],
           tmp;
         $.each(options.pages, (i, page) => {
-          if ((tmp = page.data() !== false)) {
+          if ((tmp = page.data()) !== false) {
             data.push(tmp);
           }
         });
@@ -335,6 +335,7 @@ window.Feedback = function (options) {
 
           nextButton.text(_("closeLabel"));
 
+          nextButton.off("click");
           nextButton.on("click", function () {
             returnMethods.close();
             return false;
@@ -366,9 +367,7 @@ window.Feedback = function (options) {
 
 Feedback.Page = function () {};
 Feedback.Page.prototype = {
-  render: function (dom) {
-    this.dom = dom;
-  },
+  render: function () {},
   start: function () {},
   close: function () {},
   data: function () {
@@ -580,7 +579,7 @@ Feedback.Screenshot.prototype.start = function (modal, nextButton) {
         (className.indexOf($this.options.blackoutClass) !== -1 ||
           className.indexOf($this.options.highlightClass) !== -1)
       ) {
-        bounds = getBounds(e.target);
+        var bounds = getBounds(e.target);
         highlightClose.css({
           left: window.pageXOffset + bounds.left + bounds.width + "px",
           top: window.pageYOffset + bounds.top + "px",
