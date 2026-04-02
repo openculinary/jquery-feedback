@@ -605,15 +605,19 @@ class Screenshot extends Page {
         highlightClose.off("click");
         highlightClose.on("click", () => {
           target.remove();
-          hideClose();
+          highlightClose.hide();
         });
+        highlightClose.show();
 
         clearBox();
         previousElement = undefined;
         return;
       }
 
-      hideClose();
+      // focus has changed to another annotatable element
+      else {
+        highlightClose.hide();
+      }
 
       previousElement = e.target;
 
@@ -704,10 +708,6 @@ class Screenshot extends Page {
         el.css("width", "0px");
         el.css("height", "0px");
         el.data("exclude", true);
-      },
-      hideClose = function () {
-        highlightClose.css("left", "-50px");
-        highlightClose.css("top", "-50px");
       },
       previousElement;
 
