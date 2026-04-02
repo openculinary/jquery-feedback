@@ -45,7 +45,7 @@ class Screenshot extends Page {
           (className.indexOf($this.options.blackoutClass) !== -1 ||
             className.indexOf($this.options.highlightClass) !== -1)
         ) {
-          var bounds = getBounds(e.target);
+          var bounds = e.target.getBoundingClientRect();
           highlightClose.css({
             left: window.pageXOffset + bounds.left + bounds.width + "px",
             top: window.pageYOffset + bounds.top + "px",
@@ -65,7 +65,7 @@ class Screenshot extends Page {
           window.clearTimeout(timer);
 
           timer = window.setTimeout(function () {
-            var bounds = getBounds(previousElement),
+            var bounds = previousElement.getBoundingClientRect(),
               item;
 
             if (action === false) {
@@ -280,7 +280,7 @@ class Screenshot extends Page {
 
       // draw blackouts
       $(".feedback-blackedout").each(function () {
-        var bounds = getBounds(this);
+        var bounds = this.getBoundingClientRect();
         ctx.fillRect(bounds.left, bounds.top, bounds.width, bounds.height);
       });
 

@@ -11,9 +11,6 @@ var loader = function () {
     });
     return div;
   },
-  getBounds = function (el) {
-    return el.getBoundingClientRect();
-  },
   getLang = function () {
     var lang;
     if (navigator.languages !== undefined) {
