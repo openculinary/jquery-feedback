@@ -1,4 +1,5 @@
-Feedback.Send = function () {};
-Feedback.Send.prototype = {
-  send: function () {},
-};
+class Send {
+  send(data, callback) {
+    callback(false);
+  }
+}

@@ -34,7 +34,7 @@ window.Feedback = function (options) {
 
   // default properties
   options.url = options.url || "/";
-  options.adapter = options.adapter || new Feedback.XHR(options.url);
+  options.adapter = options.adapter || new XHR(options.url);
   options.lang = options.lang || "auto";
 
   if (options.lang === "auto") options.lang = getLang();
@@ -164,8 +164,8 @@ window.Feedback = function (options) {
       // send data
       send: function (adapter) {
         // make sure send adapter is of right prototype
-        if (!(adapter instanceof Feedback.Send)) {
-          throw new Error("Adapter is not an instance of Feedback.Send");
+        if (!(adapter instanceof Send)) {
+          throw new Error("Adapter is not an instance of Send");
         }
 
         // fetch data from all pages

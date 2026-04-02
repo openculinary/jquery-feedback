@@ -176,7 +176,7 @@ window.Feedback = function (options) {
 
   // default properties
   options.url = options.url || "/";
-  options.adapter = options.adapter || new Feedback.XHR(options.url);
+  options.adapter = options.adapter || new XHR(options.url);
   options.lang = options.lang || "auto";
 
   if (options.lang === "auto") options.lang = getLang();
@@ -306,8 +306,8 @@ window.Feedback = function (options) {
       // send data
       send: function (adapter) {
         // make sure send adapter is of right prototype
-        if (!(adapter instanceof Feedback.Send)) {
-          throw new Error("Adapter is not an instance of Feedback.Send");
+        if (!(adapter instanceof Send)) {
+          throw new Error("Adapter is not an instance of Send");
         }
 
         // fetch data from all pages
@@ -375,10 +375,11 @@ class Page {
   close() {}
 }
 
-Feedback.Send = function () {};
-Feedback.Send.prototype = {
-  send: function () {},
-};
+class Send {
+  send(data, callback) {
+    callback(false);
+  }
+}
 
 class Form extends Page {
   constructor(elements) {
@@ -867,23 +868,24 @@ class Screenshot extends Page {
   }
 }
 
-Feedback.XHR = function (url) {
-  this.url = url;
-};
+class XHR extends Send {
+  constructor(url) {
+    super();
+    this.url = url;
+  }
 
-Feedback.XHR.prototype = new Feedback.Send();
-
-Feedback.XHR.prototype.send = function (data, callback) {
-  $.post({
-    url: this.url,
-    data: { data: JSON.stringify(data) },
-    success: function () {
-      callback(true);
-    },
-    error: function () {
-      callback(false);
-    },
-  });
-};
+  send(data, callback) {
+    $.post({
+      url: this.url,
+      data: { data: JSON.stringify(data) },
+      success: function () {
+        callback(true);
+      },
+      error: function () {
+        callback(false);
+      },
+    });
+  }
+}
 
 })( window, document );
