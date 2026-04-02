@@ -223,7 +223,7 @@ class Screenshot extends Page {
       var args = arguments;
 
       if (nextButton.prop("disabled") !== true) {
-        this.dom.append(loader());
+        this.dom.append(progressIndicator());
       }
 
       nextButton.prop("disabled", true);

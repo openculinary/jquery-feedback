@@ -146,11 +146,9 @@ if (window.Feedback !== undefined) {
 
 const H2C_IGNORE = "data-html2canvas-ignore";
 
-var loader = function () {
+var progressIndicator = function () {
     var div = $("<div />", { class: "feedback-loader" });
-    [1, 2, 3].forEach(function () {
-      $("<span />").appendTo(div);
-    });
+    ['*', '*', '*'].forEach(() => { $("<span />").appendTo(div); });
     return div;
   },
   getLang = function () {
@@ -319,7 +317,7 @@ window.Feedback = function (options) {
         nextButton.prop("disabled", true);
 
         modalBody.empty();
-        modalBody.append(loader());
+        modalBody.append(progressIndicator());
 
         // send data to adapter for processing
         adapter.send(data, function (success) {
@@ -725,7 +723,7 @@ class Screenshot extends Page {
       var args = arguments;
 
       if (nextButton.prop("disabled") !== true) {
-        this.dom.append(loader());
+        this.dom.append(progressIndicator());
       }
 
       nextButton.prop("disabled", true);
