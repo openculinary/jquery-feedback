@@ -1,6 +1,6 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var gulp = require("gulp");
+var concat = require("gulp-concat");
+var uglify = require("gulp-uglify");
 
 var source_files = [
   "src/license.txt",
@@ -17,16 +17,17 @@ var source_files = [
   "src/post.txt",
 ];
 
-gulp.task('build', function() {
-    return gulp.src(source_files)
-      .pipe(concat('feedback.js'))
-      .pipe(gulp.dest('dist'));
+gulp.task("build", function () {
+  return gulp
+    .src(source_files)
+    .pipe(concat("feedback.js"))
+    .pipe(gulp.dest("dist"));
 });
 
-gulp.task('build:min', function() {
-    return gulp.src(source_files)
-      .pipe(concat('feedback.min.js'))
-      .pipe(uglify())
-      .pipe(gulp.dest('dist'));
+gulp.task("build:min", function () {
+  return gulp
+    .src(source_files)
+    .pipe(concat("feedback.min.js"))
+    .pipe(uglify())
+    .pipe(gulp.dest("dist"));
 });
-
