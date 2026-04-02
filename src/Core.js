@@ -39,6 +39,10 @@ window.Feedback = function (options) {
     options.pages = [new Form(), new Screenshot(options), new Review()];
   }
 
+  if (options.redactions === undefined) {
+    options.redactions = true;
+  }
+
   var activationButton,
     modal,
     modalBody = $("<div />", { class: "feedback-body" }),

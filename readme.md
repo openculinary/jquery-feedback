@@ -58,6 +58,7 @@ Available options:
 * `lang` - `auto` for autodetect from browser or language code like `ru_RU`
 * `pages` - dialogs with user.  defaults to `[Form, Screenshot, Review]`
 * `url` - url to post form data
+* `redactions` - whether to offer the user the ability to redact elements during the screenshot review phase, defaults to `true`
 
 html2canvas options (see http://html2canvas.hertzen.com/documentation.html#available-options):
 * allowTaint
