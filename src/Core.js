@@ -218,7 +218,7 @@ window.Feedback = function (options) {
   });
 
   options = options || {};
-  $(options.appendTo || document.body).append(button);
+  if (options.appendTo !== null) $(options.appendTo || document.body).append(button);
 
   return returnMethods;
 };
