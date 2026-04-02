@@ -280,8 +280,12 @@ class Screenshot extends Page {
 
       // draw redactions
       $(".feedback-redacted").each(function () {
-        var bounds = this.getBoundingClientRect();
-        ctx.fillRect(bounds.left, bounds.top, bounds.width, bounds.height);
+        ctx.fillRect(
+          this.offsetLeft,
+          this.offsetTop,
+          this.offsetWidth,
+          this.offsetHeight,
+        );
       });
 
       // draw highlights
