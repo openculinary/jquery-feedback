@@ -180,9 +180,10 @@ class Screenshot extends Page {
       this.h2cCanvas.className = "feedback-canvas";
       document.body.appendChild(this.h2cCanvas);
 
-      var annotationDescription = $this.options.redactions === true
-        ? "highlightOrRedactDescription"
-        : "highlightDescription";
+      var annotationDescription =
+        $this.options.redactions === true
+          ? "highlightOrRedactDescription"
+          : "highlightDescription";
       this.dom.append($("<p />", { text: _(annotationDescription) }));
 
       // add highlight and redact buttons
