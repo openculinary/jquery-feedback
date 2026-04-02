@@ -75,11 +75,15 @@ class Screenshot extends Page {
         return;
       }
 
+      // focus remains within the same element; do nothing
+      else if (target.is(previousElement)) {
+        return;
+      }
+
       // set close button
       else if (
-        !target.is(previousElement) &&
-        (target.hasClass($this.options.redactClass) ||
-          target.hasClass($this.options.highlightClass))
+        target.hasClass($this.options.redactClass) ||
+        target.hasClass($this.options.highlightClass)
       ) {
         var bounds = e.target.getBoundingClientRect();
         highlightClose.css({
@@ -95,46 +99,44 @@ class Screenshot extends Page {
         clearBox();
         previousElement = undefined;
         return;
-      } else {
-        hideClose();
       }
 
-      if (!target.is(previousElement)) {
-        previousElement = e.target;
+      hideClose();
 
-        window.clearTimeout(timer);
+      previousElement = e.target;
 
-        timer = window.setTimeout(function () {
-          var bounds = previousElement.getBoundingClientRect(),
-            item;
+      window.clearTimeout(timer);
 
-          if ($this.highlightMode) {
-            item = highlightBox[0];
-            item.width = bounds.width;
-            item.height = bounds.height;
-            ctx.drawImage(
-              $this.h2cCanvas,
-              window.pageXOffset + bounds.left,
-              window.pageYOffset + bounds.top,
-              bounds.width,
-              bounds.height,
-              0,
-              0,
-              bounds.width,
-              bounds.height,
-            );
-          } else {
-            item = redactBox[0];
-          }
+      timer = window.setTimeout(function () {
+        var bounds = previousElement.getBoundingClientRect(),
+          item;
 
-          // we are only targetting IE>=9, so window.pageYOffset works fine
-          $(item).data("exclude", false);
-          item.style.left = window.pageXOffset + bounds.left + "px";
-          item.style.top = window.pageYOffset + bounds.top + "px";
-          item.style.width = bounds.width + "px";
-          item.style.height = bounds.height + "px";
-        }, 100);
-      }
+        if ($this.highlightMode) {
+          item = highlightBox[0];
+          item.width = bounds.width;
+          item.height = bounds.height;
+          ctx.drawImage(
+            $this.h2cCanvas,
+            window.pageXOffset + bounds.left,
+            window.pageYOffset + bounds.top,
+            bounds.width,
+            bounds.height,
+            0,
+            0,
+            bounds.width,
+            bounds.height,
+          );
+        } else {
+          item = redactBox[0];
+        }
+
+        // we are only targetting IE>=9, so window.pageYOffset works fine
+        $(item).data("exclude", false);
+        item.style.left = window.pageXOffset + bounds.left + "px";
+        item.style.top = window.pageYOffset + bounds.top + "px";
+        item.style.width = bounds.width + "px";
+        item.style.height = bounds.height + "px";
+      }, 100);
     };
 
     // delegate event for body click
