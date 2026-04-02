@@ -1,6 +1,6 @@
 /*
   This allows custom messages and languages in the feedback.js library.
-  The presidence order for messages is: Custom Message -> i18l -> defaults
+  The precedence order for messages is: Custom Message -> i18l -> defaults
   --------------------
   -Change Language: Include or create a language file. See examples at src/i18n/
   -Change Messages: Include or create a custom_message_strings override file
