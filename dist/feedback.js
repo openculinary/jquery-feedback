@@ -144,6 +144,8 @@ if (window.Feedback !== undefined) {
   return;
 }
 
+const H2C_IGNORE = "data-html2canvas-ignore";
+
 var loader = function () {
     var div = $("<div />", { class: "feedback-loader" });
     [1, 2, 3].forEach(function () {
@@ -167,8 +169,6 @@ var loader = function () {
     }
   },
   nextButton,
-  H2C_IGNORE = "data-html2canvas-ignore",
-  currentPage,
   modalBody = $("<div />", { class: "feedback-body" });
 
 window.Feedback = function (options) {
@@ -356,7 +356,7 @@ window.Feedback = function (options) {
   });
 
   options = options || {};
-  $(options.appendTo || document.body).append(button);
+  if (options.appendTo !== null) $(options.appendTo || document.body).append(button);
 
   return returnMethods;
 };
