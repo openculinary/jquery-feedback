@@ -34,7 +34,8 @@ var default_message_strings = {
   messageSuccess: "Your feedback was sent successfully.",
   messageError: "There was an error sending your feedback to our server.",
   formDescription: "Please describe the issue you are experiencing",
-  highlightDescription: "Highlight or redact important information",
+  highlightOrRedactDescription: "Highlight or redact important information",
+  highlightDescription: "Highlight important information",
   highlight: "Highlight",
   redact: "Redact",
   issue: "Issue",
@@ -65,7 +66,8 @@ i18n.de_DE = {
   messageSuccess: "Ihre Meinung wurde erfolgreich gesendet.",
   messageError: "Fehler beim senden Ihrer Meinung an unser Server.",
   formDescription: "Bitte beschreiben Sie das Problem das bei Ihnen auftritt",
-  highlightDescription: "Wichtige Informationen markieren oder verdunkeln",
+  highlightOrRedactDescription: "Wichtige Informationen markieren oder verdunkeln",
+  highlightDescription: "Wichtige Informationen markieren",
   highlight: "Markieren",
   redact: "Verdunkeln",
   issue: "Problem",
@@ -82,7 +84,8 @@ i18n.es_MX = {
   messageSuccess: "Sus comentarios fueron enviados con éxito.",
   messageError: "Hubo un error al enviar sus comentarios a nuestro servidor.",
   formDescription: "Por favor describa el problema que está experimentando",
-  highlightDescription: "Resaltar o ocultar información importante",
+  highlightOrRedactDescription: "Resaltar o ocultar información importante",
+  highlightDescription: "Resaltar información importante",
   highlight: "Resaltar",
   redact: "Ocultar",
   issue: "Problema",
@@ -99,7 +102,8 @@ i18n.it_IT = {
   messageSuccess: "Il tuo commento è stato inviato con successo.",
   messageError: "C'è stato un errore nell'invio del tuo commento al nostro server.",
   formDescription: "Per favore descrivi il problema",
-  highlightDescription: "Evidenzia o nascondi le informazioni importanti",
+  highlightOrRedactDescription: "Evidenzia o nascondi le informazioni importanti",
+  highlightDescription: "Evidenzia le informazioni importanti",
   highlight: "Evidenzia",
   redact: "Nascondi",
   issue: "Problema",
@@ -116,7 +120,8 @@ i18n.pt_BR = {
   messageSuccess: "Seus comentários foram enviados com sucesso.",
   messageError: "Houve um erro ao enviar os seus comentários para o nosso servidor.",
   formDescription: "Por favor, descreva o problema que está ocorrendo",
-  highlightDescription: "Destaque ou oculte informação importante",
+  highlightOrRedact: "Destaque ou oculte informação importante",
+  highlightDescription: "Destaque informação importante",
   highlight: "Destacar",
   redact: "Ocultar",
   issue: "Problema",
@@ -133,7 +138,8 @@ i18n.ru_RU = {
   messageSuccess: "Ваше сообщение успешно отправлено.",
   messageError: "Произошла ошибка при отправке сообщения на сервер.",
   formDescription: "Пожалуйста, опишите проблему с которой вы столкнулись",
-  highlightDescription: "Выделите или спрячьте важную информацию",
+  highlightOrRedactDescription: "Выделите или спрячьте важную информацию",
+  highlightDescription: "Выделите важную информацию",
   highlight: "Выделить",
   redact: "Спрятать",
   issue: "Ваше сообщение",
@@ -179,6 +185,10 @@ window.Feedback = function (options) {
 
   if (options.pages === undefined) {
     options.pages = [new Form(), new Screenshot(options), new Review()];
+  }
+
+  if (options.redactions === undefined) {
+    options.redactions = true;
   }
 
   var activationButton,
@@ -603,7 +613,7 @@ class Screenshot extends Page {
       this.mouseClickEvent = function (e) {
         e.preventDefault();
 
-        if (action === false) {
+        if ($this.options.redactions === true && action === false) {
           if (redactBox.data("exclude") === false) {
             var redact = redactBox.clone();
             redact.attr("id", undefined);
@@ -643,14 +653,6 @@ class Screenshot extends Page {
         highlightContainer = this.highlightContainer,
         removeElement,
         ctx = highlightBox[0].getContext("2d"),
-        buttonClickFunction = function (e) {
-          e.preventDefault();
-
-          highlightButton.toggleClass("active");
-          redactButton.toggleClass("active");
-
-          action = !action;
-        },
         clearBox = function () {
           clearBoxEl(redactBox);
           clearBoxEl(highlightBox);
@@ -690,21 +692,32 @@ class Screenshot extends Page {
       this.h2cCanvas.className = "feedback-canvas";
       document.body.appendChild(this.h2cCanvas);
 
-      var buttonItem = [highlightButton, redactButton];
-
-      this.dom.append($("<p />", { text: _("highlightDescription") }));
+      var annotationDescription = $this.options.redactions === true
+        ? "highlightOrRedactDescription"
+        : "highlightDescription";
+      this.dom.append($("<p />", { text: _(annotationDescription) }));
 
       // add highlight and redact buttons
-      $.each(buttonItem, (_, button) => {
-        button.addClass("feedback-btn feedback-btn-small");
-        button.addClass(
-          button === highlightButton ? "active" : "feedback-btn-inverse",
-        );
-        button.on("click", buttonClickFunction);
+      if ($this.options.redactions === true) {
+        var buttonItem = [highlightButton, redactButton];
+        $.each(buttonItem, (_, button) => {
+          button.addClass("feedback-btn feedback-btn-small");
+          button.addClass(
+            button === highlightButton ? "active" : "feedback-btn-inverse",
+          );
+          button.on("click", function (e) {
+            e.preventDefault();
 
-        this.dom.append(button);
-        this.dom.append(" ");
-      });
+            highlightButton.toggleClass("active");
+            redactButton.toggleClass("active");
+
+            action = !action;
+          });
+
+          this.dom.append(button);
+          this.dom.append(" ");
+        });
+      }
 
       highlightContainer.id = "feedback-highlight-container";
       highlightContainer.style.width = this.h2cCanvas.width + "px";

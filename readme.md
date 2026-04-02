@@ -68,6 +68,7 @@ Available options:
 * nextLabel - label on the continue button of the first dialog box
 * pages - dialogs with user.  defaults to Feedback.Form, Feedback.Screenshot, Feedback.Review
 * url - url to post form data
+* redactions - whether to allow redactions.  enabled by default
 
 html2canvas options (see http://html2canvas.hertzen.com/documentation.html#available-options):
 * allowTaint

@@ -101,7 +101,7 @@ class Screenshot extends Page {
       this.mouseClickEvent = function (e) {
         e.preventDefault();
 
-        if (action === false) {
+        if ($this.options.redactions === true && action === false) {
           if (redactBox.data("exclude") === false) {
             var redact = redactBox.clone();
             redact.attr("id", undefined);
@@ -141,14 +141,6 @@ class Screenshot extends Page {
         highlightContainer = this.highlightContainer,
         removeElement,
         ctx = highlightBox[0].getContext("2d"),
-        buttonClickFunction = function (e) {
-          e.preventDefault();
-
-          highlightButton.toggleClass("active");
-          redactButton.toggleClass("active");
-
-          action = !action;
-        },
         clearBox = function () {
           clearBoxEl(redactBox);
           clearBoxEl(highlightBox);
@@ -188,21 +180,32 @@ class Screenshot extends Page {
       this.h2cCanvas.className = "feedback-canvas";
       document.body.appendChild(this.h2cCanvas);
 
-      var buttonItem = [highlightButton, redactButton];
-
-      this.dom.append($("<p />", { text: _("highlightDescription") }));
+      var annotationDescription = $this.options.redactions === true
+        ? "highlightOrRedactDescription"
+        : "highlightDescription";
+      this.dom.append($("<p />", { text: _(annotationDescription) }));
 
       // add highlight and redact buttons
-      $.each(buttonItem, (_, button) => {
-        button.addClass("feedback-btn feedback-btn-small");
-        button.addClass(
-          button === highlightButton ? "active" : "feedback-btn-inverse",
-        );
-        button.on("click", buttonClickFunction);
+      if ($this.options.redactions === true) {
+        var buttonItem = [highlightButton, redactButton];
+        $.each(buttonItem, (_, button) => {
+          button.addClass("feedback-btn feedback-btn-small");
+          button.addClass(
+            button === highlightButton ? "active" : "feedback-btn-inverse",
+          );
+          button.on("click", function (e) {
+            e.preventDefault();
 
-        this.dom.append(button);
-        this.dom.append(" ");
-      });
+            highlightButton.toggleClass("active");
+            redactButton.toggleClass("active");
+
+            action = !action;
+          });
+
+          this.dom.append(button);
+          this.dom.append(" ");
+        });
+      }
 
       highlightContainer.id = "feedback-highlight-container";
       highlightContainer.style.width = this.h2cCanvas.width + "px";
