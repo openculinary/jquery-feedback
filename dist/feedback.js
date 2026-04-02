@@ -524,216 +524,7 @@ class Screenshot extends Page {
   start(modal, nextButton) {
     var $this = this;
 
-    if (this.h2cDone) {
-      this.dom.empty();
-      nextButton.prop("disabled", false);
-
-      var feedbackHighlightElement = "feedback-highlight-element";
-
-      var action = true;
-
-      // delegate mouse move event for body
-      this.mouseMoveEvent = function (e) {
-        // fix SVG errors
-        var className = e.target.className;
-        className =
-          className.baseVal !== undefined ? className.baseVal : className;
-
-        // don't do anything if we are highlighting a close button or body tag
-        if (
-          e.target === document.body ||
-          e.target === highlightClose ||
-          modal.has(e.target).length
-        ) {
-          // we are not gonna redact the whole page or the close item
-          clearBox();
-          previousElement = e.target;
-          return;
-        }
-
-        // set close button
-        else if (
-          e.target !== previousElement &&
-          (className.indexOf($this.options.redactClass) !== -1 ||
-            className.indexOf($this.options.highlightClass) !== -1)
-        ) {
-          var bounds = e.target.getBoundingClientRect();
-          highlightClose.css({
-            left: window.pageXOffset + bounds.left + bounds.width + "px",
-            top: window.pageYOffset + bounds.top + "px",
-          });
-
-          removeElement = e.target;
-          clearBox();
-          previousElement = undefined;
-          return;
-        } else {
-          hideClose();
-        }
-
-        if (e.target !== previousElement) {
-          previousElement = e.target;
-
-          window.clearTimeout(timer);
-
-          timer = window.setTimeout(function () {
-            var bounds = previousElement.getBoundingClientRect(),
-              item;
-
-            if (action === false) {
-              item = redactBox[0];
-            } else {
-              item = highlightBox[0];
-              item.width = bounds.width;
-              item.height = bounds.height;
-              ctx.drawImage(
-                $this.h2cCanvas,
-                window.pageXOffset + bounds.left,
-                window.pageYOffset + bounds.top,
-                bounds.width,
-                bounds.height,
-                0,
-                0,
-                bounds.width,
-                bounds.height,
-              );
-            }
-
-            // we are only targetting IE>=9, so window.pageYOffset works fine
-            $(item).data("exclude", false);
-            item.style.left = window.pageXOffset + bounds.left + "px";
-            item.style.top = window.pageYOffset + bounds.top + "px";
-            item.style.width = bounds.width + "px";
-            item.style.height = bounds.height + "px";
-          }, 100);
-        }
-      };
-
-      // delegate event for body click
-      this.mouseClickEvent = function (e) {
-        e.preventDefault();
-
-        if ($this.options.redactions === true && action === false) {
-          if (redactBox.data("exclude") === false) {
-            var redact = redactBox.clone();
-            redact.attr("id", undefined);
-            redact.addClass($this.options.redactClass);
-
-            $(document.body).append(redact);
-            previousElement = undefined;
-          }
-        } else {
-          if (highlightBox.data("exclude") === false) {
-            highlightBox.addClass($this.options.highlightClass);
-            highlightBox.removeClass(feedbackHighlightElement);
-            $this.highlightBox = highlightBox = $("<canvas />");
-
-            ctx = highlightBox[0].getContext("2d");
-
-            highlightBox.addClass(feedbackHighlightElement);
-
-            $(document.body).append(highlightBox);
-            clearBox();
-            previousElement = undefined;
-          }
-        }
-      };
-
-      this.highlightClose = $("<div />", {
-        id: "feedback-highlight-close",
-        text: "×",
-      });
-      this.redactBox = $("<div />");
-      this.highlightBox = $("<canvas />");
-      this.highlightContainer = $("<div />");
-      var timer,
-        highlightClose = this.highlightClose,
-        highlightBox = this.highlightBox,
-        redactBox = this.redactBox,
-        highlightContainer = this.highlightContainer,
-        removeElement,
-        ctx = highlightBox[0].getContext("2d"),
-        clearBox = function () {
-          clearBoxEl(redactBox);
-          clearBoxEl(highlightBox);
-
-          window.clearTimeout(timer);
-        },
-        clearBoxEl = function (el) {
-          el.css("left", "-5px");
-          el.css("top", "-5px");
-          el.css("width", "0px");
-          el.css("height", "0px");
-          el.data("exclude", true);
-        },
-        hideClose = function () {
-          highlightClose.css("left", "-50px");
-          highlightClose.css("top", "-50px");
-        },
-        redactButton = $("<a />", {
-          href: "#",
-          text: _("redact"),
-        }),
-        highlightButton = $("<a />", {
-          href: "#",
-          text: _("highlight"),
-        }),
-        previousElement;
-
-      modal.addClass("feedback-animate-toside");
-
-      highlightClose.on("click", function () {
-        $(removeElement).remove();
-        hideClose();
-      });
-
-      $(document.body).append(highlightClose);
-
-      this.h2cCanvas.className = "feedback-canvas";
-      document.body.appendChild(this.h2cCanvas);
-
-      var annotationDescription = $this.options.redactions === true
-        ? "highlightOrRedactDescription"
-        : "highlightDescription";
-      this.dom.append($("<p />", { text: _(annotationDescription) }));
-
-      // add highlight and redact buttons
-      if ($this.options.redactions === true) {
-        var buttonItem = [highlightButton, redactButton];
-        $.each(buttonItem, (_, button) => {
-          button.addClass("feedback-btn feedback-btn-small");
-          button.addClass(
-            button === highlightButton ? "active" : "feedback-btn-inverse",
-          );
-          button.on("click", function (e) {
-            e.preventDefault();
-
-            highlightButton.toggleClass("active");
-            redactButton.toggleClass("active");
-
-            action = !action;
-          });
-
-          this.dom.append(button);
-          this.dom.append(" ");
-        });
-      }
-
-      highlightContainer.attr("id", "feedback-highlight-container");
-      highlightContainer.css("width", `${this.h2cCanvas.width}px`);
-      highlightContainer.css("height", `${this.h2cCanvas.height}px`);
-
-      this.highlightBox.addClass(feedbackHighlightElement);
-      this.redactBox.attr("id", "feedback-redact-element");
-      $(document.body).append(this.highlightBox);
-      highlightContainer.append(this.redactBox);
-
-      $(document.body).append(highlightContainer);
-
-      // bind mouse delegate events
-      $(document.body).on("mousemove", this.mouseMoveEvent);
-      $(document.body).on("click", this.mouseClickEvent);
-    } else {
+    if (!this.h2cDone) {
       // still loading html2canvas
       var args = arguments;
 
@@ -746,7 +537,218 @@ class Screenshot extends Page {
       window.setTimeout(function () {
         $this.start.apply($this, args);
       }, 500);
+      return;
     }
+
+    this.dom.empty();
+    nextButton.prop("disabled", false);
+
+    var feedbackHighlightElement = "feedback-highlight-element";
+
+    var action = true;
+
+    // delegate mouse move event for body
+    this.mouseMoveEvent = function (e) {
+      // fix SVG errors
+      var className = e.target.className;
+      className =
+        className.baseVal !== undefined ? className.baseVal : className;
+
+      // don't do anything if we are highlighting a close button or body tag
+      if (
+        e.target === document.body ||
+        e.target === highlightClose ||
+        modal.has(e.target).length
+      ) {
+        // we are not gonna redact the whole page or the close item
+        clearBox();
+        previousElement = e.target;
+        return;
+      }
+
+      // set close button
+      else if (
+        e.target !== previousElement &&
+        (className.indexOf($this.options.redactClass) !== -1 ||
+          className.indexOf($this.options.highlightClass) !== -1)
+      ) {
+        var bounds = e.target.getBoundingClientRect();
+        highlightClose.css({
+          left: window.pageXOffset + bounds.left + bounds.width + "px",
+          top: window.pageYOffset + bounds.top + "px",
+        });
+
+        removeElement = e.target;
+        clearBox();
+        previousElement = undefined;
+        return;
+      } else {
+        hideClose();
+      }
+
+      if (e.target !== previousElement) {
+        previousElement = e.target;
+
+        window.clearTimeout(timer);
+
+        timer = window.setTimeout(function () {
+          var bounds = previousElement.getBoundingClientRect(),
+            item;
+
+          if (action === false) {
+            item = redactBox[0];
+          } else {
+            item = highlightBox[0];
+            item.width = bounds.width;
+            item.height = bounds.height;
+            ctx.drawImage(
+              $this.h2cCanvas,
+              window.pageXOffset + bounds.left,
+              window.pageYOffset + bounds.top,
+              bounds.width,
+              bounds.height,
+              0,
+              0,
+              bounds.width,
+              bounds.height,
+            );
+          }
+
+          // we are only targetting IE>=9, so window.pageYOffset works fine
+          $(item).data("exclude", false);
+          item.style.left = window.pageXOffset + bounds.left + "px";
+          item.style.top = window.pageYOffset + bounds.top + "px";
+          item.style.width = bounds.width + "px";
+          item.style.height = bounds.height + "px";
+        }, 100);
+      }
+    };
+
+    // delegate event for body click
+    this.mouseClickEvent = function (e) {
+      e.preventDefault();
+
+      if ($this.options.redactions === true && action === false) {
+        if (redactBox.data("exclude") === false) {
+          var redact = redactBox.clone();
+          redact.attr("id", undefined);
+          redact.addClass($this.options.redactClass);
+
+          $(document.body).append(redact);
+          previousElement = undefined;
+        }
+      } else {
+        if (highlightBox.data("exclude") === false) {
+          highlightBox.addClass($this.options.highlightClass);
+          highlightBox.removeClass(feedbackHighlightElement);
+          $this.highlightBox = highlightBox = $("<canvas />");
+
+          ctx = highlightBox[0].getContext("2d");
+
+          highlightBox.addClass(feedbackHighlightElement);
+
+          $(document.body).append(highlightBox);
+          clearBox();
+          previousElement = undefined;
+        }
+      }
+    };
+
+    this.highlightClose = $("<div />", {
+      id: "feedback-highlight-close",
+      text: "×",
+    });
+    this.redactBox = $("<div />");
+    this.highlightBox = $("<canvas />");
+    this.highlightContainer = $("<div />");
+    var timer,
+      highlightClose = this.highlightClose,
+      highlightBox = this.highlightBox,
+      redactBox = this.redactBox,
+      highlightContainer = this.highlightContainer,
+      removeElement,
+      ctx = highlightBox[0].getContext("2d"),
+      clearBox = function () {
+        clearBoxEl(redactBox);
+        clearBoxEl(highlightBox);
+
+        window.clearTimeout(timer);
+      },
+      clearBoxEl = function (el) {
+        el.css("left", "-5px");
+        el.css("top", "-5px");
+        el.css("width", "0px");
+        el.css("height", "0px");
+        el.data("exclude", true);
+      },
+      hideClose = function () {
+        highlightClose.css("left", "-50px");
+        highlightClose.css("top", "-50px");
+      },
+      redactButton = $("<a />", {
+        href: "#",
+        text: _("redact"),
+      }),
+      highlightButton = $("<a />", {
+        href: "#",
+        text: _("highlight"),
+      }),
+      previousElement;
+
+    modal.addClass("feedback-animate-toside");
+
+    highlightClose.on("click", function () {
+      $(removeElement).remove();
+      hideClose();
+    });
+
+    $(document.body).append(highlightClose);
+
+    this.h2cCanvas.className = "feedback-canvas";
+    document.body.appendChild(this.h2cCanvas);
+
+    var annotationDescription =
+      $this.options.redactions === true
+        ? "highlightOrRedactDescription"
+        : "highlightDescription";
+    this.dom.append($("<p />", { text: _(annotationDescription) }));
+
+    // add highlight and redact buttons
+    if ($this.options.redactions === true) {
+      var buttonItem = [highlightButton, redactButton];
+      $.each(buttonItem, (_, button) => {
+        button.addClass("feedback-btn feedback-btn-small");
+        button.addClass(
+          button === highlightButton ? "active" : "feedback-btn-inverse",
+        );
+        button.on("click", function (e) {
+          e.preventDefault();
+
+          highlightButton.toggleClass("active");
+          redactButton.toggleClass("active");
+
+          action = !action;
+        });
+
+        this.dom.append(button);
+        this.dom.append(" ");
+      });
+    }
+
+    highlightContainer.attr("id", "feedback-highlight-container");
+    highlightContainer.css("width", `${this.h2cCanvas.width}px`);
+    highlightContainer.css("height", `${this.h2cCanvas.height}px`);
+
+    this.highlightBox.addClass(feedbackHighlightElement);
+    this.redactBox.attr("id", "feedback-redact-element");
+    $(document.body).append(this.highlightBox);
+    highlightContainer.append(this.redactBox);
+
+    $(document.body).append(highlightContainer);
+
+    // bind mouse delegate events
+    $(document.body).on("mousemove", this.mouseMoveEvent);
+    $(document.body).on("click", this.mouseClickEvent);
   }
 
   render() {
