@@ -10,7 +10,7 @@ i18n.ru_RU = {
   formDescription: "Пожалуйста, опишите проблему с которой вы столкнулись",
   highlightDescription: "Выделите или спрячьте важную информацию",
   highlight: "Выделить",
-  blackout: "Спрятать",
+  redact: "Спрятать",
   issue: "Ваше сообщение",
 };
 i18n.ru = i18n.ru_RU;

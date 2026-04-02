@@ -51,7 +51,7 @@ Available options:
 
 * adapter - sends the data overriding the default adapter in src/send/xhr.js
 * appendTo - DOM element where to add the feedback button, defaults to document.body
-* blackoutClass - CSS class to use for elements that have been blacked out by the user during the screenshot review, defaults to feedback-blackedout
+* redactClass - CSS class to use for elements that have been redacted by the user during the screenshot review, defaults to feedback-redacted
 * canvas
 * closeLabel- override the label of the closing popup, defaults to "Close", can change to "Thanks for the feedback"
 * complete

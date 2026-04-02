@@ -3,7 +3,7 @@ class Screenshot extends Page {
     super();
     this.options = options || {};
 
-    this.options.blackoutClass ||= "feedback-blackedout";
+    this.options.redactClass ||= "feedback-redacted";
     this.options.highlightClass ||= "feedback-highlighted";
 
     this.h2cDone = false;
@@ -33,7 +33,7 @@ class Screenshot extends Page {
           e.target === highlightClose ||
           modal.has(e.target).length
         ) {
-          // we are not gonna blackout the whole page or the close item
+          // we are not gonna redact the whole page or the close item
           clearBox();
           previousElement = e.target;
           return;
@@ -42,7 +42,7 @@ class Screenshot extends Page {
         // set close button
         else if (
           e.target !== previousElement &&
-          (className.indexOf($this.options.blackoutClass) !== -1 ||
+          (className.indexOf($this.options.redactClass) !== -1 ||
             className.indexOf($this.options.highlightClass) !== -1)
         ) {
           var bounds = e.target.getBoundingClientRect();
@@ -69,7 +69,7 @@ class Screenshot extends Page {
               item;
 
             if (action === false) {
-              item = blackoutBox[0];
+              item = redactBox[0];
             } else {
               item = highlightBox[0];
               item.width = bounds.width;
@@ -102,12 +102,12 @@ class Screenshot extends Page {
         e.preventDefault();
 
         if (action === false) {
-          if (blackoutBox.data("exclude") === false) {
-            var blackout = blackoutBox.clone();
-            blackout.attr("id", undefined);
-            blackout.addClass($this.options.blackoutClass);
+          if (redactBox.data("exclude") === false) {
+            var redact = redactBox.clone();
+            redact.attr("id", undefined);
+            redact.addClass($this.options.redactClass);
 
-            $(document.body).append(blackout);
+            $(document.body).append(redact);
             previousElement = undefined;
           }
         } else {
@@ -131,13 +131,13 @@ class Screenshot extends Page {
         id: "feedback-highlight-close",
         text: "×",
       });
-      this.blackoutBox = $("<div />");
+      this.redactBox = $("<div />");
       this.highlightBox = $("<canvas />");
       this.highlightContainer = document.createElement("div");
       var timer,
         highlightClose = this.highlightClose,
         highlightBox = this.highlightBox,
-        blackoutBox = this.blackoutBox,
+        redactBox = this.redactBox,
         highlightContainer = this.highlightContainer,
         removeElement,
         ctx = highlightBox[0].getContext("2d"),
@@ -145,12 +145,12 @@ class Screenshot extends Page {
           e.preventDefault();
 
           highlightButton.toggleClass("active");
-          blackoutButton.toggleClass("active");
+          redactButton.toggleClass("active");
 
           action = !action;
         },
         clearBox = function () {
-          clearBoxEl(blackoutBox);
+          clearBoxEl(redactBox);
           clearBoxEl(highlightBox);
 
           window.clearTimeout(timer);
@@ -166,9 +166,9 @@ class Screenshot extends Page {
           highlightClose.css("left", "-50px");
           highlightClose.css("top", "-50px");
         },
-        blackoutButton = $("<a />", {
+        redactButton = $("<a />", {
           href: "#",
-          text: _("blackout"),
+          text: _("redact"),
         }),
         highlightButton = $("<a />", {
           href: "#",
@@ -188,11 +188,11 @@ class Screenshot extends Page {
       this.h2cCanvas.className = "feedback-canvas";
       document.body.appendChild(this.h2cCanvas);
 
-      var buttonItem = [highlightButton, blackoutButton];
+      var buttonItem = [highlightButton, redactButton];
 
       this.dom.append($("<p />", { text: _("highlightDescription") }));
 
-      // add highlight and blackout buttons
+      // add highlight and redact buttons
       $.each(buttonItem, (_, button) => {
         button.addClass("feedback-btn feedback-btn-small");
         button.addClass(
@@ -209,9 +209,9 @@ class Screenshot extends Page {
       highlightContainer.style.height = this.h2cCanvas.height + "px";
 
       this.highlightBox.addClass(feedbackHighlightElement);
-      this.blackoutBox.attr("id", "feedback-blackout-element");
+      this.redactBox.attr("id", "feedback-redact-element");
       $(document.body).append(this.highlightBox);
-      $(highlightContainer).append(this.blackoutBox);
+      $(highlightContainer).append(this.redactBox);
 
       document.body.appendChild(highlightContainer);
 
@@ -278,8 +278,8 @@ class Screenshot extends Page {
         radius = 5;
       ctx.fillStyle = "#000";
 
-      // draw blackouts
-      $(".feedback-blackedout").each(function () {
+      // draw redacts
+      $(".feedback-redacted").each(function () {
         var bounds = this.getBoundingClientRect();
         ctx.fillRect(bounds.left, bounds.top, bounds.width, bounds.height);
       });
@@ -354,12 +354,12 @@ class Screenshot extends Page {
   close() {
     this._data = undefined;
 
-    this.blackoutBox.remove();
+    this.redactBox.remove();
     $(this.highlightContainer).remove();
     this.highlightBox.remove();
     this.highlightClose.remove();
 
-    $("." + this.options.blackoutClass).remove();
+    $("." + this.options.redactClass).remove();
     $("." + this.options.highlightClass).remove();
   }
 }

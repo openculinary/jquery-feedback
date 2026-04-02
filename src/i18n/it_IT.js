@@ -10,7 +10,7 @@ i18n.it_IT = {
   formDescription: "Per favore descrivi il problema",
   highlightDescription: "Evidenzia o nascondi le informazioni importanti",
   highlight: "Evidenzia",
-  blackout: "Nascondi",
+  redact: "Nascondi",
   issue: "Problema",
 };
 i18n.it = i18n.it_IT;
