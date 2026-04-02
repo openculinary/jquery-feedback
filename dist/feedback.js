@@ -574,14 +574,11 @@ class Screenshot extends Page {
     // delegate mouse move event for body
     this.mouseMoveEvent = function (e) {
       // fix SVG errors
-      var className = e.target.className;
-      className =
-        className.baseVal !== undefined ? className.baseVal : className;
-
+      var target = $(e.target);
       // don't do anything if we are highlighting a close button or body tag
       if (
-        e.target === document.body ||
-        e.target === highlightClose ||
+        target.is(document.body) ||
+        target.is(highlightClose) ||
         modal.has(e.target).length
       ) {
         // we are not gonna redact the whole page or the close item
@@ -592,17 +589,21 @@ class Screenshot extends Page {
 
       // set close button
       else if (
-        e.target !== previousElement &&
-        (className.indexOf($this.options.redactClass) !== -1 ||
-          className.indexOf($this.options.highlightClass) !== -1)
+        !target.is(previousElement) &&
+        (target.hasClass($this.options.redactClass) ||
+          target.hasClass($this.options.highlightClass))
       ) {
         var bounds = e.target.getBoundingClientRect();
         highlightClose.css({
           left: window.pageXOffset + bounds.left + bounds.width + "px",
           top: window.pageYOffset + bounds.top + "px",
         });
+        highlightClose.off("click");
+        highlightClose.on("click", () => {
+          target.remove();
+          hideClose();
+        });
 
-        removeElement = e.target;
         clearBox();
         previousElement = undefined;
         return;
@@ -610,7 +611,7 @@ class Screenshot extends Page {
         hideClose();
       }
 
-      if (e.target !== previousElement) {
+      if (!target.is(previousElement)) {
         previousElement = e.target;
 
         window.clearTimeout(timer);
@@ -688,7 +689,6 @@ class Screenshot extends Page {
       highlightClose = this.highlightClose,
       highlightBox = this.highlightBox,
       redactBox = this.redactBox,
-      removeElement,
       ctx = highlightBox[0].getContext("2d"),
       clearBox = function () {
         clearBoxEl(redactBox);
@@ -711,11 +711,6 @@ class Screenshot extends Page {
 
     modal.addClass("feedback-animate-toside");
 
-    highlightClose.on("click", function () {
-      $(removeElement).remove();
-      hideClose();
-    });
-
     $(document.body).append(highlightClose);
 
     this.h2cCanvas.className = "feedback-canvas";
@@ -734,7 +729,7 @@ class Screenshot extends Page {
     this.redactBox.attr("id", "feedback-redact-element");
     $(document.body).append(this.highlightBox);
 
-    var highlightContainer = this.highlightContainer = $("<div />");
+    var highlightContainer = (this.highlightContainer = $("<div />"));
     highlightContainer.attr("id", "feedback-highlight-container");
     highlightContainer.css("width", `${this.h2cCanvas.width}px`);
     highlightContainer.css("height", `${this.h2cCanvas.height}px`);
