@@ -34,18 +34,14 @@ window.Feedback = function (options) {
 
   // default properties
   options.url = options.url || "/";
-  options.adapter = options.adapter || new Feedback.XHR(options.url);
+  options.adapter = options.adapter || new XHR(options.url);
   options.lang = options.lang || "auto";
 
   if (options.lang === "auto") options.lang = getLang();
   i18n.lang = options.lang;
 
   if (options.pages === undefined) {
-    options.pages = [
-      new Feedback.Form(),
-      new Feedback.Screenshot(options),
-      new Feedback.Review(),
-    ];
+    options.pages = [new Form(), new Screenshot(options), new Review()];
   }
 
   var button,
@@ -60,7 +56,7 @@ window.Feedback = function (options) {
       // open send feedback modal window
       open: function () {
         $.each(options.pages, (_, page) => {
-          if (page instanceof Feedback.Review) return;
+          if (page instanceof Review) return;
           page.render();
         });
 
@@ -115,7 +111,7 @@ window.Feedback = function (options) {
           } else {
             options.pages[currentPage].start(modal, nextButton);
 
-            if (options.pages[currentPage] instanceof Feedback.Review) {
+            if (options.pages[currentPage] instanceof Review) {
               // create DOM for review page, based on collected data
               options.pages[currentPage].render(options.pages);
             }
@@ -129,7 +125,7 @@ window.Feedback = function (options) {
             }
 
             // if next page is review page, change button label
-            if (options.pages[currentPage] instanceof Feedback.Review) {
+            if (options.pages[currentPage] instanceof Review) {
               nextButton.text(_("reviewLabel"));
             }
           }
@@ -168,8 +164,8 @@ window.Feedback = function (options) {
       // send data
       send: function (adapter) {
         // make sure send adapter is of right prototype
-        if (!(adapter instanceof Feedback.Send)) {
-          throw new Error("Adapter is not an instance of Feedback.Send");
+        if (!(adapter instanceof Send)) {
+          throw new Error("Adapter is not an instance of Send");
         }
 
         // fetch data from all pages
