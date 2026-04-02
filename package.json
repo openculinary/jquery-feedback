@@ -50,8 +50,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "html2canvas": "^1.0.0-rc.7",
-    "jquery": "^4.0.0"
+    "html2canvas": "^1.4.1",
+    "jquery": "^4.0.0",
+    "prettier": "^3.8.1"
   },
   "devDependencies": {
     "gulp": "^5.0.1",

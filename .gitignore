@@ -1,6 +1,2 @@
-.DS_Store
-nbproject/
-libs/flashcanvas.*
-libs/canvas2png.js
-node_modules/
+node_modules
 screenshot.png
