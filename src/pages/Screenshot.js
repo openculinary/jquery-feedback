@@ -278,7 +278,7 @@ class Screenshot extends Page {
         radius = 5;
       ctx.fillStyle = "#000";
 
-      // draw redacts
+      // draw redactions
       $(".feedback-redacted").each(function () {
         var bounds = this.getBoundingClientRect();
         ctx.fillRect(bounds.left, bounds.top, bounds.width, bounds.height);
