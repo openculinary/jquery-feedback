@@ -645,7 +645,7 @@ class Screenshot extends Page {
       });
       this.redactBox = $("<div />");
       this.highlightBox = $("<canvas />");
-      this.highlightContainer = document.createElement("div");
+      this.highlightContainer = $("<div />");
       var timer,
         highlightClose = this.highlightClose,
         highlightBox = this.highlightBox,
@@ -719,16 +719,16 @@ class Screenshot extends Page {
         });
       }
 
-      highlightContainer.id = "feedback-highlight-container";
-      highlightContainer.style.width = this.h2cCanvas.width + "px";
-      highlightContainer.style.height = this.h2cCanvas.height + "px";
+      highlightContainer.attr("id", "feedback-highlight-container");
+      highlightContainer.css("width", `${this.h2cCanvas.width}px`);
+      highlightContainer.css("height", `${this.h2cCanvas.height}px`);
 
       this.highlightBox.addClass(feedbackHighlightElement);
       this.redactBox.attr("id", "feedback-redact-element");
       $(document.body).append(this.highlightBox);
-      $(highlightContainer).append(this.redactBox);
+      highlightContainer.append(this.redactBox);
 
-      document.body.appendChild(highlightContainer);
+      $(document.body).append(highlightContainer);
 
       // bind mouse delegate events
       $(document.body).on("mousemove", this.mouseMoveEvent);
@@ -874,7 +874,7 @@ class Screenshot extends Page {
     this._data = undefined;
 
     this.redactBox.remove();
-    $(this.highlightContainer).remove();
+    this.highlightContainer.remove();
     this.highlightBox.remove();
     this.highlightClose.remove();
 
