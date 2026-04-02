@@ -26,7 +26,6 @@ var loader = function () {
   },
   nextButton,
   H2C_IGNORE = "data-html2canvas-ignore",
-  currentPage,
   modalBody = $("<div />", { class: "feedback-body" });
 
 window.Feedback = function (options) {
