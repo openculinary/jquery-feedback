@@ -30,8 +30,10 @@ No plugins, no flash, no interaction needed from the server, just pure JavaScrip
  - Newer versions of Google Chrome, Safari & Opera
  - IE9
 
-## License ##
+## Licensing ##
  
 feedback.js is released under the MIT license:
 
 * http://www.opensource.org/licenses/MIT
+
+The webpages in the `examples` directory are adapted from example HTML provided by Twitter's Bootstrap project under an [Apache-2.0 license](https://github.com/twbs/bootstrap/blob/c52368d3c5984b28e6a71e5e1240afdd788fc2e6/LICENSE), notably the [`hero`](https://github.com/twbs/bootstrap/blob/ebc69356637143c938c07904d10928c11e742196/docs/examples/hero.html) example.
