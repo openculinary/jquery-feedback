@@ -7,6 +7,32 @@ class Screenshot extends Page {
     this.options.highlightClass ||= "feedback-highlighted";
 
     this.h2cDone = false;
+    this.highlightMode = true;
+  }
+
+  #addAnnotationButtons() {
+    if (this.options.redactions !== true) return;
+
+    var $this = this,
+      highlight = $("<a />", { href: "#", text: _("highlight") }),
+      redact = $("<a />", { href: "#", text: _("redact") });
+
+    var buttons = [highlight, redact];
+    $.each(buttons, (_, button) => {
+      button.addClass("feedback-btn feedback-btn-small");
+      button.addClass(button === highlight ? "active" : "feedback-btn-inverse");
+      button.on("click", (e) => {
+        e.preventDefault();
+
+        highlight.toggleClass("active");
+        redact.toggleClass("active");
+
+        $this.highlightMode = !$this.highlightMode;
+      });
+
+      this.dom.append(button);
+      this.dom.append(" ");
+    });
   }
 
   start(modal, nextButton) {
@@ -32,8 +58,6 @@ class Screenshot extends Page {
     nextButton.prop("disabled", false);
 
     var feedbackHighlightElement = "feedback-highlight-element";
-
-    var action = true;
 
     // delegate mouse move event for body
     this.mouseMoveEvent = function (e) {
@@ -83,9 +107,7 @@ class Screenshot extends Page {
           var bounds = previousElement.getBoundingClientRect(),
             item;
 
-          if (action === false) {
-            item = redactBox[0];
-          } else {
+          if ($this.highlightMode) {
             item = highlightBox[0];
             item.width = bounds.width;
             item.height = bounds.height;
@@ -100,6 +122,8 @@ class Screenshot extends Page {
               bounds.width,
               bounds.height,
             );
+          } else {
+            item = redactBox[0];
           }
 
           // we are only targetting IE>=9, so window.pageYOffset works fine
@@ -116,7 +140,7 @@ class Screenshot extends Page {
     this.mouseClickEvent = function (e) {
       e.preventDefault();
 
-      if ($this.options.redactions === true && action === false) {
+      if ($this.options.redactions === true && $this.highlightMode === false) {
         if (redactBox.data("exclude") === false) {
           var redact = redactBox.clone();
           redact.attr("id", undefined);
@@ -173,14 +197,6 @@ class Screenshot extends Page {
         highlightClose.css("left", "-50px");
         highlightClose.css("top", "-50px");
       },
-      redactButton = $("<a />", {
-        href: "#",
-        text: _("redact"),
-      }),
-      highlightButton = $("<a />", {
-        href: "#",
-        text: _("highlight"),
-      }),
       previousElement;
 
     modal.addClass("feedback-animate-toside");
@@ -202,26 +218,7 @@ class Screenshot extends Page {
     this.dom.append($("<p />", { text: _(annotationDescription) }));
 
     // add highlight and redact buttons
-    if ($this.options.redactions === true) {
-      var buttonItem = [highlightButton, redactButton];
-      $.each(buttonItem, (_, button) => {
-        button.addClass("feedback-btn feedback-btn-small");
-        button.addClass(
-          button === highlightButton ? "active" : "feedback-btn-inverse",
-        );
-        button.on("click", function (e) {
-          e.preventDefault();
-
-          highlightButton.toggleClass("active");
-          redactButton.toggleClass("active");
-
-          action = !action;
-        });
-
-        this.dom.append(button);
-        this.dom.append(" ");
-      });
-    }
+    this.#addAnnotationButtons();
 
     highlightContainer.attr("id", "feedback-highlight-container");
     highlightContainer.css("width", `${this.h2cCanvas.width}px`);
