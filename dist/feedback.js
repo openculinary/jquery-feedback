@@ -164,9 +164,7 @@ var loader = function () {
     if (lang) {
       return lang.replace("-", "_");
     }
-  },
-  nextButton,
-  modalBody = $("<div />", { class: "feedback-body" });
+  };
 
 window.Feedback = function (options) {
   options = options || {};
@@ -185,7 +183,9 @@ window.Feedback = function (options) {
 
   var activationButton,
     modal,
+    modalBody = $("<div />", { class: "feedback-body" }),
     currentPage,
+    nextButton,
     glass = $("<div />", {
       class: "feedback-glass",
       style: "pointer-events: none;",
