@@ -388,7 +388,7 @@ button.feedback-btn.small, input[type="submit"].feedback-btn.small {
 }
 
 
-#feedback-blackout-element {
+#feedback-redact-element {
     background: #000;
     opacity: 0.8;
     position:absolute;
@@ -447,7 +447,7 @@ button.feedback-btn.small, input[type="submit"].feedback-btn.small {
 
 }
 
-.feedback-blackedout {
+.feedback-redacted {
     background: #000;
     position:absolute;
     z-index: 2000;

@@ -26,9 +26,9 @@ var default_message_strings = {
   messageSuccess: "Your feedback was sent successfully.",
   messageError: "There was an error sending your feedback to our server.",
   formDescription: "Please describe the issue you are experiencing",
-  highlightDescription: "Highlight or blackout important information",
+  highlightDescription: "Highlight or redact important information",
   highlight: "Highlight",
-  blackout: "Blackout",
+  redact: "Redact",
   issue: "Issue",
 };
 

@@ -10,7 +10,7 @@ i18n.de_DE = {
   formDescription: "Bitte beschreiben Sie das Problem das bei Ihnen auftritt",
   highlightDescription: "Wichtige Informationen markieren oder verdunkeln",
   highlight: "Markieren",
-  blackout: "Verdunkeln",
+  redact: "Verdunkeln",
   issue: "Problem",
 };
 i18n.de = i18n.de_DE;
