@@ -482,42 +482,40 @@ class Form extends Page {
       data[item.name] = item.element.val();
     });
 
-    if (this.browserInfo.url) data.url = window.location.href;
-    if (this.browserInfo.timeOpened) data.timeOpened = new Date();
-    if (this.browserInfo.timezone)
+    const browserInfo = this.browserInfo;
+    if (browserInfo.url) data.url = window.location.href;
+    if (browserInfo.timeOpened) data.timeOpened = new Date();
+    if (browserInfo.timezone)
       data.timezone = new Date().getTimezoneOffset() / 60;
-    if (this.browserInfo.pageon) data.pageon = window.location.pathname;
-    if (this.browserInfo.referrer) data.referrer = document.referrer;
-    if (this.browserInfo.previousSites) data.previousSites = history.length;
-    if (this.browserInfo.browserName) data.browserName = navigator.appName;
-    if (this.browserInfo.browserEngine) data.browserEngine = navigator.product;
-    if (this.browserInfo.browserVersion1a)
+    if (browserInfo.pageon) data.pageon = window.location.pathname;
+    if (browserInfo.referrer) data.referrer = document.referrer;
+    if (browserInfo.previousSites) data.previousSites = history.length;
+    if (browserInfo.browserName) data.browserName = navigator.appName;
+    if (browserInfo.browserEngine) data.browserEngine = navigator.product;
+    if (browserInfo.browserVersion1a)
       data.browserVersion1a = navigator.appVersion;
-    if (this.browserInfo.browserVersion1b)
+    if (browserInfo.browserVersion1b)
       data.browserVersion1b = navigator.userAgent;
-    if (this.browserInfo.browserLanguage)
-      data.browserLanguage = navigator.language;
-    if (this.browserInfo.browserOnline) data.browserOnline = navigator.onLine;
-    if (this.browserInfo.browserPlatform)
-      data.browserPlatform = navigator.platform;
-    if (this.browserInfo.javaEnabled)
-      data.javaEnabled = navigator.javaEnabled();
-    if (this.browserInfo.dataCookiesEnabled)
+    if (browserInfo.browserLanguage) data.browserLanguage = navigator.language;
+    if (browserInfo.browserOnline) data.browserOnline = navigator.onLine;
+    if (browserInfo.browserPlatform) data.browserPlatform = navigator.platform;
+    if (browserInfo.javaEnabled) data.javaEnabled = navigator.javaEnabled();
+    if (browserInfo.dataCookiesEnabled)
       data.dataCookiesEnabled = navigator.cookieEnabled;
-    if (this.browserInfo.dataCookies1) data.dataCookies1 = document.cookie;
-    if (this.browserInfo.dataCookies2)
+    if (browserInfo.dataCookies1) data.dataCookies1 = document.cookie;
+    if (browserInfo.dataCookies2)
       data.dataCookies2 = decodeURIComponent(document.cookie.split(";"));
-    if (this.browserInfo.dataStorage) data.dataStorage = localStorage;
-    if (this.browserInfo.sizeScreenW) data.sizeScreenW = screen.width;
-    if (this.browserInfo.sizeScreenH) data.sizeScreenH = screen.height;
-    if (this.browserInfo.sizeDocW) data.sizeDocW = document.width;
-    if (this.browserInfo.sizeDocH) data.sizeDocH = document.height;
-    if (this.browserInfo.sizeInW) data.sizeInW = innerWidth;
-    if (this.browserInfo.sizeInH) data.sizeInH = innerHeight;
-    if (this.browserInfo.sizeAvailW) data.sizeAvailW = screen.availWidth;
-    if (this.browserInfo.sizeAvailH) data.sizeAvailH = screen.availHeight;
-    if (this.browserInfo.scrColorDepth) data.scrColorDepth = screen.colorDepth;
-    if (this.browserInfo.scrPixelDepth) data.scrPixelDepth = screen.pixelDepth;
+    if (browserInfo.dataStorage) data.dataStorage = localStorage;
+    if (browserInfo.sizeScreenW) data.sizeScreenW = screen.width;
+    if (browserInfo.sizeScreenH) data.sizeScreenH = screen.height;
+    if (browserInfo.sizeDocW) data.sizeDocW = document.width;
+    if (browserInfo.sizeDocH) data.sizeDocH = document.height;
+    if (browserInfo.sizeInW) data.sizeInW = innerWidth;
+    if (browserInfo.sizeInH) data.sizeInH = innerHeight;
+    if (browserInfo.sizeAvailW) data.sizeAvailW = screen.availWidth;
+    if (browserInfo.sizeAvailH) data.sizeAvailH = screen.availHeight;
+    if (browserInfo.scrColorDepth) data.scrColorDepth = screen.colorDepth;
+    if (browserInfo.scrPixelDepth) data.scrPixelDepth = screen.pixelDepth;
 
     // cache and return data
     return (this._data = data);
