@@ -108,7 +108,6 @@ i18n.it_IT = {
   highlight: "Evidenzia",
   redact: "Nascondi",
   issue: "Problema",
-  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.it = i18n.it_IT;
 
@@ -127,7 +126,6 @@ i18n.pt_BR = {
   highlight: "Destacar",
   redact: "Ocultar",
   issue: "Problema",
-  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.pt = i18n.pt_BR;
 
@@ -146,7 +144,6 @@ i18n.ru_RU = {
   highlight: "Выделить",
   redact: "Спрятать",
   issue: "Ваше сообщение",
-  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.ru = i18n.ru_RU;
 

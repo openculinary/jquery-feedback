@@ -13,6 +13,5 @@ i18n.ru_RU = {
   highlight: "Выделить",
   redact: "Спрятать",
   issue: "Ваше сообщение",
-  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.ru = i18n.ru_RU;
