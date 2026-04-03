@@ -31,6 +31,7 @@ var default_message_strings = {
   highlight: "Highlight",
   redact: "Redact",
   issue: "Issue",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 
 var i18n = Object.create({

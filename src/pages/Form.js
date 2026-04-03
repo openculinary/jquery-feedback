@@ -12,6 +12,8 @@ class Form extends Page {
     this.browserInfo = browserInfo || this.#defaultBrowserInfo();
 
     this.dom = $("<div />");
+
+    this.browserInfoConsentCheckbox = undefined;
   }
 
   static #defaultBrowserInfo() {
@@ -60,6 +62,28 @@ class Form extends Page {
           break;
       }
     });
+
+    const browserInfoConsent = $("<div />");
+    browserInfoConsent.append(
+      (this.browserInfoConsentCheckbox = $("<input />", {
+        id: "browser-info-consent",
+        type: "checkbox",
+        style: "float: left; margin: 8px",
+      })),
+    );
+    browserInfoConsent.append(
+      $("<label />", {
+        for: "browser-info-consent",
+        text: _("browserInfoConsent"),
+      }),
+    );
+    browserInfoConsent.append(
+      $("<div />", {
+        style: "clear: both",
+      }),
+    );
+
+    this.dom.append(browserInfoConsent);
   }
 
   end(modal) {
@@ -87,40 +111,44 @@ class Form extends Page {
       data[item.name] = item.element.val();
     });
 
-    const browserInfo = this.browserInfo;
-    if (browserInfo.url) data.url = window.location.href;
-    if (browserInfo.timeOpened) data.timeOpened = new Date();
-    if (browserInfo.timezone)
-      data.timezone = new Date().getTimezoneOffset() / 60;
-    if (browserInfo.pageon) data.pageon = window.location.pathname;
-    if (browserInfo.referrer) data.referrer = document.referrer;
-    if (browserInfo.previousSites) data.previousSites = history.length;
-    if (browserInfo.browserName) data.browserName = navigator.appName;
-    if (browserInfo.browserEngine) data.browserEngine = navigator.product;
-    if (browserInfo.browserVersion1a)
-      data.browserVersion1a = navigator.appVersion;
-    if (browserInfo.browserVersion1b)
-      data.browserVersion1b = navigator.userAgent;
-    if (browserInfo.browserLanguage) data.browserLanguage = navigator.language;
-    if (browserInfo.browserOnline) data.browserOnline = navigator.onLine;
-    if (browserInfo.browserPlatform) data.browserPlatform = navigator.platform;
-    if (browserInfo.javaEnabled) data.javaEnabled = navigator.javaEnabled();
-    if (browserInfo.dataCookiesEnabled)
-      data.dataCookiesEnabled = navigator.cookieEnabled;
-    if (browserInfo.dataCookies1) data.dataCookies1 = document.cookie;
-    if (browserInfo.dataCookies2)
-      data.dataCookies2 = decodeURIComponent(document.cookie.split(";"));
-    if (browserInfo.dataStorage) data.dataStorage = localStorage;
-    if (browserInfo.sizeScreenW) data.sizeScreenW = screen.width;
-    if (browserInfo.sizeScreenH) data.sizeScreenH = screen.height;
-    if (browserInfo.sizeDocW) data.sizeDocW = document.width;
-    if (browserInfo.sizeDocH) data.sizeDocH = document.height;
-    if (browserInfo.sizeInW) data.sizeInW = innerWidth;
-    if (browserInfo.sizeInH) data.sizeInH = innerHeight;
-    if (browserInfo.sizeAvailW) data.sizeAvailW = screen.availWidth;
-    if (browserInfo.sizeAvailH) data.sizeAvailH = screen.availHeight;
-    if (browserInfo.scrColorDepth) data.scrColorDepth = screen.colorDepth;
-    if (browserInfo.scrPixelDepth) data.scrPixelDepth = screen.pixelDepth;
+    if (this.browserInfoConsentCheckbox.is(":checked")) {
+      const browserInfo = this.browserInfo;
+      if (browserInfo.url) data.url = window.location.href;
+      if (browserInfo.timeOpened) data.timeOpened = new Date();
+      if (browserInfo.timezone)
+        data.timezone = new Date().getTimezoneOffset() / 60;
+      if (browserInfo.pageon) data.pageon = window.location.pathname;
+      if (browserInfo.referrer) data.referrer = document.referrer;
+      if (browserInfo.previousSites) data.previousSites = history.length;
+      if (browserInfo.browserName) data.browserName = navigator.appName;
+      if (browserInfo.browserEngine) data.browserEngine = navigator.product;
+      if (browserInfo.browserVersion1a)
+        data.browserVersion1a = navigator.appVersion;
+      if (browserInfo.browserVersion1b)
+        data.browserVersion1b = navigator.userAgent;
+      if (browserInfo.browserLanguage)
+        data.browserLanguage = navigator.language;
+      if (browserInfo.browserOnline) data.browserOnline = navigator.onLine;
+      if (browserInfo.browserPlatform)
+        data.browserPlatform = navigator.platform;
+      if (browserInfo.javaEnabled) data.javaEnabled = navigator.javaEnabled();
+      if (browserInfo.dataCookiesEnabled)
+        data.dataCookiesEnabled = navigator.cookieEnabled;
+      if (browserInfo.dataCookies1) data.dataCookies1 = document.cookie;
+      if (browserInfo.dataCookies2)
+        data.dataCookies2 = decodeURIComponent(document.cookie.split(";"));
+      if (browserInfo.dataStorage) data.dataStorage = localStorage;
+      if (browserInfo.sizeScreenW) data.sizeScreenW = screen.width;
+      if (browserInfo.sizeScreenH) data.sizeScreenH = screen.height;
+      if (browserInfo.sizeDocW) data.sizeDocW = document.width;
+      if (browserInfo.sizeDocH) data.sizeDocH = document.height;
+      if (browserInfo.sizeInW) data.sizeInW = innerWidth;
+      if (browserInfo.sizeInH) data.sizeInH = innerHeight;
+      if (browserInfo.sizeAvailW) data.sizeAvailW = screen.availWidth;
+      if (browserInfo.sizeAvailH) data.sizeAvailH = screen.availHeight;
+      if (browserInfo.scrColorDepth) data.scrColorDepth = screen.colorDepth;
+      if (browserInfo.scrPixelDepth) data.scrPixelDepth = screen.pixelDepth;
+    }
 
     // cache and return data
     return (this._data = data);
@@ -137,6 +165,25 @@ class Form extends Page {
         dom.append($("<hr />"));
       }
     });
+
+    if (this.browserInfoConsentCheckbox.is(":checked")) {
+      const $this = this,
+        data = this.data();
+      const browserDetails = $("<details />");
+      browserDetails.append($("<summary />", { text: "Browser-Info" }));
+      $.each(Form.#defaultBrowserInfo(), (field, enabled) => {
+        if (field in $this.browserInfo && enabled && field in data) {
+          var labelText = field + ":";
+          var label = $("<label />", { text: labelText });
+          var fieldValue = data[String(field)];
+          browserDetails.append(label);
+          browserDetails.append(fieldValue);
+          browserDetails.append($("<hr />"));
+        }
+      });
+      dom.append(browserDetails);
+    }
+
     return dom;
   }
 
