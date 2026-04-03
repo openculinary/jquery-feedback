@@ -404,12 +404,12 @@ class Form extends Page {
         required: false,
       },
     ];
-    this.browserInfo = browserInfo || this.defaultBrowserInfo();
+    this.browserInfo = browserInfo || this.#defaultBrowserInfo();
 
     this.dom = $("<div />");
   }
 
-  static defaultBrowserInfo() {
+  static #defaultBrowserInfo() {
     return {
       url: true,
       timeOpened: true,
