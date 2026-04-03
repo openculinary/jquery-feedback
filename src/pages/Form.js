@@ -165,6 +165,25 @@ class Form extends Page {
         dom.append($("<hr />"));
       }
     });
+
+    if (this.browserInfoConsentCheckbox.is(":checked")) {
+      const $this = this,
+        data = this.data();
+      const browserDetails = $("<details />");
+      browserDetails.append($("<summary />", { text: "Browser-Info" }));
+      $.each(Form.#defaultBrowserInfo(), (field, enabled) => {
+        if (field in $this.browserInfo && enabled && field in data) {
+          var labelText = field + ":";
+          var label = $("<label />", { text: labelText });
+          var fieldValue = data[String(field)];
+          browserDetails.append(label);
+          browserDetails.append(fieldValue);
+          browserDetails.append($("<hr />"));
+        }
+      });
+      dom.append(browserDetails);
+    }
+
     return dom;
   }
 
