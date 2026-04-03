@@ -408,7 +408,6 @@ class Form extends Page {
     this.dom = $("<div />");
 
     this.browserInfoConsentCheckbox = undefined;
-    this.browserInfoConsentLabel = undefined;
   }
 
   render() {
