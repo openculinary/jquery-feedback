@@ -31,11 +31,11 @@ class Form extends Page {
 
     const browserInfoConsent = $("<div />");
     browserInfoConsent.append(
-      $("<input />", {
+      (this.browserInfoConsentCheckbox = $("<input />", {
         id: "browser-info-consent",
         type: "checkbox",
         style: "float: left; margin: 8px",
-      }),
+      })),
     );
     browserInfoConsent.append(
       $("<label />", {
@@ -77,7 +77,7 @@ class Form extends Page {
       data[item.name] = item.element.val();
     });
 
-    if ($("#browser-info-consent").is(":checked")) {
+    if (this.browserInfoConsentCheckbox.is(":checked")) {
       data.url = window.location.href;
       data.timeOpened = new Date();
       data.timezone = new Date().getTimezoneOffset() / 60;
