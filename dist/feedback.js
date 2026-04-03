@@ -39,6 +39,7 @@ var default_message_strings = {
   highlight: "Highlight",
   redact: "Redact",
   issue: "Issue",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 
 var i18n = Object.create({
@@ -107,6 +108,7 @@ i18n.it_IT = {
   highlight: "Evidenzia",
   redact: "Nascondi",
   issue: "Problema",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.it = i18n.it_IT;
 
@@ -125,6 +127,7 @@ i18n.pt_BR = {
   highlight: "Destacar",
   redact: "Ocultar",
   issue: "Problema",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.pt = i18n.pt_BR;
 
@@ -143,6 +146,7 @@ i18n.ru_RU = {
   highlight: "Выделить",
   redact: "Спрятать",
   issue: "Ваше сообщение",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.ru = i18n.ru_RU;
 
@@ -402,6 +406,9 @@ class Form extends Page {
     ];
 
     this.dom = $("<div />");
+
+    this.browserInfoConsentCheckbox = undefined;
+    this.browserInfoConsentLabel = undefined;
   }
 
   render() {
@@ -417,6 +424,28 @@ class Form extends Page {
           break;
       }
     });
+
+    const browserInfoConsent = $("<div />");
+    browserInfoConsent.append(
+      $("<input />", {
+        id: "browser-info-consent",
+        type: "checkbox",
+        style: "float: left; margin: 8px",
+      }),
+    );
+    browserInfoConsent.append(
+      $("<label />", {
+        for: "browser-info-consent",
+        text: _("browserInfoConsent"),
+      }),
+    );
+    browserInfoConsent.append(
+      $("<div />", {
+        style: "clear: both",
+      }),
+    );
+
+    this.dom.append(browserInfoConsent);
   }
 
   end(modal) {
@@ -444,34 +473,36 @@ class Form extends Page {
       data[item.name] = item.element.val();
     });
 
-    data.url = window.location.href;
-    data.timeOpened = new Date();
-    data.timezone = new Date().getTimezoneOffset() / 60;
-    data.pageon = window.location.pathname;
-    data.referrer = document.referrer;
-    data.previousSites = history.length;
-    data.browserName = navigator.appName;
-    data.browserEngine = navigator.product;
-    data.browserVersion1a = navigator.appVersion;
-    data.browserVersion1b = navigator.userAgent;
-    data.browserLanguage = navigator.language;
-    data.browserOnline = navigator.onLine;
-    data.browserPlatform = navigator.platform;
-    data.javaEnabled = navigator.javaEnabled();
-    data.dataCookiesEnabled = navigator.cookieEnabled;
-    data.dataCookies1 = document.cookie;
-    data.dataCookies2 = decodeURIComponent(document.cookie.split(";"));
-    data.dataStorage = localStorage;
-    data.sizeScreenW = screen.width;
-    data.sizeScreenH = screen.height;
-    data.sizeDocW = document.width;
-    data.sizeDocH = document.height;
-    data.sizeInW = innerWidth;
-    data.sizeInH = innerHeight;
-    data.sizeAvailW = screen.availWidth;
-    data.sizeAvailH = screen.availHeight;
-    data.scrColorDepth = screen.colorDepth;
-    data.scrPixelDepth = screen.pixelDepth;
+    if ($("#browser-info-consent").is(":checked")) {
+      data.url = window.location.href;
+      data.timeOpened = new Date();
+      data.timezone = new Date().getTimezoneOffset() / 60;
+      data.pageon = window.location.pathname;
+      data.referrer = document.referrer;
+      data.previousSites = history.length;
+      data.browserName = navigator.appName;
+      data.browserEngine = navigator.product;
+      data.browserVersion1a = navigator.appVersion;
+      data.browserVersion1b = navigator.userAgent;
+      data.browserLanguage = navigator.language;
+      data.browserOnline = navigator.onLine;
+      data.browserPlatform = navigator.platform;
+      data.javaEnabled = navigator.javaEnabled();
+      data.dataCookiesEnabled = navigator.cookieEnabled;
+      data.dataCookies1 = document.cookie;
+      data.dataCookies2 = decodeURIComponent(document.cookie.split(";"));
+      data.dataStorage = localStorage;
+      data.sizeScreenW = screen.width;
+      data.sizeScreenH = screen.height;
+      data.sizeDocW = document.width;
+      data.sizeDocH = document.height;
+      data.sizeInW = innerWidth;
+      data.sizeInH = innerHeight;
+      data.sizeAvailW = screen.availWidth;
+      data.sizeAvailH = screen.availHeight;
+      data.scrColorDepth = screen.colorDepth;
+      data.scrPixelDepth = screen.pixelDepth;
+    }
 
     // cache and return data
     return (this._data = data);

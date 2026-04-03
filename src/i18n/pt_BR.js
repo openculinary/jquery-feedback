@@ -13,5 +13,6 @@ i18n.pt_BR = {
   highlight: "Destacar",
   redact: "Ocultar",
   issue: "Problema",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.pt = i18n.pt_BR;

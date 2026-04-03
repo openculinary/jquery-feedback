@@ -13,5 +13,6 @@ i18n.it_IT = {
   highlight: "Evidenzia",
   redact: "Nascondi",
   issue: "Problema",
+  browserInfoConsent: "I would like to provide information about my web browser and device with this feedback",
 };
 i18n.it = i18n.it_IT;
