@@ -167,21 +167,24 @@ class Form extends Page {
     });
 
     if (this.browserInfoConsentCheckbox.is(":checked")) {
-      const $this = this,
-        data = this.data();
+      const data = this.data();
       const browserDetails = $("<details />");
       browserDetails.append($("<summary />", { text: "Browser-Info" }));
+      const browserInfoCollected = $("<table />");
       $.each(Form.#defaultBrowserInfo(), (field, enabled) => {
-        if (field in $this.browserInfo && enabled && field in data) {
-          var labelText = field + ":";
-          var label = $("<label />", { text: labelText });
-          var fieldValue = data[String(field)];
-          browserDetails.append(label);
-          browserDetails.append(fieldValue);
-          browserDetails.append($("<hr />"));
+        // field can be collected, is configured for reporting, and was collected
+        if (field in this.browserInfo && enabled && field in data) {
+          const row = $("<tr />");
+          row.append($("<th />", { text: field }));
+          row.append($("<td />", { text: data[field] }));
+          browserInfoCollected.append(row);
         }
       });
-      dom.append(browserDetails);
+      browserDetails.append($("<br />"));
+      browserDetails.append(browserInfoCollected);
+      browserDetails.appendTo(dom);
+
+      dom.append($("<hr />"));
     }
 
     return dom;
