@@ -1,1 +1,1 @@
-export { Feedback as default, Feedback };
+export { Feedback as default, Feedback, Send };
