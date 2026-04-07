@@ -41,22 +41,22 @@
 
     <!-- Le javascript -->
     <script src="js/jquery.js"></script>
-    <script src="../dist/feedback.js"></script>
-    
     <script type="text/javascript">
-      $(document).ready(function() {
-        var api = Feedback({
-            h2cPath:'js/html2canvas.js',
-            appendTo: null, // don't add feedback button to page
-            scale: 1,
+      import("../dist/feedback.js").then(module => {
+        $(document).ready(function() {
+          var api = module.Feedback({
+              h2cPath:'js/html2canvas.js',
+              appendTo: null, // don't add feedback button to page
+              scale: 1,
+          });
+
+          // instead, let's open it after 2 seconds
+          window.setTimeout(function(){
+              api.open();
+          }, 2000);
+
         });
-        
-        // instead, let's open it after 2 seconds
-        window.setTimeout(function(){
-            api.open();
-        }, 2000);
-        
-      });      
+      });
     </script>
 
 </body></html>

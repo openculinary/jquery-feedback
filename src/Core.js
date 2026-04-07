@@ -1,7 +1,3 @@
-if (window.Feedback !== undefined) {
-  return;
-}
-
 const H2C_IGNORE = "data-html2canvas-ignore";
 
 var progressIndicator = function () {
@@ -24,7 +20,7 @@ var progressIndicator = function () {
     }
   };
 
-window.Feedback = function (options) {
+const Feedback = function (options) {
   options = options || {};
 
   // default properties

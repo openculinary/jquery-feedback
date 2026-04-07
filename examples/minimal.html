@@ -41,6 +41,8 @@
 
     <!-- Le javascript -->
     <script src="js/jquery.js"></script>
-    <script src="../dist/feedback.js"></script>
+    <script type="text/javascript">
+      import("../dist/feedback.js").then(module => { window.Feedback = module.Feedback });
+    </script>
 
 </body></html>

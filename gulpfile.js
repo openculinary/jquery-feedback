@@ -4,7 +4,6 @@ var uglify = require("gulp-uglify");
 
 var source_files = [
   "src/license.txt",
-  "src/pre.txt",
   "src/i18n/i18n.js",
   "src/i18n/*.js",
   "src/Core.js",
@@ -14,7 +13,7 @@ var source_files = [
   "src/pages/Review.js",
   "src/pages/Screenshot.js",
   "src/send/xhr.js",
-  "src/post.txt",
+  "src/exports.js",
 ];
 
 gulp.task("build", function () {

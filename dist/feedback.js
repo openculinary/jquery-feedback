@@ -5,7 +5,6 @@
 
  Released under MIT License
 */
-(function( window, document, undefined ) {
 /*
   This allows custom messages and languages in the feedback.js library.
   The precedence order for messages is: Custom Message -> i18l -> defaults
@@ -147,10 +146,6 @@ i18n.ru_RU = {
 };
 i18n.ru = i18n.ru_RU;
 
-if (window.Feedback !== undefined) {
-  return;
-}
-
 const H2C_IGNORE = "data-html2canvas-ignore";
 
 var progressIndicator = function () {
@@ -173,7 +168,7 @@ var progressIndicator = function () {
     }
   };
 
-window.Feedback = function (options) {
+const Feedback = function (options) {
   options = options || {};
 
   // default properties
@@ -992,4 +987,4 @@ class XHR extends Send {
   }
 }
 
-})( window, document );
+export { Feedback as default, Feedback };
