@@ -1,5 +1,7 @@
-feedback.js - Feedback form with screenshot
-===========================================
+@openculinary/jquery-feedback - Feedback form with screenshot
+=============================================================
+
+This jQuery-based component is derived from the [`feedback.js` project](https://github.com/niklasvh/feedback.js), and subsequent contributors.
 
 Original preview available at http://experiments.hertzen.com/jsfeedback/
 
