@@ -405,7 +405,7 @@ class Form extends Page {
         required: false,
       },
     ];
-    this.browserInfo = browserInfo || this.#defaultBrowserInfo();
+    this.browserInfo = browserInfo || Form.#defaultBrowserInfo();
 
     this.dom = $("<div />");
 
