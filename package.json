@@ -51,8 +51,7 @@
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
-    "jquery": "^4.0.0",
-    "prettier": "^3.8.1"
+    "jquery": "^4.0.0"
   },
   "devDependencies": {
     "gulp": "^5.0.1",
