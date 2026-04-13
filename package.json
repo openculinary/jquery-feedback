@@ -6,7 +6,7 @@
     "jquery",
     "feedback"
   ],
-  "homepage": "https://github.com/openculinary/jquery-feedback/",
+  "homepage": "https://www.npmjs.com/package/@openculinary/jquery-feedback",
   "license": "MIT",
   "author": {
     "name": "Niklas von Hertzen",
